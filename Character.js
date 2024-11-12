@@ -12,12 +12,13 @@ import { copper, bank, gudgeonFishing, ashForest, chicken, miningWorkshop } from
  * - craft code: string, quantity: number
  * - use item code: string, quantity: number
  * - deposit all
+ * - all actions loop
  */
 
 export default class Character {
     constructor(name) {
         this.name = name;
-        this.defaultState = { state: "idle" };
+        this.defaultState = { state: "all actions loop" };
         this.currentState = undefined;
         this.pendingActions = [];
         this.characterState = undefined;
@@ -84,6 +85,10 @@ export default class Character {
                                 }
                             }
                         }
+                        break;
+                    case "all actions loop":
+                        this.allActionLoop()
+                        break;
                     default:
                         break;
                 }
@@ -114,7 +119,6 @@ export default class Character {
         this.addToActionQueue({ state: "craft", code: "copper", quantity: 8 });
         this.addToActionQueue({ state: "move", ...bank });
         this.addToActionQueue({ state: "deposit all" });
-        this.isLooping = true;
     }
 
     fishGudgeonLoop() {
@@ -124,7 +128,6 @@ export default class Character {
         }
         this.addToActionQueue({ state: "move", ...bank });
         this.addToActionQueue({ state: "deposit all" });
-        this.isLooping = true;
     }
 
     chopAshwoodLoop() {
@@ -134,7 +137,6 @@ export default class Character {
         }
         this.addToActionQueue({ state: "move", ...bank });
         this.addToActionQueue({ state: "deposit all" });
-        this.isLooping = true;
     }
 
     attackChickenLoop() {
@@ -145,7 +147,6 @@ export default class Character {
         }
         this.addToActionQueue({ state: "move", ...bank });
         this.addToActionQueue({ state: "deposit all" });
-        this.isLooping = true;
     }
     allActionLoop() {
         const actions = [() => this.mineCopperLoop(), () => this.chopAshwoodLoop(), () => this.fishGudgeonLoop(), () => this.attackChickenLoop()];

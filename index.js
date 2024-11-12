@@ -18,11 +18,12 @@ export const gudgeonFishing = {x: 4, y: 2}
 // fightLoop();
 
 const Bobby = new Character("Bobby");
-Bobby.addToActionQueue({ state: "move", ...yellowSlime });
-for(let i = 0; i < 100; i++) {
-    Bobby.addToActionQueue({ state: "attack" });
-    Bobby.addToActionQueue({ state: "rest" });
-}
+// Bobby.addToActionQueue({ state: "move", ...yellowSlime });
+// for(let i = 0; i < 100; i++) {
+//     Bobby.addToActionQueue({ state: "attack" });
+//     Bobby.addToActionQueue({ state: "rest" });
+// }
+Bobby.allActionLoop();
 Bobby.actionLoop();
 
 const Stuart = new Character("Stuart");
