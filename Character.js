@@ -1,6 +1,6 @@
 import { attack, collect, craft, getCharacter, rest, move, depositItem, useItem, getMap, getResource } from "./BaseActions.js";
 import { delay } from "./Util.js";
-import { copper, bank, gudgeonFishing, ashForest, chicken, miningWorkshop } from "./index.js";
+import { copper, bank, gudgeonFishing, ashForest, chicken, miningWorkshop, spruceForest, iron } from "./index.js";
 
 const INVENTORY_THRESHOLD = 0.8;
 const LOW_HP_THRESHOLD = 0.5;
@@ -28,11 +28,15 @@ export default class Character {
         while (true) {
             await this.updateCharacterState();
 
-            if (this.shouldRest()) {
-                this.setCurrentState("rest");
-            } else if (this.hasCooldown()) {
+            if (this.hasCooldown()) {
                 await this.handleCooldown();
             }
+
+            
+            if (this.shouldRest()) {
+                await rest(this.name);
+                continue;
+            }  
 
             if (!this.currentState) {
                 this.currentState = this.pendingActions.shift() || this.defaultState;
@@ -113,6 +117,10 @@ export default class Character {
         }
 
         this.handleActionResult(result);
+        if(this.currentState.repeat && this.currentState.repeat > 0) {
+            this.currentState.repeat --;
+            this.pendingActions.unshift(this.currentState);
+        }
         this.currentState = undefined;
     }
 
@@ -189,8 +197,8 @@ export default class Character {
 
     getSkillLocation(skill) {
         const skillLocations = {
-            mining_level: copper,
-            woodcutting_level: ashForest,
+            mining_level: iron,
+            woodcutting_level: spruceForest,
             fishing_level: gudgeonFishing,
         };
         return skillLocations[skill];
