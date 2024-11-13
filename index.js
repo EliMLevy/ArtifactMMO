@@ -60,7 +60,8 @@ app.post('/action', (req, res) => {
     const actionObject = { state: action, ...actionParams };
 
     // Add action to character's queue
-    character.addToActionQueue(actionObject);
+    // character.addToActionQueue(actionObject);
+    character.queueState(action, actionParams);
 
     res.json({ message: `Action ${action} added to ${characterName}'s queue` });
 });
