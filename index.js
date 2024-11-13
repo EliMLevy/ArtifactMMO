@@ -66,6 +66,30 @@ app.post('/action', (req, res) => {
     res.json({ message: `Action ${action} added to ${characterName}'s queue` });
 });
 
+app.post('/default', (req, res) => {
+    const { characterName, action, ...actionParams } = req.body;
+
+    // Validate required fields
+    if (!characterName || !action) {
+        return res.status(400).json({ error: "Character name and action are required" });
+    }
+
+    // Find character
+    const character = characters.get(characterName);
+    if (!character) {
+        return res.status(404).json({ error: "Character not found" });
+    }
+
+    // Create action object based on the action type
+    const actionObject = { state: action, ...actionParams };
+
+    // Add action to character's queue
+    // character.addToActionQueue(actionObject);
+    character.defaultState = actionObject
+
+    res.json({ message: `Action ${action} set as default for ${characterName}'s queue` });
+})
+
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
