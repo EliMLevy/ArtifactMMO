@@ -26,7 +26,7 @@ export async function sendRequestToURL(url, path, method, body) {
         const response = await fetch(url + path, requestOptions);
         const result = await response.json();
         if (result.error) {
-            console.log("Failed:", result.error);
+            console.log("Failed:", url, result.error);
         }
         if(response.status != 200) {
             console.log("Unexpected status:", response.status, result)

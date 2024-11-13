@@ -45,6 +45,10 @@ export async function craft(character, itemCode, quantity) {
     return await sendRequest(character, "/action/crafting", "POST", raw);
 }
 
+export async function recylce(character, code, quantity) {
+    return await sendRequest(character, "/action/recycling", "POST", JSON.stringify({code, quantity}));
+}
+
 export async function unequip(character, slot) {
     var raw = JSON.stringify({
         slot,
@@ -188,6 +192,11 @@ export async function depositItem(character, item) {
     const body = { code: item.code, quantity: item.quantity };
     return await sendRequest(character, "/action/bank/deposit", "POST", JSON.stringify(body));
 }
+export async function withdrawItem(character, code, quantity) {
+    const body = { code, quantity };
+    return await sendRequest(character, "/action/bank/withdraw", "POST", JSON.stringify(body));
+}
+
 
 export async function useItem(character, code, quantity) {
     const body = { code, quantity }
