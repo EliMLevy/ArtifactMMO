@@ -1,4 +1,4 @@
-import { attack, collect, craft, getCharacter, rest, move, depositItem, useItem } from "./BaseActions.js";
+import { attack, collect, craft, getCharacter, rest, move, depositItem, useItem, getMap, getResource } from "./BaseActions.js";
 import { delay } from "./Util.js";
 import { copper, bank, gudgeonFishing, ashForest, chicken, miningWorkshop } from "./index.js";
 
@@ -22,12 +22,23 @@ export default class Character {
         this.currentState = undefined;
         this.pendingActions = [];
         this.characterState = undefined;
-        this.isLooping = false;
+        this.currentMap = undefined;
+        this.skills = {
+            mining_level: undefined,
+            woodcutting_level: undefined,
+            fishing_level: undefined,
+        };
     }
 
     async actionLoop() {
         while (true) {
             this.characterState = await getCharacter(this.name);
+            if(!this.currentMap) {
+                this.currentMap = await getMap(this.characterState.data.x, this.characterState.data.y)
+            }
+            this.skills.mining_level = this.characterState.data.mining_level;
+            this.skills.woodcutting_level = this.characterState.data.woodcutting_level;
+            this.skills.fishing_level = this.characterState.data.fishing_level;
             if (this.characterState.data.hp < 50) {
                 this.currentState = { state: "rest" };
             }
@@ -40,9 +51,6 @@ export default class Character {
                 // Try to take a state from the pending actions
                 if (this.pendingActions.length > 0) {
                     this.currentState = this.pendingActions.shift();
-                    if (this.isLooping) {
-                        this.pendingActions.push(this.currentState);
-                    }
                 } else {
                     // Otherwise default to default state
                     this.currentState = this.defaultState;
@@ -58,6 +66,7 @@ export default class Character {
                         break;
                     case "move":
                         result = await move(this.name, this.currentState.x, this.currentState.y);
+                        this.currentMap = undefined;                        
                         break;
                     case "attack":
                         result = await attack(this.name);
@@ -87,7 +96,35 @@ export default class Character {
                         }
                         break;
                     case "all actions loop":
-                        this.allActionLoop()
+                        this.allActionLoop();
+                        break;
+                    case "autopilot":
+                        // if we have low health -> rest
+                        if (this.characterState.data.hp / this.characterState.data.max_hp < 0.8) {
+                            this.addToActionQueue({ state: "rest" });
+                            break;
+                        }
+                        // if we have a lot of items in our inventory -> drop items off
+                        const itemsInInventory = this.characterState.data.inventory.reduce((part, a) => part + a, 0);
+                        if (itemsInInventory / this.characterState.data.inventory_max_items > 0.8) {
+                            this.addToActionQueue({ state: "move", ...bank });
+                            this.addToActionQueue({ state: "deposit all" });
+                            break;
+                        }
+                        // If we are on a map that has a resource, see if this skill needs more advancement.
+                        // A skill needs more advancement if there is no skill >2 points behind
+                        if(this.currentMap && this.currentMap.data.content && this.currentMap.data.content.type === "resource") {
+                            const targetSkill = getResource(this.currentMap.data.content.code).data.skill;
+                            // There is no skill that is more than 3 behind the targetSkill
+                            if(Object.keys(this.skills).every(skill => this.skills[skill] + 3 > this.skills[targetSkill])) {
+                                this.addToActionQueue({ state: "collect" });
+                                break;
+                            }
+                        }
+
+                        // Find the lowest skill and do that action
+                        const lowestSkill = Object.keys(this.skills).sort((a, b) => this.skills[a] - this.skills[b]);
+                        this.performSkill(lowestSkill);
                         break;
                     default:
                         break;
@@ -154,5 +191,25 @@ export default class Character {
         actions
             .sort(() => Math.random() - 0.5) // Randomize the order of actions
             .forEach((action) => action()); // Execute each action in the new random order
+    }
+
+    performSkill(skill) {
+        switch (skill) {
+            case "mining_level":
+            case "mining":
+                this.addToActionQueue({ state: "move", ...copper });
+                break;
+            case "woodcutting_level":
+            case "woodcutting":
+                this.addToActionQueue({ state: "move", ...ashForest });
+                break;
+            case "fishing_level":
+            case "fishing":
+                this.addToActionQueue({ state: "move", ...gudgeonFishing });
+                break;
+            default:
+                break;
+        }
+        this.addToActionQueue({ state: "collect" });
     }
 }
