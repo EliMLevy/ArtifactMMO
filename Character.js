@@ -2,19 +2,13 @@ import { attack, collect, craft, getCharacter, rest, move, depositItem, useItem,
 import { delay } from "./Util.js";
 import { copper, bank, gudgeonFishing, ashForest, chicken, miningWorkshop } from "./index.js";
 
-/**
- * States:
- * - "idle"
- * - "move" x: number, y: number
- * - attack
- * - rest
- * - collect
- * - craft code: string, quantity: number
- * - use item code: string, quantity: number
- * - deposit all
- * - all actions loop
- */
+const INVENTORY_THRESHOLD = 0.8;
+const LOW_HP_THRESHOLD = 0.5;
+const IDLE_DELAY = 3000;
 
+/**
+ * Encapsulates actions and character state handling in an improved, modular way.
+ */
 export default class Character {
     constructor(name) {
         this.name = name;
@@ -32,184 +26,184 @@ export default class Character {
 
     async actionLoop() {
         while (true) {
-            this.characterState = await getCharacter(this.name);
-            if(!this.currentMap) {
-                this.currentMap = await getMap(this.characterState.data.x, this.characterState.data.y)
-            }
-            this.skills.mining_level = this.characterState.data.mining_level;
-            this.skills.woodcutting_level = this.characterState.data.woodcutting_level;
-            this.skills.fishing_level = this.characterState.data.fishing_level;
-            if (this.characterState.data.hp < 50) {
-                this.currentState = { state: "rest" };
-            }
-            if (this.characterState.data.cooldown && new Date() < new Date(this.characterState.data.cooldown_expiration)) {
-                console.log(this.name, "cooldown for ", this.characterState.data.cooldown, " sec");
-                await delay(this.characterState.data.cooldown * 1000);
+            await this.updateCharacterState();
+
+            if (this.shouldRest()) {
+                this.setCurrentState("rest");
+            } else if (this.hasCooldown()) {
+                await this.handleCooldown();
             }
 
             if (!this.currentState) {
-                // Try to take a state from the pending actions
-                if (this.pendingActions.length > 0) {
-                    this.currentState = this.pendingActions.shift();
-                } else {
-                    // Otherwise default to default state
-                    this.currentState = this.defaultState;
-                }
+                this.currentState = this.pendingActions.shift() || this.defaultState;
             }
+
             try {
-                // Do the action
-                console.log(this.name, "Next state: ", this.currentState);
-                let result;
-                switch (this.currentState.state) {
-                    case "idle":
-                        await delay(3000);
-                        break;
-                    case "move":
-                        result = await move(this.name, this.currentState.x, this.currentState.y);
-                        this.currentMap = undefined;                        
-                        break;
-                    case "attack":
-                        result = await attack(this.name);
-                        break;
-                    case "rest":
-                        result = await rest(this.name);
-                        break;
-                    case "collect":
-                        result = await collect(this.name);
-                        break;
-                    case "craft":
-                        result = await craft(this.name, this.currentState.code, this.currentState.quantity);
-                        break;
-                    case "use item":
-                        result = await useItem(this.name, this.currentState.code, this.currentState.quantity);
-                        break;
-                    case "deposit all":
-                        for (let i = 0; i < this.characterState.data.inventory.length; i++) {
-                            const slot = this.characterState.data.inventory[i];
-                            if (slot && slot.quantity > 0) {
-                                console.log("Depositing:", slot);
-                                const depositResult = await depositItem(this.name, slot);
-                                if (depositResult) {
-                                    await delay(depositResult.data.cooldown.remaining_seconds * 1000);
-                                }
-                            }
-                        }
-                        break;
-                    case "all actions loop":
-                        this.allActionLoop();
-                        break;
-                    case "autopilot":
-                        // if we have low health -> rest
-                        if (this.characterState.data.hp / this.characterState.data.max_hp < 0.8) {
-                            this.addToActionQueue({ state: "rest" });
-                            break;
-                        }
-                        // if we have a lot of items in our inventory -> drop items off
-                        const itemsInInventory = this.characterState.data.inventory.reduce((part, a) => part + a, 0);
-                        if (itemsInInventory / this.characterState.data.inventory_max_items > 0.8) {
-                            this.addToActionQueue({ state: "move", ...bank });
-                            this.addToActionQueue({ state: "deposit all" });
-                            break;
-                        }
-                        // If we are on a map that has a resource, see if this skill needs more advancement.
-                        // A skill needs more advancement if there is no skill >2 points behind
-                        if(this.currentMap && this.currentMap.data.content && this.currentMap.data.content.type === "resource") {
-                            const targetSkill = getResource(this.currentMap.data.content.code).data.skill;
-                            // There is no skill that is more than 3 behind the targetSkill
-                            if(Object.keys(this.skills).every(skill => this.skills[skill] + 3 > this.skills[targetSkill])) {
-                                this.addToActionQueue({ state: "collect" });
-                                break;
-                            }
-                        }
-
-                        // Find the lowest skill and do that action
-                        const lowestSkill = Object.keys(this.skills).sort((a, b) => this.skills[a] - this.skills[b]);
-                        this.performSkill(lowestSkill);
-                        break;
-                    default:
-                        break;
-                }
-                if (result) {
-                    if (result.error) {
-                        if (result.error.code == 499) {
-                            this.pendingActions.unshift(this.currentState);
-                        }
-                    }
-                }
-                this.currentState = undefined;
+                await this.performCurrentState();
             } catch (error) {
-                console.log("Error: failed to complete state: ", this.currentState.state, error);
+                console.error("Error executing state", this.currentState, error);
             }
         }
     }
 
-    addToActionQueue(action) {
-        this.pendingActions.push(action);
-    }
-
-    mineCopperLoop() {
-        this.addToActionQueue({ state: "move", ...copper });
-        for (let i = 0; i < 64; i++) {
-            this.addToActionQueue({ state: "collect" });
+    async updateCharacterState() {
+        this.characterState = await getCharacter(this.name);
+        if (!this.currentMap) {
+            const { x, y } = this.characterState.data;
+            this.currentMap = await getMap(x, y);
         }
-        this.addToActionQueue({ state: "move", ...miningWorkshop });
-        this.addToActionQueue({ state: "craft", code: "copper", quantity: 8 });
-        this.addToActionQueue({ state: "move", ...bank });
-        this.addToActionQueue({ state: "deposit all" });
+        this.updateSkills();
     }
 
-    fishGudgeonLoop() {
-        this.addToActionQueue({ state: "move", ...gudgeonFishing });
-        for (let i = 0; i < 50; i++) {
-            this.addToActionQueue({ state: "collect" });
-        }
-        this.addToActionQueue({ state: "move", ...bank });
-        this.addToActionQueue({ state: "deposit all" });
+    updateSkills() {
+        const { mining_level, woodcutting_level, fishing_level } = this.characterState.data;
+        this.skills = { mining_level, woodcutting_level, fishing_level };
     }
 
-    chopAshwoodLoop() {
-        this.addToActionQueue({ state: "move", ...ashForest });
-        for (let i = 0; i < 50; i++) {
-            this.addToActionQueue({ state: "collect" });
-        }
-        this.addToActionQueue({ state: "move", ...bank });
-        this.addToActionQueue({ state: "deposit all" });
+    shouldRest() {
+        return this.characterState.data.hp < LOW_HP_THRESHOLD * this.characterState.data.max_hp;
     }
 
-    attackChickenLoop() {
-        this.addToActionQueue({ state: "move", ...chicken });
-        for (let i = 0; i < 50; i++) {
-            this.addToActionQueue({ state: "attack" });
-            this.addToActionQueue({ state: "rest" });
-        }
-        this.addToActionQueue({ state: "move", ...bank });
-        this.addToActionQueue({ state: "deposit all" });
-    }
-    allActionLoop() {
-        const actions = [() => this.mineCopperLoop(), () => this.chopAshwoodLoop(), () => this.fishGudgeonLoop(), () => this.attackChickenLoop()];
-
-        actions
-            .sort(() => Math.random() - 0.5) // Randomize the order of actions
-            .forEach((action) => action()); // Execute each action in the new random order
+    hasCooldown() {
+        const { cooldown, cooldown_expiration } = this.characterState.data;
+        return cooldown && new Date() < new Date(cooldown_expiration);
     }
 
-    performSkill(skill) {
-        switch (skill) {
-            case "mining_level":
-            case "mining":
-                this.addToActionQueue({ state: "move", ...copper });
+    async handleCooldown() {
+        const cooldownTime = this.characterState.data.cooldown * 1000;
+        console.log(`${this.name} cooldown for ${this.characterState.data.cooldown} seconds`);
+        await delay(cooldownTime);
+    }
+
+    async performCurrentState() {
+        console.log(`${this.name} performing state: `, this.currentState);
+        let result;
+
+        switch (this.currentState.state) {
+            case "idle":
+                await delay(IDLE_DELAY);
                 break;
-            case "woodcutting_level":
-            case "woodcutting":
-                this.addToActionQueue({ state: "move", ...ashForest });
+            case "move":
+                await this.moveCharacter();
                 break;
-            case "fishing_level":
-            case "fishing":
-                this.addToActionQueue({ state: "move", ...gudgeonFishing });
+            case "attack":
+                result = await attack(this.name);
+                break;
+            case "rest":
+                result = await rest(this.name);
+                break;
+            case "collect":
+                result = await collect(this.name);
+                break;
+            case "craft":
+                result = await craft(this.name, this.currentState.code, this.currentState.quantity);
+                break;
+            case "use item":
+                result = await useItem(this.name, this.currentState.code, this.currentState.quantity);
+                break;
+            case "deposit all":
+                await this.depositAllItems();
+                break;
+            case "autopilot":
+                await this.autoPilotActions();
                 break;
             default:
+                console.warn("Unknown state:", this.currentState.state);
                 break;
         }
-        this.addToActionQueue({ state: "collect" });
+
+        this.handleActionResult(result);
+        this.currentState = undefined;
+    }
+
+    async moveCharacter() {
+        const { x, y } = this.currentState;
+        await move(this.name, x, y);
+        this.currentMap = undefined;
+    }
+
+    async depositAllItems() {
+        for (const slot of this.characterState.data.inventory) {
+            if (slot && slot.quantity > 0) {
+                console.log("Depositing:", slot);
+                const result = await depositItem(this.name, slot);
+                if (result) await delay(result.data.cooldown.remaining_seconds * 1000);
+            }
+        }
+    }
+
+    async autoPilotActions() {
+        if (this.shouldRest()) {
+            this.queueState("rest");
+        } else if (this.isInventoryFull()) {
+            await this.manageFullInventory();
+        } else {
+            await this.gatherResourcesOrTrain();
+        }
+    }
+
+    isInventoryFull() {
+        const totalItems = this.characterState.data.inventory.reduce((sum, slot) => sum + slot.quantity, 0);
+        return totalItems / this.characterState.data.inventory_max_items > INVENTORY_THRESHOLD;
+    }
+
+    async manageFullInventory() {
+        this.queueState("move", bank);
+        this.queueState("deposit all");
+    }
+
+    async gatherResourcesOrTrain() {
+        // If the character is standing on a resource
+        if (this.currentMap && this.currentMap.data.content?.type === "resource") {
+            // If the skill gained from this resource needs more training
+            const skillOfResource = this.getResourceSkill(this.currentMap.data.content.code);
+            if (skillOfResource && this.skillNeedsTraining(skillOfResource)) {
+                this.queueState("collect");
+                return;
+            }
+        } 
+        await this.trainLowestSkill();
+    }
+
+    async getResourceSkill(code) {
+        const resource = await getResource(code)
+        if(resource) {
+            return resource.data.skill;
+        }
+
+    }
+
+    async skillNeedsTraining(skill) {
+        // If there is a skill that is more than three levels behind then this skill does not need training
+        return Object.values(this.skills).every((skill) => skill + 3 > this.skills[resourceSkill]);
+    }
+
+    async trainLowestSkill() {
+        const lowestSkill = Object.keys(this.skills).sort((a, b) => this.skills[a] - this.skills[b])[0];
+        const skillLocation = this.getSkillLocation(lowestSkill);
+
+        if (skillLocation) {
+            this.queueState("move", skillLocation);
+            this.queueState("collect");
+        }
+    }
+
+    getSkillLocation(skill) {
+        const skillLocations = {
+            mining_level: copper,
+            woodcutting_level: ashForest,
+            fishing_level: gudgeonFishing,
+        };
+        return skillLocations[skill];
+    }
+
+    queueState(state, location = {}) {
+        this.pendingActions.push({ state, ...location });
+    }
+
+    handleActionResult(result) {
+        if (result?.error?.code === 499) {
+            this.pendingActions.unshift(this.currentState);
+        }
     }
 }
