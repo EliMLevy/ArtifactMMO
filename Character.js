@@ -1,8 +1,8 @@
-import { attack, collect, craft, getCharacter, rest, move, depositItem, useItem, getMap, getResource } from "./BaseActions.js";
+import { attack, collect, craft, getCharacter, rest, move, depositItem, useItem, getMap, getResource, withdrawItem, equip, recylce } from "./BaseActions.js";
 import { delay } from "./Util.js";
 import { copper, bank, gudgeonFishing, ashForest, chicken, miningWorkshop, spruceForest, iron } from "./index.js";
 
-const INVENTORY_THRESHOLD = 0.8;
+const INVENTORY_THRESHOLD = 0.9;
 const LOW_HP_THRESHOLD = 0.5;
 const IDLE_DELAY = 3000;
 
@@ -14,7 +14,9 @@ export default class Character {
         this.name = name;
         this.defaultState = { state: "autopilot" };
         this.currentState = undefined;
+        this.oldLocation = undefined; // If we need to drop off and rememeber where to return to
         this.pendingActions = [];
+        this.clipboardQueue = []; // Used for more complex loops that involve multiple actions
         this.characterState = undefined;
         this.currentMap = undefined;
         this.skills = {
@@ -37,6 +39,22 @@ export default class Character {
                 await rest(this.name);
                 continue;
             }  
+
+            if(this.isInventoryFull()) {
+                if(this.currentMap && this.currentMap.data.content.code === "bank") {
+                    await this.depositAllItems();
+                    if(this.oldLocation) {
+                        this.pendingActions.unshift({ state: "move", x: this.oldLocation.data.x, y: this.oldLocation.data.y });
+                        this.oldLocation = undefined;
+                    }
+                    continue;
+                } else {
+                    this.oldLocation = this.currentMap;
+                    await move(this.name, bank.x, bank.y);
+                    this.currentMap = undefined;
+                    continue;
+                }
+            }
 
             if (!this.currentState) {
                 this.currentState = this.pendingActions.shift() || this.defaultState;
@@ -102,14 +120,35 @@ export default class Character {
             case "craft":
                 result = await craft(this.name, this.currentState.code, this.currentState.quantity);
                 break;
+            case "recyle":
+                result = await recylce(this.name, this.currentState.code, this.currentState.quantity);
+                break;
             case "use item":
                 result = await useItem(this.name, this.currentState.code, this.currentState.quantity);
                 break;
+            case "equip":
+                result = await equip(this.name, this.currentState.code, this.currentState.slot)
+                break
             case "deposit all":
                 await this.depositAllItems();
                 break;
+            case "withdraw":
+                result = await withdrawItem(this.name, this.currentState.code, this.currentState.quantity)
+                break;
             case "autopilot":
                 await this.autoPilotActions();
+                break;
+            case "copy queue":
+                // Copy all actions from the queue into a clipboard for pasting later
+                this.clipboardQueue = []
+                this.clipboardQueue.push({"state": "copy queue"})
+                this.pendingActions.forEach(elem => this.clipboardQueue.push({...elem}))
+                break;
+            case "paste queue":
+                // Paste all the actions from the clipboard into the main queue
+                if(this.clipboardQueue && this.clipboardQueue.length > 0) {
+                    this.clipboardQueue.forEach(elem => this.pendingActions.push(elem))
+                }
                 break;
             default:
                 console.warn("Unknown state:", this.currentState.state);
@@ -117,10 +156,7 @@ export default class Character {
         }
 
         this.handleActionResult(result);
-        if(this.currentState.repeat && this.currentState.repeat > 0) {
-            this.currentState.repeat --;
-            this.pendingActions.unshift(this.currentState);
-        }
+        
         this.currentState = undefined;
     }
 
@@ -209,7 +245,13 @@ export default class Character {
     }
 
     handleActionResult(result) {
-        if (result?.error?.code === 499) {
+        if (result?.error?.code === 499) { // Cooldown. try again
+            this.pendingActions.unshift(this.currentState);
+            return;
+        } 
+
+        if (this.currentState.repeat && this.currentState.repeat > 0 && (result == undefined || result.error == undefined)) {
+            this.currentState.repeat--;
             this.pendingActions.unshift(this.currentState);
         }
     }
