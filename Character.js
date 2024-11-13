@@ -12,7 +12,7 @@ const IDLE_DELAY = 3000;
 export default class Character {
     constructor(name) {
         this.name = name;
-        this.defaultState = { state: "all actions loop" };
+        this.defaultState = { state: "autopilot" };
         this.currentState = undefined;
         this.pendingActions = [];
         this.characterState = undefined;
@@ -161,25 +161,24 @@ export default class Character {
                 this.queueState("collect");
                 return;
             }
-        } 
+        }
         await this.trainLowestSkill();
     }
 
     async getResourceSkill(code) {
-        const resource = await getResource(code)
-        if(resource) {
+        const resource = await getResource(code);
+        if (resource) {
             return resource.data.skill;
         }
-
     }
 
-    async skillNeedsTraining(skill) {
+    async skillNeedsTraining(resourceSkill) {
         // If there is a skill that is more than three levels behind then this skill does not need training
         return Object.values(this.skills).every((skill) => skill + 3 > this.skills[resourceSkill]);
     }
 
     async trainLowestSkill() {
-        const lowestSkill = Object.keys(this.skills).sort((a, b) => this.skills[a] - this.skills[b])[0];
+        const lowestSkill = Object.keys(this.skills).reduce((lowest, skill) => (this.skills[skill] < this.skills[lowest] ? skill : lowest));
         const skillLocation = this.getSkillLocation(lowestSkill);
 
         if (skillLocation) {
