@@ -2,7 +2,7 @@ import Character from "./Character.js";
 import express from 'express';
 
 export const BASE_URL = `https://api.artifactsmmo.com/my/`;
-export const API_TOKEN = "";
+export const API_TOKEN = process.env.API_TOKEN;
 
 export const weaponCraftingHall = { x: 2, y: 1 };
 export const ashForest = { x: -1, y: 0 };
@@ -56,11 +56,8 @@ app.post('/action', (req, res) => {
         return res.status(404).json({ error: 'Character not found' });
     }
 
-    // Create action object based on the action type
-    const actionObject = { state: action, ...actionParams };
 
     // Add action to character's queue
-    // character.addToActionQueue(actionObject);
     character.queueState(action, actionParams);
 
     res.json({ message: `Action ${action} added to ${characterName}'s queue` });
@@ -84,7 +81,6 @@ app.post('/default', (req, res) => {
     const actionObject = { state: action, ...actionParams };
 
     // Add action to character's queue
-    // character.addToActionQueue(actionObject);
     character.defaultState = actionObject
 
     res.json({ message: `Action ${action} set as default for ${characterName}'s queue` });
