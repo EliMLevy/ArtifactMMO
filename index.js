@@ -1,5 +1,6 @@
 import Character from "./Character.js";
 import express from 'express';
+import cors from 'cors'
 
 export const BASE_URL = `https://api.artifactsmmo.com/my/`;
 export const API_TOKEN = process.env.API_TOKEN;
@@ -23,6 +24,7 @@ export const yellowSlime = { x: 1, y: -2 };
 // Initialize express
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // Store character instances in a map for easy access
 const characters = new Map();
@@ -67,8 +69,40 @@ app.post('/action', (req, res) => {
     // Add action to character's queue
     character.queueState(action, actionParams);
 
-    res.json({ message: `Action ${action} added to ${characterName}'s queue` });
+    res.json({
+        lastState: character.lastState,
+        defaultState: character.defaultState,
+        upcomingActions: character.pendingActions,
+        character: character.characterState,
+        currentMap: character.currentMap,
+    });
 });
+
+app.post('/clear', (req, res) => {
+    const { characterName } = req.body;
+
+    // Validate required fields
+    if (!characterName) {
+        return res.status(400).json({ error: "Character name is required" });
+    }
+
+    // Find character
+    const character = characters.get(characterName);
+    if (!character) {
+        return res.status(404).json({ error: "Character not found" });
+    }
+
+    // Add action to character's queue
+    character.clearQueue();
+
+    res.json({
+        lastState: character.lastState,
+        defaultState: character.defaultState,
+        upcomingActions: character.pendingActions,
+        character: character.characterState,
+        currentMap: character.currentMap,
+    });
+})
 
 app.post('/default', (req, res) => {
     const { characterName, action, ...actionParams } = req.body;
@@ -90,7 +124,36 @@ app.post('/default', (req, res) => {
     // Add action to character's queue
     character.defaultState = actionObject
 
-    res.json({ message: `Action ${action} set as default for ${characterName}'s queue` });
+    res.json({
+        lastState: character.lastState,
+        defaultState: character.defaultState,
+        upcomingActions: character.pendingActions,
+        character: character.characterState,
+        currentMap: character.currentMap,
+    });
+})
+
+app.post('/character', (req, res) => {
+    const { characterName } = req.body;
+    // Validate required fields
+    if (!characterName) {
+        return res.status(400).json({ error: "Character name is required" });
+    }
+
+    // Find character
+    const character = characters.get(characterName);
+    if (!character) {
+        return res.status(404).json({ error: "Character not found" });
+    }
+
+    res.json({
+        lastState: character.lastState,
+        defaultState: character.defaultState,
+        upcomingActions: character.pendingActions,
+        character: character.characterState,
+        currentMap: character.currentMap,
+    });
+
 })
 
 // Start server
