@@ -1,11 +1,11 @@
 import { attack, collect, craft, getCharacter, rest, move, depositItem, useItem, getMap, getResource, withdrawItem, equip, recylce } from "./BaseActions.js";
 import { delay } from "./Util.js";
-import { copper, bank, gudgeonFishing, ashForest, chicken, miningWorkshop, spruceForest, iron } from "./index.js";
+import { bank, gudgeonFishing, spruceForest, iron } from "./index.js";
 
 const INVENTORY_THRESHOLD = 0.9;
 const LOW_HP_THRESHOLD = 0.5;
 const IDLE_DELAY = 3000;
-
+const ANTI_THROTTLING_DELAY = 500;
 /**
  * Encapsulates actions and character state handling in an improved, modular way.
  */
@@ -14,6 +14,7 @@ export default class Character {
         this.name = name;
         this.defaultState = { state: "autopilot" };
         this.currentState = undefined;
+        this.lastState = undefined;
         this.oldLocation = undefined; // If we need to drop off and rememeber where to return to
         this.pendingActions = [];
         this.clipboardQueue = []; // Used for more complex loops that involve multiple actions
@@ -34,16 +35,15 @@ export default class Character {
                 await this.handleCooldown();
             }
 
-            
             if (this.shouldRest()) {
                 await rest(this.name);
                 continue;
-            }  
+            }
 
-            if(this.isInventoryFull()) {
-                if(this.currentMap && this.currentMap.data.content.code === "bank") {
+            if (this.isInventoryFull()) {
+                if (this.currentMap && this.currentMap.data.content.code === "bank") {
                     await this.depositAllItems();
-                    if(this.oldLocation) {
+                    if (this.oldLocation) {
                         this.pendingActions.unshift({ state: "move", x: this.oldLocation.data.x, y: this.oldLocation.data.y });
                         this.oldLocation = undefined;
                     }
@@ -69,12 +69,18 @@ export default class Character {
     }
 
     async updateCharacterState() {
-        this.characterState = await getCharacter(this.name);
-        if (!this.currentMap) {
-            const { x, y } = this.characterState.data;
-            this.currentMap = await getMap(x, y);
+        const oldState = this.characterState;
+        try {
+            this.characterState = await getCharacter(this.name);
+            if (!this.currentMap || this.characterState.data.x != this.currentMap.data.x || this.characterState.data.y != this.currentMap.data.y) {
+                const { x, y } = this.characterState.data;
+                this.currentMap = await getMap(x, y);
+            }
+            this.updateSkills();
+        } catch (error) {
+            console.log("Failed to parse character state", error, this.characterState);
+            this.characterState = oldState;
         }
-        this.updateSkills();
     }
 
     updateSkills() {
@@ -98,6 +104,7 @@ export default class Character {
     }
 
     async performCurrentState() {
+        await delay(ANTI_THROTTLING_DELAY);
         console.log(`${this.name} performing state: `, this.currentState);
         let result;
 
@@ -120,34 +127,34 @@ export default class Character {
             case "craft":
                 result = await craft(this.name, this.currentState.code, this.currentState.quantity);
                 break;
-            case "recyle":
+            case "recycle":
                 result = await recylce(this.name, this.currentState.code, this.currentState.quantity);
                 break;
             case "use item":
                 result = await useItem(this.name, this.currentState.code, this.currentState.quantity);
                 break;
             case "equip":
-                result = await equip(this.name, this.currentState.code, this.currentState.slot)
-                break
+                result = await equip(this.name, this.currentState.code, this.currentState.slot);
+                break;
             case "deposit all":
                 await this.depositAllItems();
                 break;
             case "withdraw":
-                result = await withdrawItem(this.name, this.currentState.code, this.currentState.quantity)
+                result = await withdrawItem(this.name, this.currentState.code, this.currentState.quantity);
                 break;
             case "autopilot":
                 await this.autoPilotActions();
                 break;
             case "copy queue":
                 // Copy all actions from the queue into a clipboard for pasting later
-                this.clipboardQueue = []
-                this.clipboardQueue.push({"state": "copy queue"})
-                this.pendingActions.forEach(elem => this.clipboardQueue.push({...elem}))
+                this.clipboardQueue = [];
+                this.clipboardQueue.push({ state: "copy queue" });
+                this.pendingActions.forEach((elem) => this.clipboardQueue.push({ ...elem }));
                 break;
             case "paste queue":
                 // Paste all the actions from the clipboard into the main queue
-                if(this.clipboardQueue && this.clipboardQueue.length > 0) {
-                    this.clipboardQueue.forEach(elem => this.pendingActions.push(elem))
+                if (this.clipboardQueue && this.clipboardQueue.length > 0) {
+                    this.clipboardQueue.forEach((elem) => this.pendingActions.push(elem));
                 }
                 break;
             default:
@@ -156,7 +163,7 @@ export default class Character {
         }
 
         this.handleActionResult(result);
-        
+        this.lastState = this.currentState;
         this.currentState = undefined;
     }
 
@@ -244,11 +251,16 @@ export default class Character {
         this.pendingActions.push({ state, ...location });
     }
 
+    clearQueue() {
+        this.pendingActions = [];
+    }
+
     handleActionResult(result) {
-        if (result?.error?.code === 499) { // Cooldown. try again
+        if (result?.error?.code === 499) {
+            // Cooldown. try again
             this.pendingActions.unshift(this.currentState);
             return;
-        } 
+        }
 
         if (this.currentState.repeat && this.currentState.repeat > 0 && (result == undefined || result.error == undefined)) {
             this.currentState.repeat--;
