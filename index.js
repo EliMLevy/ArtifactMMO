@@ -25,6 +25,7 @@ export const yellowSlime = { x: 1, y: -2 };
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(express.static("public"));
 
 // Store character instances in a map for easy access
 const characters = new Map();
