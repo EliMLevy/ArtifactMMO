@@ -1,0 +1,4 @@
+Items = https://api.artifactsmmo.com/items?page=4&size=100
+Get drops of resources = https://api.artifactsmmo.com/resources/iron_rocks
+get maps = https://api.artifactsmmo.com/maps?page=5&size=100
+

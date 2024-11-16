@@ -1,0 +1,748 @@
+{
+    "salmon_fishing_spot": [
+        {
+            "x": -3,
+            "y": -4,
+            "content": {
+                "type": "resource",
+                "code": "salmon_fishing_spot"
+            }
+        },
+        {
+            "x": -2,
+            "y": -4,
+            "content": {
+                "type": "resource",
+                "code": "salmon_fishing_spot"
+            }
+        }
+    ],
+    "goblin_wolfrider": [
+        {
+            "x": 6,
+            "y": -4,
+            "content": {
+                "type": "monster",
+                "code": "goblin_wolfrider"
+            }
+        },
+        {
+            "x": 9,
+            "y": -3,
+            "content": {
+                "type": "monster",
+                "code": "goblin_wolfrider"
+            }
+        }
+    ],
+    "orc": [
+        {
+            "x": 7,
+            "y": -4,
+            "content": {
+                "type": "monster",
+                "code": "orc"
+            }
+        },
+        {
+            "x": 7,
+            "y": -2,
+            "content": {
+                "type": "monster",
+                "code": "orc"
+            }
+        }
+    ],
+    "ogre": [
+        {
+            "x": 8,
+            "y": -4,
+            "content": {
+                "type": "monster",
+                "code": "ogre"
+            }
+        },
+        {
+            "x": 8,
+            "y": -2,
+            "content": {
+                "type": "monster",
+                "code": "ogre"
+            }
+        }
+    ],
+    "pig": [
+        {
+            "x": -3,
+            "y": -3,
+            "content": {
+                "type": "monster",
+                "code": "pig"
+            }
+        }
+    ],
+    "woodcutting": [
+        {
+            "x": -2,
+            "y": -3,
+            "content": {
+                "type": "workshop",
+                "code": "woodcutting"
+            }
+        }
+    ],
+    "gold_rocks": [
+        {
+            "x": 6,
+            "y": -3,
+            "content": {
+                "type": "resource",
+                "code": "gold_rocks"
+            }
+        }
+    ],
+    "cyclops": [
+        {
+            "x": 7,
+            "y": -3,
+            "content": {
+                "type": "monster",
+                "code": "cyclops"
+            }
+        },
+        {
+            "x": 8,
+            "y": -3,
+            "content": {
+                "type": "monster",
+                "code": "cyclops"
+            }
+        }
+    ],
+    "blue_slime": [
+        {
+            "x": 0,
+            "y": -2,
+            "content": {
+                "type": "monster",
+                "code": "blue_slime"
+            }
+        },
+        {
+            "x": 2,
+            "y": -1,
+            "content": {
+                "type": "monster",
+                "code": "blue_slime"
+            }
+        }
+    ],
+    "yellow_slime": [
+        {
+            "x": 1,
+            "y": -2,
+            "content": {
+                "type": "monster",
+                "code": "yellow_slime"
+            }
+        },
+        {
+            "x": 4,
+            "y": -1,
+            "content": {
+                "type": "monster",
+                "code": "yellow_slime"
+            }
+        }
+    ],
+    "red_slime": [
+        {
+            "x": 2,
+            "y": -2,
+            "content": {
+                "type": "monster",
+                "code": "red_slime"
+            }
+        },
+        {
+            "x": 1,
+            "y": -1,
+            "content": {
+                "type": "monster",
+                "code": "red_slime"
+            }
+        }
+    ],
+    "green_slime": [
+        {
+            "x": 3,
+            "y": -2,
+            "content": {
+                "type": "monster",
+                "code": "green_slime"
+            }
+        },
+        {
+            "x": 0,
+            "y": -1,
+            "content": {
+                "type": "monster",
+                "code": "green_slime"
+            }
+        }
+    ],
+    "goblin": [
+        {
+            "x": 6,
+            "y": -2,
+            "content": {
+                "type": "monster",
+                "code": "goblin"
+            }
+        },
+        {
+            "x": 9,
+            "y": -2,
+            "content": {
+                "type": "monster",
+                "code": "goblin"
+            }
+        }
+    ],
+    "wolf": [
+        {
+            "x": -3,
+            "y": 0,
+            "content": {
+                "type": "monster",
+                "code": "wolf"
+            }
+        },
+        {
+            "x": -2,
+            "y": 1,
+            "content": {
+                "type": "monster",
+                "code": "wolf"
+            }
+        }
+    ],
+    "ash_tree": [
+        {
+            "x": -1,
+            "y": 0,
+            "content": {
+                "type": "resource",
+                "code": "ash_tree"
+            }
+        },
+        {
+            "x": 6,
+            "y": 1,
+            "content": {
+                "type": "resource",
+                "code": "ash_tree"
+            }
+        }
+    ],
+    "copper_rocks": [
+        {
+            "x": 2,
+            "y": 0,
+            "content": {
+                "type": "resource",
+                "code": "copper_rocks"
+            }
+        }
+    ],
+    "chicken": [
+        {
+            "x": 0,
+            "y": 1,
+            "content": {
+                "type": "monster",
+                "code": "chicken"
+            }
+        }
+    ],
+    "cooking": [
+        {
+            "x": 1,
+            "y": 1,
+            "content": {
+                "type": "workshop",
+                "code": "cooking"
+            }
+        }
+    ],
+    "weaponcrafting": [
+        {
+            "x": 2,
+            "y": 1,
+            "content": {
+                "type": "workshop",
+                "code": "weaponcrafting"
+            }
+        }
+    ],
+    "gearcrafting": [
+        {
+            "x": 3,
+            "y": 1,
+            "content": {
+                "type": "workshop",
+                "code": "gearcrafting"
+            }
+        }
+    ],
+    "bank": [
+        {
+            "x": 4,
+            "y": 1,
+            "content": {
+                "type": "bank",
+                "code": "bank"
+            }
+        },
+        {
+            "x": 7,
+            "y": 13,
+            "content": {
+                "type": "bank",
+                "code": "bank"
+            }
+        }
+    ],
+    "grand_exchange": [
+        {
+            "x": 5,
+            "y": 1,
+            "content": {
+                "type": "grand_exchange",
+                "code": "grand_exchange"
+            }
+        }
+    ],
+    "owlbear": [
+        {
+            "x": 10,
+            "y": 1,
+            "content": {
+                "type": "monster",
+                "code": "owlbear"
+            }
+        },
+        {
+            "x": 10,
+            "y": 2,
+            "content": {
+                "type": "monster",
+                "code": "owlbear"
+            }
+        }
+    ],
+    "cow": [
+        {
+            "x": 0,
+            "y": 2,
+            "content": {
+                "type": "monster",
+                "code": "cow"
+            }
+        }
+    ],
+    "monsters": [
+        {
+            "x": 1,
+            "y": 2,
+            "content": {
+                "type": "tasks_master",
+                "code": "monsters"
+            }
+        }
+    ],
+    "sunflower": [
+        {
+            "x": 2,
+            "y": 2,
+            "content": {
+                "type": "resource",
+                "code": "sunflower"
+            }
+        }
+    ],
+    "gudgeon_fishing_spot": [
+        {
+            "x": 4,
+            "y": 2,
+            "content": {
+                "type": "resource",
+                "code": "gudgeon_fishing_spot"
+            }
+        }
+    ],
+    "shrimp_fishing_spot": [
+        {
+            "x": 5,
+            "y": 2,
+            "content": {
+                "type": "resource",
+                "code": "shrimp_fishing_spot"
+            }
+        }
+    ],
+    "jewelrycrafting": [
+        {
+            "x": 1,
+            "y": 3,
+            "content": {
+                "type": "workshop",
+                "code": "jewelrycrafting"
+            }
+        }
+    ],
+    "alchemy": [
+        {
+            "x": 2,
+            "y": 3,
+            "content": {
+                "type": "workshop",
+                "code": "alchemy"
+            }
+        }
+    ],
+    "mushmush": [
+        {
+            "x": 5,
+            "y": 3,
+            "content": {
+                "type": "monster",
+                "code": "mushmush"
+            }
+        },
+        {
+            "x": 6,
+            "y": 4,
+            "content": {
+                "type": "monster",
+                "code": "mushmush"
+            }
+        }
+    ],
+    "flying_serpent": [
+        {
+            "x": 5,
+            "y": 4,
+            "content": {
+                "type": "monster",
+                "code": "flying_serpent"
+            }
+        },
+        {
+            "x": 7,
+            "y": 4,
+            "content": {
+                "type": "monster",
+                "code": "flying_serpent"
+            }
+        }
+    ],
+    "mining": [
+        {
+            "x": 1,
+            "y": 5,
+            "content": {
+                "type": "workshop",
+                "code": "mining"
+            }
+        }
+    ],
+    "birch_tree": [
+        {
+            "x": 3,
+            "y": 5,
+            "content": {
+                "type": "resource",
+                "code": "birch_tree"
+            }
+        },
+        {
+            "x": -1,
+            "y": 6,
+            "content": {
+                "type": "resource",
+                "code": "birch_tree"
+            }
+        }
+    ],
+    "coal_rocks": [
+        {
+            "x": 1,
+            "y": 6,
+            "content": {
+                "type": "resource",
+                "code": "coal_rocks"
+            }
+        }
+    ],
+    "spruce_tree": [
+        {
+            "x": 2,
+            "y": 6,
+            "content": {
+                "type": "resource",
+                "code": "spruce_tree"
+            }
+        },
+        {
+            "x": 1,
+            "y": 9,
+            "content": {
+                "type": "resource",
+                "code": "spruce_tree"
+            }
+        }
+    ],
+    "skeleton": [
+        {
+            "x": 8,
+            "y": 6,
+            "content": {
+                "type": "monster",
+                "code": "skeleton"
+            }
+        },
+        {
+            "x": 8,
+            "y": 8,
+            "content": {
+                "type": "monster",
+                "code": "skeleton"
+            }
+        }
+    ],
+    "dead_tree": [
+        {
+            "x": 9,
+            "y": 6,
+            "content": {
+                "type": "resource",
+                "code": "dead_tree"
+            }
+        },
+        {
+            "x": 9,
+            "y": 8,
+            "content": {
+                "type": "resource",
+                "code": "dead_tree"
+            }
+        }
+    ],
+    "vampire": [
+        {
+            "x": 10,
+            "y": 6,
+            "content": {
+                "type": "monster",
+                "code": "vampire"
+            }
+        },
+        {
+            "x": 10,
+            "y": 8,
+            "content": {
+                "type": "monster",
+                "code": "vampire"
+            }
+        }
+    ],
+    "iron_rocks": [
+        {
+            "x": 1,
+            "y": 7,
+            "content": {
+                "type": "resource",
+                "code": "iron_rocks"
+            }
+        }
+    ],
+    "death_knight": [
+        {
+            "x": 8,
+            "y": 7,
+            "content": {
+                "type": "monster",
+                "code": "death_knight"
+            }
+        },
+        {
+            "x": 10,
+            "y": 7,
+            "content": {
+                "type": "monster",
+                "code": "death_knight"
+            }
+        }
+    ],
+    "lich": [
+        {
+            "x": 9,
+            "y": 7,
+            "content": {
+                "type": "monster",
+                "code": "lich"
+            }
+        }
+    ],
+    "bat": [
+        {
+            "x": 11,
+            "y": 7,
+            "content": {
+                "type": "monster",
+                "code": "bat"
+            }
+        },
+        {
+            "x": 8,
+            "y": 9,
+            "content": {
+                "type": "monster",
+                "code": "bat"
+            }
+        }
+    ],
+    "glowstem": [
+        {
+            "x": 1,
+            "y": 10,
+            "content": {
+                "type": "resource",
+                "code": "glowstem"
+            }
+        }
+    ],
+    "imp": [
+        {
+            "x": 0,
+            "y": 12,
+            "content": {
+                "type": "monster",
+                "code": "imp"
+            }
+        },
+        {
+            "x": 0,
+            "y": 14,
+            "content": {
+                "type": "monster",
+                "code": "imp"
+            }
+        }
+    ],
+    "maple_tree": [
+        {
+            "x": 1,
+            "y": 12,
+            "content": {
+                "type": "resource",
+                "code": "maple_tree"
+            }
+        },
+        {
+            "x": 4,
+            "y": 14,
+            "content": {
+                "type": "resource",
+                "code": "maple_tree"
+            }
+        }
+    ],
+    "bass_fishing_spot": [
+        {
+            "x": 6,
+            "y": 12,
+            "content": {
+                "type": "resource",
+                "code": "bass_fishing_spot"
+            }
+        }
+    ],
+    "trout_fishing_spot": [
+        {
+            "x": 7,
+            "y": 12,
+            "content": {
+                "type": "resource",
+                "code": "trout_fishing_spot"
+            }
+        }
+    ],
+    "mithril_rocks": [
+        {
+            "x": -2,
+            "y": 13,
+            "content": {
+                "type": "resource",
+                "code": "mithril_rocks"
+            }
+        }
+    ],
+    "hellhound": [
+        {
+            "x": -1,
+            "y": 13,
+            "content": {
+                "type": "monster",
+                "code": "hellhound"
+            }
+        },
+        {
+            "x": 1,
+            "y": 14,
+            "content": {
+                "type": "monster",
+                "code": "hellhound"
+            }
+        }
+    ],
+    "cultist_acolyte": [
+        {
+            "x": 1,
+            "y": 13,
+            "content": {
+                "type": "monster",
+                "code": "cultist_acolyte"
+            }
+        },
+        {
+            "x": -1,
+            "y": 14,
+            "content": {
+                "type": "monster",
+                "code": "cultist_acolyte"
+            }
+        }
+    ],
+    "items": [
+        {
+            "x": 4,
+            "y": 13,
+            "content": {
+                "type": "tasks_master",
+                "code": "items"
+            }
+        }
+    ],
+    "nettle": [
+        {
+            "x": 7,
+            "y": 14,
+            "content": {
+                "type": "resource",
+                "code": "nettle"
+            }
+        }
+    ]
+}

@@ -1,0 +1,347 @@
+{
+    "data": [
+        {
+            "name": "Mithril Shield",
+            "code": "mithril_shield",
+            "level": 40,
+            "type": "shield",
+            "subtype": "",
+            "description": "",
+            "effects": [
+                {
+                    "name": "res_fire",
+                    "value": 15
+                },
+                {
+                    "name": "res_air",
+                    "value": 15
+                }
+            ],
+            "craft": {
+                "skill": "gearcrafting",
+                "level": 40,
+                "items": [
+                    {
+                        "code": "mithril",
+                        "quantity": 7
+                    },
+                    {
+                        "code": "lizard_skin",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "cyclops_eye",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "hellhound_hair",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "goblin_eye",
+                        "quantity": 4
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "White Knight Shield",
+            "code": "white_knight_shield",
+            "level": 40,
+            "type": "shield",
+            "subtype": "",
+            "description": "",
+            "effects": [
+                {
+                    "name": "res_earth",
+                    "value": 15
+                },
+                {
+                    "name": "res_air",
+                    "value": 15
+                }
+            ],
+            "craft": {
+                "skill": "gearcrafting",
+                "level": 40,
+                "items": [
+                    {
+                        "code": "maple_plank",
+                        "quantity": 7
+                    },
+                    {
+                        "code": "demon_horn",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "wolfrider_hair",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "hellhound_hair",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "goblin_eye",
+                        "quantity": 4
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Blade of Hell",
+            "code": "blade_of_hell",
+            "level": 40,
+            "type": "weapon",
+            "subtype": "sword",
+            "description": "",
+            "effects": [
+                {
+                    "name": "attack_earth",
+                    "value": 115
+                }
+            ],
+            "craft": {
+                "skill": "weaponcrafting",
+                "level": 40,
+                "items": [
+                    {
+                        "code": "strangold",
+                        "quantity": 9
+                    },
+                    {
+                        "code": "efreet_cloth",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "broken_sword",
+                        "quantity": 1
+                    },
+                    {
+                        "code": "book_from_hell",
+                        "quantity": 1
+                    },
+                    {
+                        "code": "orc_skin",
+                        "quantity": 6
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Book from Hell",
+            "code": "book_from_hell",
+            "level": 40,
+            "type": "resource",
+            "subtype": "mob",
+            "description": "",
+            "effects": [],
+            "craft": null,
+            "tradeable": true
+        },
+        {
+            "name": "Efreet Cloth",
+            "code": "efreet_cloth",
+            "level": 40,
+            "type": "resource",
+            "subtype": "mob",
+            "description": "",
+            "effects": [],
+            "craft": null,
+            "tradeable": true
+        },
+        {
+            "name": "Maple Sap",
+            "code": "maple_sap",
+            "level": 40,
+            "type": "resource",
+            "subtype": "sap",
+            "description": "",
+            "effects": [],
+            "craft": {
+                "skill": "woodcutting",
+                "level": 40,
+                "items": [
+                    {
+                        "code": "maple_wood",
+                        "quantity": 30
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Maple Syrup",
+            "code": "maple_syrup",
+            "level": 40,
+            "type": "consumable",
+            "subtype": "food",
+            "description": "",
+            "effects": [
+                {
+                    "name": "heal",
+                    "value": 275
+                }
+            ],
+            "craft": {
+                "skill": "cooking",
+                "level": 40,
+                "items": [
+                    {
+                        "code": "maple_sap",
+                        "quantity": 2
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Earth Res Potion",
+            "code": "earth_res_potion",
+            "level": 40,
+            "type": "utility",
+            "subtype": "potion",
+            "description": "Gives 10% earth resistance at the start of fight.",
+            "effects": [
+                {
+                    "name": "boost_res_earth",
+                    "value": 10
+                }
+            ],
+            "craft": {
+                "skill": "alchemy",
+                "level": 40,
+                "items": [
+                    {
+                        "code": "yellow_slimeball",
+                        "quantity": 2
+                    },
+                    {
+                        "code": "maple_sap",
+                        "quantity": 1
+                    },
+                    {
+                        "code": "glowstem_leaf",
+                        "quantity": 1
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Fire Res Potion",
+            "code": "fire_res_potion",
+            "level": 40,
+            "type": "utility",
+            "subtype": "potion",
+            "description": "Gives 10% fire resistance at the start of fight.",
+            "effects": [
+                {
+                    "name": "boost_res_fire",
+                    "value": 10
+                }
+            ],
+            "craft": {
+                "skill": "alchemy",
+                "level": 40,
+                "items": [
+                    {
+                        "code": "red_slimeball",
+                        "quantity": 2
+                    },
+                    {
+                        "code": "maple_sap",
+                        "quantity": 1
+                    },
+                    {
+                        "code": "glowstem_leaf",
+                        "quantity": 1
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Water Res Potion",
+            "code": "water_res_potion",
+            "level": 40,
+            "type": "utility",
+            "subtype": "potion",
+            "description": "Gives 10% water resistance at the start of fight.",
+            "effects": [
+                {
+                    "name": "boost_res_water",
+                    "value": 10
+                }
+            ],
+            "craft": {
+                "skill": "alchemy",
+                "level": 40,
+                "items": [
+                    {
+                        "code": "blue_slimeball",
+                        "quantity": 2
+                    },
+                    {
+                        "code": "maple_sap",
+                        "quantity": 1
+                    },
+                    {
+                        "code": "glowstem_leaf",
+                        "quantity": 1
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Air Res Potion",
+            "code": "air_res_potion",
+            "level": 40,
+            "type": "utility",
+            "subtype": "potion",
+            "description": "Gives 10% air resistance at the start of fight.",
+            "effects": [
+                {
+                    "name": "boost_res_air",
+                    "value": 10
+                }
+            ],
+            "craft": {
+                "skill": "alchemy",
+                "level": 40,
+                "items": [
+                    {
+                        "code": "green_slimeball",
+                        "quantity": 2
+                    },
+                    {
+                        "code": "maple_sap",
+                        "quantity": 1
+                    },
+                    {
+                        "code": "glowstem_leaf",
+                        "quantity": 1
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        }
+    ],
+    "total": 311,
+    "page": 4,
+    "size": 100,
+    "pages": 4
+}
