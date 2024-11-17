@@ -55,13 +55,13 @@ def collect_resource(item_code, quantity):
     resource_location = check_monsters_or_resources(resources, item_code)
     if resource_location != None:
         return [{"action": "move", "x": resource_location[0], "y": resource_location[1]},
-            {"action": "attack", "repeat": quantity}]
+            {"action": "collect", "repeat": quantity}]
     # Check monsters
     monster_location = check_monsters_or_resources(monsters, item_code)
     if monster_location != None:
         return [
             {"action": "move", "x": monster_location[0], "y": monster_location[1]},
-            {"action": "attack", "repeat": quantity}]
+            {"action": "collect", "repeat": quantity}]
     else:
         return [{"action": "error", "message": f"cannot find {item_code}"}]
 
@@ -82,6 +82,6 @@ def create_plan(item_code, quantity) -> list[str]:
         return [f"Can not attain {item_code}"]
     
 
-plan = create_plan("iron_dagger", 1)
+plan = create_plan("slime_shield", 5)
 for item in plan:
-    print(item)
+    print(item, ",")
