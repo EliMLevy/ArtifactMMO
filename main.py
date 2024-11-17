@@ -6,10 +6,12 @@ def main():
     characters = [Character(n) for n in names]
     for c in characters: c.load_data()
 
+
     # Create threads for each character's task loop
     threads = []
     for character in characters:
-        thread = threading.Thread(target=character.complete_monster_tasks_loop)
+        # thread = threading.Thread(target=character.execute_plan, args=[plan])
+        thread = threading.Thread(target=character.complete_resource_collect_loop)
         thread.daemon = True  # Allow the program to exit even if threads are running
         threads.append(thread)
 

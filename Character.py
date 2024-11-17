@@ -153,7 +153,7 @@ class Character:
                 continue
             
             print(f"[{self.name}] Collecting")
-            collect_highest_unlocked_resource(self, "fishing")
+            collect_highest_unlocked_resource(self, "woodcutting")
             
 
     def complete_monster_tasks_loop(self):
