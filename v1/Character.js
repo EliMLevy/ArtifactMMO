@@ -1,4 +1,4 @@
-import { attack, collect, craft, getCharacter, rest, move, depositItem, useItem, getMap, getResource, withdrawItem, equip, recylce } from "./BaseActions.js";
+import { attack, collect, craft, getCharacter, rest, move, depositItem, useItem, getMap, getResource, withdrawItem, equip, recycle } from "./BaseActions.js";
 import { delay } from "./Util.js";
 import { bank, gudgeonFishing, spruceForest, iron } from "./index.js";
 
@@ -128,7 +128,7 @@ export default class Character {
                 result = await craft(this.name, this.currentState.code, this.currentState.quantity);
                 break;
             case "recycle":
-                result = await recylce(this.name, this.currentState.code, this.currentState.quantity);
+                result = await recycle(this.name, this.currentState.code, this.currentState.quantity);
                 break;
             case "use item":
                 result = await useItem(this.name, this.currentState.code, this.currentState.quantity);
