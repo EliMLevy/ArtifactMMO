@@ -75,7 +75,7 @@ def map_combination():
 
 
 def combine_maps_and_resources():
-    resource_df = pd.DataFrame(columns=["resource_code", "x", "y", "drop_chance", "map_code"])
+    resource_df = pd.DataFrame(columns=["resource_code", "x", "y", "drop_chance", "map_code", "level", "skill"])
     resources_file = open("./resources.json")
     resources = json.loads(resources_file.read()) 
 
@@ -92,13 +92,14 @@ def combine_maps_and_resources():
             # For each drop, add row to the df
             for drop in resource["drops"]:
                 for location in locations:
-                    resource_df.loc[len(resource_df)] = [drop["code"], location["x"], location["y"], drop["rate"], location["content"]["code"]]
+                    resource_df.loc[len(resource_df)] = [drop["code"], location["x"], location["y"], drop["rate"], location["content"]["code"], resource["level"], resource["skill"]]
         else:
             skipped.append(resource["code"])
 
     resource_df.to_csv("./resources.csv", index=False)
     print(skipped)
 
+combine_maps_and_resources()
 
 def combine_items():
     all_items = {}
@@ -148,10 +149,29 @@ def combine_maps_and_monsters():
     print(skipped)
 
 
-maps_file = open("./maps/all_maps.json")
-maps = json.loads(maps_file.read())
+def convert_json_to_csv(input_file, output_file):
+    # Load the JSON data
+    with open(input_file, 'r') as f:
+        data = json.load(f)
+    
+    # Prepare a list to store rows for the DataFrame
+    rows = []
+    
+    # Iterate over the JSON data and extract relevant fields
+    for content_code, items in data.items():
+        for item in items:
+            row = {
+                "x": item["x"],
+                "y": item["y"],
+                "content_type": item["content"]["type"],
+                "content_code": content_code
+            }
+            rows.append(row)
+    
+    # Create a DataFrame
+    df = pd.DataFrame(rows)
+    
+    # Write to CSV
+    df.to_csv(output_file, index=False)
 
-workshops_df = pd.DataFrame(columns=["skill", "x", "y"])
-
-for key, value in maps.items():
-    print(key, value)
+# convert_json_to_csv("./maps/all_maps.json", "all_maps.csv")
