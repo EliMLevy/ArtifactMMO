@@ -1,22 +1,29 @@
-import asyncio
+import threading
 from Character import Character
-from enhanced_actions import *
 
-
-
-async def main():
+def main():
     names = ["Bobby", "Stuart", "George", "Tim", "Joe"]
     characters = [Character(n) for n in names]
     for c in characters: c.load_data()
 
-    # Create tasks for each character's task loop
-    tasks = [asyncio.create_task(character.complete_resource_collect_loop()) for character in characters]
+    # Create threads for each character's task loop
+    threads = []
+    for character in characters:
+        thread = threading.Thread(target=character.complete_monster_tasks_loop)
+        thread.daemon = True  # Allow the program to exit even if threads are running
+        threads.append(thread)
 
-    # Run all tasks concurrently
-    await asyncio.gather(*tasks)
-    
+    # Start all threads
+    for thread in threads:
+        thread.start()
+
+    # Wait for all threads to complete (they won't in this case since they're infinite loops)
+    try:
+        while True:
+            for thread in threads:
+                thread.join(timeout=1.0)  # Check each thread every second
+    except KeyboardInterrupt:
+        print("\nShutting down gracefully...")
 
 if __name__ == "__main__":
-    asyncio.run(main())
-
-
+    main()

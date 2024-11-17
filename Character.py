@@ -1,7 +1,7 @@
-import asyncio
+import time
 from datetime import datetime
 from dataclasses import dataclass, field
-from actions import accept_new_task, attack, complete_task, get_character, move, rest
+from actions import accept_new_task, attack, complete_task, craft, get_character, move, recycle, rest
 from data_classes import InventoryItem
 import encyclopedia as ency
 from util import handle_result_cooldown
@@ -13,7 +13,6 @@ class Character:
     def __init__(self, name):
         print(f"Character {name} created!")
         self.name = name
-
 
     def load_data(self):
         result = get_character(self.name)
@@ -115,66 +114,91 @@ class Character:
         self.alchemy_xp = data["alchemy_xp"]
         self.alchemy_max_xp = data["alchemy_max_xp"]
 
-    async def complete_resource_collect_loop(self):
+    def execute_plan(self, plan):
+        from enhanced_actions import withdraw_from_bank, deposit_all_items
+        for item in plan:
+            self.load_data()
+            if self.cooldown > 0 and datetime.now() < self.cooldown_expiration:
+                time.sleep(self.cooldown)
+
+            if item["action"] == "deposit all":
+                print(f"[{self.name}] Depositing all")
+                deposit_all_items(self)
+            elif item["action"] == "withdraw":
+                print(f"[{self.name}] Withdrawing {item['code']} x{item['quantity']}")
+                withdraw_from_bank(self, item["code"], item["quantity"])
+            elif item["action"] == "move":
+                print(f"[{self.name}] Moving to {item['x']},{item['y']}")
+                result = move(self.name, item["x"], item["y"])
+                handle_result_cooldown(result)
+            elif item["action"] == "craft":
+                print(f"[{self.name}] Crafting {item['code']} x{item['quantity']}")
+                result = craft(self.name, item["code"], item["quantity"])
+                handle_result_cooldown(result)
+            elif item["action"] == "recycle":
+                print(f"[{self.name}] Recycling {item['code']} x{item['quantity']}")
+                result = recycle(self.name, item["code"], item["quantity"])
+                handle_result_cooldown(result)
+    
+    def complete_resource_collect_loop(self):
         from enhanced_actions import collect_highest_unlocked_resource, deposit_all_items
         while True:
             self.load_data()
             if self.cooldown > 0 and datetime.now() < self.cooldown_expiration:
-                await asyncio.sleep(self.cooldown)
+                time.sleep(self.cooldown)
 
             if self.needs_to_deposit():
                 print(f"[{self.name}] needs to deposit")
-                await deposit_all_items(self.name)
+                deposit_all_items(self)
                 continue
             
             print(f"[{self.name}] Collecting")
-            await collect_highest_unlocked_resource(self, "fishing")
+            collect_highest_unlocked_resource(self, "fishing")
             
 
-    async def complete_monster_tasks_loop(self):
+    def complete_monster_tasks_loop(self):
         from enhanced_actions import move_to_location, deposit_all_items
 
         while True:
             self.load_data()
             # Check for cooldown
             if self.cooldown > 0 and datetime.now() < self.cooldown_expiration:
-                await asyncio.sleep(self.cooldown)
+                time.sleep(self.cooldown)
 
             # Check for task
-            if self.task is None:
+            if self.task is None or len(self.task) == 0:
                 # get a task from task master
                 print(f"[{self.name}] Getting task")
-                await move_to_location(self, "monsters")
+                move_to_location(self, "monsters")
                 result = accept_new_task(self.name)
-                await handle_result_cooldown(result)
+                handle_result_cooldown(result)
                 continue
             
-            # If progress is finished, compelte the task
+            # If progress is finished, complete the task
             if self.task_progress >= self.task_total:
                 print(f"[{self.name}] Completing task")
-                await move_to_location(self, "monsters")
+                move_to_location(self, "monsters")
                 complete_task(self.name)
                 continue
 
             if self.needs_to_deposit():
-                await deposit_all_items(self.name)
+                deposit_all_items(self)
                 continue
         
             # If above is false
             # Move to location of task
             print(f"[{self.name}] Moving to tasks {self.task}")
-            await move_to_location(self, self.task)
+            move_to_location(self, self.task)
 
             if self.needs_rest():
                 print(f"[{self.name}] Resting!")
                 result = rest(self.name)
-                await handle_result_cooldown(result)
+                handle_result_cooldown(result)
                 
             # attack
             print(f"[{self.name}] attacking {self.task}")
             result = attack(self.name)
-            await handle_result_cooldown(result)
-
+            handle_result_cooldown(result)
 
     def get_skill_level(self, skill: str):
         if skill == "fishing":

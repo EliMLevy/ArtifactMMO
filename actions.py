@@ -39,6 +39,26 @@ def equip(character: str, code: str, slot: str) -> Any:
 def get_character(name: str) -> Any:
     return send_request_to_url(f"https://api.artifactsmmo.com/characters/{name}", "", "GET", None)
 
+def get_bank_items():
+    print("Getting bank items")
+    page = 1
+    all_results = []
+    done = False
+
+    while not done:
+        result = send_request_to_url(f"https://api.artifactsmmo.com/my/bank/items?page={page}", "", "GET", None)
+        print(len(result["data"]))
+        all_results.extend(result["data"])
+
+        print(result["pages"], page)
+        if result["pages"] > page:
+            page += 1
+        else:
+            break
+        time.sleep(1)
+
+    return result["data"]
+
 def deposit_item(character: str, item: InventoryItem) -> Any:
     body = {"code": item.code, "quantity": item.quantity}
     return send_request(character, "/action/bank/deposit", "POST", body)
