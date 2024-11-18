@@ -28,6 +28,18 @@ def is_item_in_bank(item_code):
 def get_quantity_of_item_in_bank(item_code):   
     return next((item["quantity"] for item in bank_items if item["code"] == item_code), 0)
     
+'''
+input -> [{withdraw, 160, iron_ore}, {craft, 20, iron}]
+output -> [{withdraw, 100, iron}, {craft, 12, iron}, {withdraw, 60, iron_ore}, {craft, 8, iron}]
+'''
+def review_plan(plan):
+    # Step through plan and keep track of inventory.
+    # withdraw, collect, attack increase space used.
+    # Craft -> get conversion rate
+    # deposit all -> inventory space used = 0
+    
+    # If we need to withdraw, collect or attack too many items then we need to split 
+    pass
 
 def check_monsters_or_resources(df, item_code):
     locations = df[df["resource_code"] == item_code]
@@ -82,6 +94,9 @@ def create_plan(item_code, quantity) -> list[str]:
         return [f"Can not attain {item_code}"]
     
 
-plan = create_plan("slime_shield", 5)
+plan = [{"action": "deposit all"}]
+plan.extend(create_plan("iron_ring", 10))
+plan.append({"action": "deposit all"})
+
 for item in plan:
     print(item, ",")

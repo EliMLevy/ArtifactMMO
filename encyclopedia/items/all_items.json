@@ -2,6 +2,13 @@
     "cooked_gudgeon": {
         "code": "cooked_gudgeon",
         "level": 1,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 30
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 1,
@@ -16,6 +23,13 @@
     "copper_dagger": {
         "code": "copper_dagger",
         "level": 1,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_air",
+                "value": 8
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 1,
@@ -29,15 +43,42 @@
     },
     "copper_ore": {
         "code": "copper_ore",
-        "level": 1
+        "level": 1,
+        "type": "resource",
+        "effects": []
     },
     "raw_chicken": {
         "code": "raw_chicken",
-        "level": 1
+        "level": 1,
+        "type": "resource",
+        "effects": []
     },
     "copper_boots": {
         "code": "copper_boots",
         "level": 1,
+        "type": "boots",
+        "effects": [
+            {
+                "name": "res_water",
+                "value": 2
+            },
+            {
+                "name": "res_earth",
+                "value": 2
+            },
+            {
+                "name": "res_fire",
+                "value": 2
+            },
+            {
+                "name": "res_air",
+                "value": 2
+            },
+            {
+                "name": "haste",
+                "value": 2
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 1,
@@ -51,11 +92,36 @@
     },
     "egg": {
         "code": "egg",
-        "level": 1
+        "level": 1,
+        "type": "resource",
+        "effects": []
     },
     "copper_helmet": {
         "code": "copper_helmet",
         "level": 1,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 20
+            },
+            {
+                "name": "dmg_water",
+                "value": 3
+            },
+            {
+                "name": "dmg_earth",
+                "value": 3
+            },
+            {
+                "name": "dmg_fire",
+                "value": 3
+            },
+            {
+                "name": "dmg_air",
+                "value": 3
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 1,
@@ -69,11 +135,20 @@
     },
     "ash_wood": {
         "code": "ash_wood",
-        "level": 1
+        "level": 1,
+        "type": "resource",
+        "effects": []
     },
     "cooked_chicken": {
         "code": "cooked_chicken",
         "level": 1,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 40
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 1,
@@ -87,19 +162,27 @@
     },
     "feather": {
         "code": "feather",
-        "level": 1
+        "level": 1,
+        "type": "resource",
+        "effects": []
     },
     "gudgeon": {
         "code": "gudgeon",
-        "level": 1
+        "level": 1,
+        "type": "resource",
+        "effects": []
     },
     "tasks_coin": {
         "code": "tasks_coin",
-        "level": 1
+        "level": 1,
+        "type": "currency",
+        "effects": []
     },
     "copper": {
         "code": "copper",
         "level": 1,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "mining",
             "level": 1,
@@ -114,6 +197,25 @@
     "wooden_shield": {
         "code": "wooden_shield",
         "level": 1,
+        "type": "shield",
+        "effects": [
+            {
+                "name": "res_fire",
+                "value": 2
+            },
+            {
+                "name": "res_earth",
+                "value": 2
+            },
+            {
+                "name": "res_water",
+                "value": 2
+            },
+            {
+                "name": "res_air",
+                "value": 2
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 1,
@@ -128,6 +230,13 @@
     "wooden_staff": {
         "code": "wooden_staff",
         "level": 1,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 8
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 1,
@@ -146,6 +255,25 @@
     "copper_ring": {
         "code": "copper_ring",
         "level": 1,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_air",
+                "value": 2
+            },
+            {
+                "name": "dmg_earth",
+                "value": 2
+            },
+            {
+                "name": "dmg_water",
+                "value": 2
+            },
+            {
+                "name": "dmg_fire",
+                "value": 2
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 1,
@@ -160,6 +288,8 @@
     "ash_plank": {
         "code": "ash_plank",
         "level": 1,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "woodcutting",
             "level": 1,
@@ -173,39 +303,98 @@
     },
     "wooden_stick": {
         "code": "wooden_stick",
-        "level": 1
+        "level": 1,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 4
+            }
+        ]
     },
     "apple": {
         "code": "apple",
-        "level": 1
+        "level": 1,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 15
+            }
+        ]
     },
     "algae": {
         "code": "algae",
-        "level": 1
+        "level": 1,
+        "type": "resource",
+        "effects": []
     },
     "sunflower": {
         "code": "sunflower",
-        "level": 1
+        "level": 1,
+        "type": "resource",
+        "effects": []
     },
     "bag_of_gold": {
         "code": "bag_of_gold",
-        "level": 1
+        "level": 1,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "gold",
+                "value": 1500
+            }
+        ]
     },
     "small_bag_of_gold": {
         "code": "small_bag_of_gold",
-        "level": 1
+        "level": 1,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "gold",
+                "value": 750
+            }
+        ]
     },
     "yellow_slimeball": {
         "code": "yellow_slimeball",
-        "level": 2
+        "level": 2,
+        "type": "resource",
+        "effects": []
     },
     "green_slimeball": {
         "code": "green_slimeball",
-        "level": 4
+        "level": 4,
+        "type": "resource",
+        "effects": []
     },
     "copper_legs_armor": {
         "code": "copper_legs_armor",
         "level": 5,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 25
+            },
+            {
+                "name": "dmg_water",
+                "value": 2
+            },
+            {
+                "name": "dmg_earth",
+                "value": 2
+            },
+            {
+                "name": "dmg_fire",
+                "value": 2
+            },
+            {
+                "name": "dmg_air",
+                "value": 2
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 5,
@@ -224,6 +413,21 @@
     "feather_coat": {
         "code": "feather_coat",
         "level": 5,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 25
+            },
+            {
+                "name": "dmg_air",
+                "value": 5
+            },
+            {
+                "name": "dmg_water",
+                "value": 5
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 5,
@@ -242,6 +446,13 @@
     "fire_staff": {
         "code": "fire_staff",
         "level": 5,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_fire",
+                "value": 16
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 5,
@@ -259,11 +470,20 @@
     },
     "raw_beef": {
         "code": "raw_beef",
-        "level": 5
+        "level": 5,
+        "type": "resource",
+        "effects": []
     },
     "cooked_beef": {
         "code": "cooked_beef",
         "level": 5,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 50
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 5,
@@ -278,6 +498,21 @@
     "copper_armor": {
         "code": "copper_armor",
         "level": 5,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 25
+            },
+            {
+                "name": "dmg_earth",
+                "value": 5
+            },
+            {
+                "name": "dmg_fire",
+                "value": 5
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 5,
@@ -295,11 +530,20 @@
     },
     "milk_bucket": {
         "code": "milk_bucket",
-        "level": 5
+        "level": 5,
+        "type": "resource",
+        "effects": []
     },
     "fried_eggs": {
         "code": "fried_eggs",
         "level": 5,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 50
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 5,
@@ -314,6 +558,13 @@
     "sticky_dagger": {
         "code": "sticky_dagger",
         "level": 5,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_air",
+                "value": 16
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 5,
@@ -332,6 +583,13 @@
     "sticky_sword": {
         "code": "sticky_sword",
         "level": 5,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 16
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 5,
@@ -350,6 +608,13 @@
     "life_amulet": {
         "code": "life_amulet",
         "level": 5,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 30
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 5,
@@ -368,6 +633,13 @@
     "water_bow": {
         "code": "water_bow",
         "level": 5,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_water",
+                "value": 16
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 5,
@@ -386,6 +658,13 @@
     "small_health_potion": {
         "code": "small_health_potion",
         "level": 5,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "restore",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 5,
@@ -399,19 +678,40 @@
     },
     "blue_slimeball": {
         "code": "blue_slimeball",
-        "level": 6
+        "level": 6,
+        "type": "resource",
+        "effects": []
     },
     "red_slimeball": {
         "code": "red_slimeball",
-        "level": 7
+        "level": 7,
+        "type": "resource",
+        "effects": []
     },
     "cowhide": {
         "code": "cowhide",
-        "level": 8
+        "level": 8,
+        "type": "resource",
+        "effects": []
     },
     "fire_and_earth_amulet": {
         "code": "fire_and_earth_amulet",
         "level": 10,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 20
+            },
+            {
+                "name": "dmg_fire",
+                "value": 5
+            },
+            {
+                "name": "dmg_earth",
+                "value": 5
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 10,
@@ -434,6 +734,25 @@
     "iron_boots": {
         "code": "iron_boots",
         "level": 10,
+        "type": "boots",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 40
+            },
+            {
+                "name": "res_water",
+                "value": 5
+            },
+            {
+                "name": "res_air",
+                "value": 5
+            },
+            {
+                "name": "haste",
+                "value": 3
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 10,
@@ -452,6 +771,13 @@
     "iron_sword": {
         "code": "iron_sword",
         "level": 10,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 24
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 10,
@@ -470,6 +796,25 @@
     "leather_boots": {
         "code": "leather_boots",
         "level": 10,
+        "type": "boots",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 40
+            },
+            {
+                "name": "res_fire",
+                "value": 5
+            },
+            {
+                "name": "res_earth",
+                "value": 5
+            },
+            {
+                "name": "haste",
+                "value": 3
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 10,
@@ -487,11 +832,20 @@
     },
     "mushroom": {
         "code": "mushroom",
-        "level": 10
+        "level": 10,
+        "type": "resource",
+        "effects": []
     },
     "cooked_shrimp": {
         "code": "cooked_shrimp",
         "level": 10,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 60
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 10,
@@ -506,6 +860,29 @@
     "leather_armor": {
         "code": "leather_armor",
         "level": 10,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 50
+            },
+            {
+                "name": "dmg_air",
+                "value": 8
+            },
+            {
+                "name": "dmg_water",
+                "value": 8
+            },
+            {
+                "name": "res_fire",
+                "value": 2
+            },
+            {
+                "name": "res_earth",
+                "value": 2
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 10,
@@ -524,6 +901,29 @@
     "adventurer_pants": {
         "code": "adventurer_pants",
         "level": 10,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 50
+            },
+            {
+                "name": "dmg_earth",
+                "value": 5
+            },
+            {
+                "name": "dmg_water",
+                "value": 5
+            },
+            {
+                "name": "dmg_air",
+                "value": 5
+            },
+            {
+                "name": "dmg_fire",
+                "value": 5
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 10,
@@ -546,6 +946,37 @@
     "adventurer_helmet": {
         "code": "adventurer_helmet",
         "level": 10,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 50
+            },
+            {
+                "name": "dmg_earth",
+                "value": 5
+            },
+            {
+                "name": "dmg_water",
+                "value": 5
+            },
+            {
+                "name": "dmg_fire",
+                "value": 5
+            },
+            {
+                "name": "dmg_air",
+                "value": 5
+            },
+            {
+                "name": "res_fire",
+                "value": 8
+            },
+            {
+                "name": "res_air",
+                "value": 8
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 10,
@@ -572,6 +1003,21 @@
     "air_and_water_amulet": {
         "code": "air_and_water_amulet",
         "level": 10,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 20
+            },
+            {
+                "name": "dmg_water",
+                "value": 5
+            },
+            {
+                "name": "dmg_air",
+                "value": 5
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 10,
@@ -594,6 +1040,13 @@
     "greater_wooden_staff": {
         "code": "greater_wooden_staff",
         "level": 10,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_water",
+                "value": 24
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 10,
@@ -612,6 +1065,29 @@
     "iron_armor": {
         "code": "iron_armor",
         "level": 10,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 50
+            },
+            {
+                "name": "dmg_earth",
+                "value": 8
+            },
+            {
+                "name": "dmg_fire",
+                "value": 8
+            },
+            {
+                "name": "res_water",
+                "value": 2
+            },
+            {
+                "name": "res_air",
+                "value": 2
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 10,
@@ -630,6 +1106,33 @@
     "iron_legs_armor": {
         "code": "iron_legs_armor",
         "level": 10,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 50
+            },
+            {
+                "name": "haste",
+                "value": 1
+            },
+            {
+                "name": "res_earth",
+                "value": 5
+            },
+            {
+                "name": "res_water",
+                "value": 5
+            },
+            {
+                "name": "res_air",
+                "value": 5
+            },
+            {
+                "name": "res_fire",
+                "value": 5
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 10,
@@ -648,6 +1151,45 @@
     "adventurer_vest": {
         "code": "adventurer_vest",
         "level": 10,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 60
+            },
+            {
+                "name": "dmg_fire",
+                "value": 8
+            },
+            {
+                "name": "dmg_air",
+                "value": 8
+            },
+            {
+                "name": "dmg_water",
+                "value": 8
+            },
+            {
+                "name": "dmg_earth",
+                "value": 8
+            },
+            {
+                "name": "res_fire",
+                "value": 2
+            },
+            {
+                "name": "res_earth",
+                "value": 2
+            },
+            {
+                "name": "res_water",
+                "value": 2
+            },
+            {
+                "name": "res_air",
+                "value": 2
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 10,
@@ -674,6 +1216,29 @@
     "iron_helm": {
         "code": "iron_helm",
         "level": 10,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 40
+            },
+            {
+                "name": "dmg_fire",
+                "value": 5
+            },
+            {
+                "name": "dmg_earth",
+                "value": 5
+            },
+            {
+                "name": "res_fire",
+                "value": 4
+            },
+            {
+                "name": "res_earth",
+                "value": 4
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 10,
@@ -691,11 +1256,36 @@
     },
     "iron_ore": {
         "code": "iron_ore",
-        "level": 10
+        "level": 10,
+        "type": "resource",
+        "effects": []
     },
     "leather_hat": {
         "code": "leather_hat",
         "level": 10,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 40
+            },
+            {
+                "name": "dmg_air",
+                "value": 5
+            },
+            {
+                "name": "dmg_water",
+                "value": 5
+            },
+            {
+                "name": "res_water",
+                "value": 4
+            },
+            {
+                "name": "res_air",
+                "value": 4
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 10,
@@ -714,6 +1304,25 @@
     "slime_shield": {
         "code": "slime_shield",
         "level": 10,
+        "type": "shield",
+        "effects": [
+            {
+                "name": "res_fire",
+                "value": 4
+            },
+            {
+                "name": "res_earth",
+                "value": 4
+            },
+            {
+                "name": "res_water",
+                "value": 4
+            },
+            {
+                "name": "res_air",
+                "value": 4
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 10,
@@ -744,6 +1353,8 @@
     "iron": {
         "code": "iron",
         "level": 10,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "mining",
             "level": 10,
@@ -757,11 +1368,20 @@
     },
     "jasper_crystal": {
         "code": "jasper_crystal",
-        "level": 10
+        "level": 10,
+        "type": "resource",
+        "effects": []
     },
     "cheese": {
         "code": "cheese",
         "level": 10,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 70
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 10,
@@ -775,11 +1395,32 @@
     },
     "spruce_wood": {
         "code": "spruce_wood",
-        "level": 10
+        "level": 10,
+        "type": "resource",
+        "effects": []
     },
     "iron_ring": {
         "code": "iron_ring",
         "level": 10,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_air",
+                "value": 4
+            },
+            {
+                "name": "dmg_earth",
+                "value": 4
+            },
+            {
+                "name": "dmg_fire",
+                "value": 4
+            },
+            {
+                "name": "dmg_water",
+                "value": 4
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 10,
@@ -798,6 +1439,13 @@
     "iron_dagger": {
         "code": "iron_dagger",
         "level": 10,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_air",
+                "value": 24
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 10,
@@ -816,6 +1464,8 @@
     "spruce_plank": {
         "code": "spruce_plank",
         "level": 10,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "woodcutting",
             "level": 10,
@@ -829,15 +1479,26 @@
     },
     "shrimp": {
         "code": "shrimp",
-        "level": 10
+        "level": 10,
+        "type": "resource",
+        "effects": []
     },
     "magical_cure": {
         "code": "magical_cure",
-        "level": 10
+        "level": 10,
+        "type": "resource",
+        "effects": []
     },
     "fire_bow": {
         "code": "fire_bow",
         "level": 10,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_fire",
+                "value": 24
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 10,
@@ -856,6 +1517,17 @@
     "iron_pickaxe": {
         "code": "iron_pickaxe",
         "level": 10,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 5
+            },
+            {
+                "name": "mining",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 10,
@@ -878,6 +1550,17 @@
     "iron_axe": {
         "code": "iron_axe",
         "level": 10,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 5
+            },
+            {
+                "name": "woodcutting",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 10,
@@ -900,6 +1583,17 @@
     "spruce_fishing_rod": {
         "code": "spruce_fishing_rod",
         "level": 10,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_water",
+                "value": 5
+            },
+            {
+                "name": "fishing",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 10,
@@ -922,6 +1616,13 @@
     "earth_boost_potion": {
         "code": "earth_boost_potion",
         "level": 10,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "boost_dmg_earth",
+                "value": 12
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 10,
@@ -944,6 +1645,13 @@
     "air_boost_potion": {
         "code": "air_boost_potion",
         "level": 10,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "boost_dmg_air",
+                "value": 12
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 10,
@@ -966,6 +1674,13 @@
     "fire_boost_potion": {
         "code": "fire_boost_potion",
         "level": 10,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "boost_dmg_fire",
+                "value": 12
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 10,
@@ -988,6 +1703,13 @@
     "water_boost_potion": {
         "code": "water_boost_potion",
         "level": 10,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "boost_dmg_water",
+                "value": 12
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 10,
@@ -1010,6 +1732,17 @@
     "leather_gloves": {
         "code": "leather_gloves",
         "level": 10,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_air",
+                "value": 5
+            },
+            {
+                "name": "alchemy",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 10,
@@ -1031,27 +1764,65 @@
     },
     "astralyte_crystal": {
         "code": "astralyte_crystal",
-        "level": 10
+        "level": 10,
+        "type": "resource",
+        "effects": []
     },
     "enchanted_fabric": {
         "code": "enchanted_fabric",
-        "level": 10
+        "level": 10,
+        "type": "resource",
+        "effects": []
     },
     "forest_ring": {
         "code": "forest_ring",
-        "level": 10
+        "level": 10,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 20
+            },
+            {
+                "name": "dmg_air",
+                "value": 5
+            },
+            {
+                "name": "dmg_earth",
+                "value": 5
+            },
+            {
+                "name": "dmg_fire",
+                "value": 5
+            },
+            {
+                "name": "dmg_water",
+                "value": 5
+            }
+        ]
     },
     "flying_wing": {
         "code": "flying_wing",
-        "level": 12
+        "level": 12,
+        "type": "resource",
+        "effects": []
     },
     "serpent_skin": {
         "code": "serpent_skin",
-        "level": 12
+        "level": 12,
+        "type": "resource",
+        "effects": []
     },
     "air_ring": {
         "code": "air_ring",
         "level": 15,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_air",
+                "value": 8
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 15,
@@ -1074,6 +1845,25 @@
     "multislimes_sword": {
         "code": "multislimes_sword",
         "level": 15,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_air",
+                "value": 9
+            },
+            {
+                "name": "attack_water",
+                "value": 9
+            },
+            {
+                "name": "attack_fire",
+                "value": 9
+            },
+            {
+                "name": "attack_earth",
+                "value": 9
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 15,
@@ -1108,6 +1898,21 @@
     "mushmush_wizard_hat": {
         "code": "mushmush_wizard_hat",
         "level": 15,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "dmg_fire",
+                "value": 10
+            },
+            {
+                "name": "dmg_earth",
+                "value": 10
+            },
+            {
+                "name": "hp",
+                "value": 60
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 15,
@@ -1133,11 +1938,20 @@
     },
     "raw_wolf_meat": {
         "code": "raw_wolf_meat",
-        "level": 15
+        "level": 15,
+        "type": "resource",
+        "effects": []
     },
     "earth_ring": {
         "code": "earth_ring",
         "level": 15,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_earth",
+                "value": 8
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 15,
@@ -1160,6 +1974,21 @@
     "lucky_wizard_hat": {
         "code": "lucky_wizard_hat",
         "level": 15,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "dmg_air",
+                "value": 10
+            },
+            {
+                "name": "dmg_water",
+                "value": 10
+            },
+            {
+                "name": "hp",
+                "value": 60
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 15,
@@ -1186,6 +2015,29 @@
     "mushmush_jacket": {
         "code": "mushmush_jacket",
         "level": 15,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 60
+            },
+            {
+                "name": "dmg_fire",
+                "value": 10
+            },
+            {
+                "name": "dmg_earth",
+                "value": 10
+            },
+            {
+                "name": "dmg_air",
+                "value": 10
+            },
+            {
+                "name": "dmg_water",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 15,
@@ -1212,6 +2064,33 @@
     "adventurer_boots": {
         "code": "adventurer_boots",
         "level": 15,
+        "type": "boots",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 60
+            },
+            {
+                "name": "res_water",
+                "value": 5
+            },
+            {
+                "name": "res_air",
+                "value": 5
+            },
+            {
+                "name": "res_earth",
+                "value": 5
+            },
+            {
+                "name": "res_fire",
+                "value": 5
+            },
+            {
+                "name": "haste",
+                "value": 4
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 15,
@@ -1238,6 +2117,13 @@
     "cooked_wolf_meat": {
         "code": "cooked_wolf_meat",
         "level": 15,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 80
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 15,
@@ -1252,6 +2138,17 @@
     "mushstaff": {
         "code": "mushstaff",
         "level": 15,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_fire",
+                "value": 16
+            },
+            {
+                "name": "attack_earth",
+                "value": 16
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 15,
@@ -1278,6 +2175,13 @@
     "fire_ring": {
         "code": "fire_ring",
         "level": 15,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_fire",
+                "value": 8
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 15,
@@ -1300,6 +2204,17 @@
     "mushmush_bow": {
         "code": "mushmush_bow",
         "level": 15,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_air",
+                "value": 16
+            },
+            {
+                "name": "attack_water",
+                "value": 16
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 15,
@@ -1325,11 +2240,20 @@
     },
     "wolf_bone": {
         "code": "wolf_bone",
-        "level": 15
+        "level": 15,
+        "type": "resource",
+        "effects": []
     },
     "life_ring": {
         "code": "life_ring",
         "level": 15,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 30
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 15,
@@ -1352,6 +2276,13 @@
     "mushroom_soup": {
         "code": "mushroom_soup",
         "level": 15,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 140
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 15,
@@ -1366,6 +2297,13 @@
     "water_ring": {
         "code": "water_ring",
         "level": 15,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_water",
+                "value": 8
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 15,
@@ -1387,27 +2325,53 @@
     },
     "wolf_hair": {
         "code": "wolf_hair",
-        "level": 15
+        "level": 15,
+        "type": "resource",
+        "effects": []
     },
     "backpack": {
         "code": "backpack",
-        "level": 15
+        "level": 15,
+        "type": "artifact",
+        "effects": [
+            {
+                "name": "inventory_space",
+                "value": 30
+            }
+        ]
     },
     "skeleton_bone": {
         "code": "skeleton_bone",
-        "level": 18
+        "level": 18,
+        "type": "resource",
+        "effects": []
     },
     "skeleton_skull": {
         "code": "skeleton_skull",
-        "level": 18
+        "level": 18,
+        "type": "resource",
+        "effects": []
     },
     "birch_wood": {
         "code": "birch_wood",
-        "level": 20
+        "level": 20,
+        "type": "resource",
+        "effects": []
     },
     "magic_wizard_hat": {
         "code": "magic_wizard_hat",
         "level": 20,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 90
+            },
+            {
+                "name": "dmg_water",
+                "value": 16
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 20,
@@ -1434,6 +2398,13 @@
     "cooked_trout": {
         "code": "cooked_trout",
         "level": 20,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 110
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 20,
@@ -1447,11 +2418,32 @@
     },
     "ogre_skin": {
         "code": "ogre_skin",
-        "level": 20
+        "level": 20,
+        "type": "resource",
+        "effects": []
     },
     "ring_of_chance": {
         "code": "ring_of_chance",
         "level": 20,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_fire",
+                "value": 8
+            },
+            {
+                "name": "dmg_water",
+                "value": 8
+            },
+            {
+                "name": "dmg_air",
+                "value": 8
+            },
+            {
+                "name": "dmg_earth",
+                "value": 8
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 20,
@@ -1482,6 +2474,13 @@
     "battlestaff": {
         "code": "battlestaff",
         "level": 20,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_water",
+                "value": 40
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 20,
@@ -1508,6 +2507,13 @@
     "forest_whip": {
         "code": "forest_whip",
         "level": 20,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_air",
+                "value": 40
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 20,
@@ -1533,15 +2539,30 @@
     },
     "ogre_eye": {
         "code": "ogre_eye",
-        "level": 20
+        "level": 20,
+        "type": "resource",
+        "effects": []
     },
     "coal": {
         "code": "coal",
-        "level": 20
+        "level": 20,
+        "type": "resource",
+        "effects": []
     },
     "steel_helm": {
         "code": "steel_helm",
         "level": 20,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 90
+            },
+            {
+                "name": "dmg_earth",
+                "value": 16
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 20,
@@ -1568,6 +2589,25 @@
     "steel_boots": {
         "code": "steel_boots",
         "level": 20,
+        "type": "boots",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 80
+            },
+            {
+                "name": "res_earth",
+                "value": 8
+            },
+            {
+                "name": "res_fire",
+                "value": 8
+            },
+            {
+                "name": "haste",
+                "value": 6
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 20,
@@ -1594,6 +2634,8 @@
     "hardwood_plank": {
         "code": "hardwood_plank",
         "level": 20,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "woodcutting",
             "level": 20,
@@ -1611,11 +2653,36 @@
     },
     "trout": {
         "code": "trout",
-        "level": 20
+        "level": 20,
+        "type": "resource",
+        "effects": []
     },
     "steel_armor": {
         "code": "steel_armor",
         "level": 20,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 90
+            },
+            {
+                "name": "dmg_earth",
+                "value": 15
+            },
+            {
+                "name": "dmg_water",
+                "value": 15
+            },
+            {
+                "name": "res_earth",
+                "value": 5
+            },
+            {
+                "name": "res_water",
+                "value": 5
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 20,
@@ -1642,6 +2709,13 @@
     "steel_battleaxe": {
         "code": "steel_battleaxe",
         "level": 20,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 40
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 20,
@@ -1668,6 +2742,29 @@
     "steel_legs_armor": {
         "code": "steel_legs_armor",
         "level": 20,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 80
+            },
+            {
+                "name": "haste",
+                "value": 2
+            },
+            {
+                "name": "dmg_water",
+                "value": 10
+            },
+            {
+                "name": "dmg_earth",
+                "value": 10
+            },
+            {
+                "name": "res_water",
+                "value": 6
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 20,
@@ -1694,6 +2791,29 @@
     "skeleton_pants": {
         "code": "skeleton_pants",
         "level": 20,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 80
+            },
+            {
+                "name": "haste",
+                "value": 2
+            },
+            {
+                "name": "dmg_fire",
+                "value": 10
+            },
+            {
+                "name": "dmg_air",
+                "value": 10
+            },
+            {
+                "name": "res_fire",
+                "value": 6
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 20,
@@ -1720,6 +2840,13 @@
     "skull_staff": {
         "code": "skull_staff",
         "level": 20,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_fire",
+                "value": 40
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 20,
@@ -1746,6 +2873,29 @@
     "skeleton_armor": {
         "code": "skeleton_armor",
         "level": 20,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 90
+            },
+            {
+                "name": "dmg_fire",
+                "value": 15
+            },
+            {
+                "name": "dmg_air",
+                "value": 15
+            },
+            {
+                "name": "res_fire",
+                "value": 5
+            },
+            {
+                "name": "res_air",
+                "value": 5
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 20,
@@ -1772,6 +2922,17 @@
     "skeleton_helmet": {
         "code": "skeleton_helmet",
         "level": 20,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 90
+            },
+            {
+                "name": "dmg_air",
+                "value": 16
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 20,
@@ -1798,6 +2959,8 @@
     "steel": {
         "code": "steel",
         "level": 20,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "mining",
             "level": 20,
@@ -1816,6 +2979,21 @@
     "dreadful_ring": {
         "code": "dreadful_ring",
         "level": 20,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 20
+            },
+            {
+                "name": "dmg_earth",
+                "value": 11
+            },
+            {
+                "name": "dmg_water",
+                "value": 11
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 20,
@@ -1842,6 +3020,8 @@
     "sapphire": {
         "code": "sapphire",
         "level": 20,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "mining",
             "level": 20,
@@ -1856,6 +3036,8 @@
     "emerald": {
         "code": "emerald",
         "level": 20,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "mining",
             "level": 20,
@@ -1870,6 +3052,25 @@
     "steel_shield": {
         "code": "steel_shield",
         "level": 20,
+        "type": "shield",
+        "effects": [
+            {
+                "name": "res_fire",
+                "value": 7
+            },
+            {
+                "name": "res_earth",
+                "value": 7
+            },
+            {
+                "name": "res_water",
+                "value": 7
+            },
+            {
+                "name": "res_air",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 20,
@@ -1896,6 +3097,25 @@
     "steel_ring": {
         "code": "steel_ring",
         "level": 20,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_earth",
+                "value": 5
+            },
+            {
+                "name": "dmg_air",
+                "value": 5
+            },
+            {
+                "name": "dmg_water",
+                "value": 5
+            },
+            {
+                "name": "dmg_fire",
+                "value": 5
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 20,
@@ -1922,6 +3142,8 @@
     "ruby": {
         "code": "ruby",
         "level": 20,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "mining",
             "level": 20,
@@ -1935,11 +3157,24 @@
     },
     "pig_skin": {
         "code": "pig_skin",
-        "level": 20
+        "level": 20,
+        "type": "resource",
+        "effects": []
     },
     "tromatising_mask": {
         "code": "tromatising_mask",
         "level": 20,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 90
+            },
+            {
+                "name": "dmg_fire",
+                "value": 16
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 20,
@@ -1966,6 +3201,21 @@
     "skull_ring": {
         "code": "skull_ring",
         "level": 20,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 20
+            },
+            {
+                "name": "dmg_fire",
+                "value": 11
+            },
+            {
+                "name": "dmg_air",
+                "value": 11
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 20,
@@ -1992,6 +3242,8 @@
     "topaz": {
         "code": "topaz",
         "level": 20,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "mining",
             "level": 20,
@@ -2006,6 +3258,21 @@
     "dreadful_amulet": {
         "code": "dreadful_amulet",
         "level": 20,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 40
+            },
+            {
+                "name": "dmg_water",
+                "value": 10
+            },
+            {
+                "name": "dmg_earth",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 20,
@@ -2032,6 +3299,21 @@
     "skull_amulet": {
         "code": "skull_amulet",
         "level": 20,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 40
+            },
+            {
+                "name": "dmg_air",
+                "value": 10
+            },
+            {
+                "name": "dmg_fire",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 20,
@@ -2058,6 +3340,13 @@
     "minor_health_potion": {
         "code": "minor_health_potion",
         "level": 20,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "restore",
+                "value": 40
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 20,
@@ -2076,6 +3365,25 @@
     "serpent_skin_boots": {
         "code": "serpent_skin_boots",
         "level": 20,
+        "type": "boots",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 80
+            },
+            {
+                "name": "res_water",
+                "value": 8
+            },
+            {
+                "name": "res_air",
+                "value": 8
+            },
+            {
+                "name": "haste",
+                "value": 6
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 20,
@@ -2102,6 +3410,13 @@
     "apple_pie": {
         "code": "apple_pie",
         "level": 20,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 250
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 20,
@@ -2119,35 +3434,65 @@
     },
     "emerald_stone": {
         "code": "emerald_stone",
-        "level": 20
+        "level": 20,
+        "type": "resource",
+        "effects": []
     },
     "topaz_stone": {
         "code": "topaz_stone",
-        "level": 20
+        "level": 20,
+        "type": "resource",
+        "effects": []
     },
     "ruby_stone": {
         "code": "ruby_stone",
-        "level": 20
+        "level": 20,
+        "type": "resource",
+        "effects": []
     },
     "sapphire_stone": {
         "code": "sapphire_stone",
-        "level": 20
+        "level": 20,
+        "type": "resource",
+        "effects": []
     },
     "nettle_leaf": {
         "code": "nettle_leaf",
-        "level": 20
+        "level": 20,
+        "type": "resource",
+        "effects": []
     },
     "wooden_club": {
         "code": "wooden_club",
-        "level": 20
+        "level": 20,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 35
+            }
+        ]
     },
     "vampire_blood": {
         "code": "vampire_blood",
-        "level": 24
+        "level": 24,
+        "type": "resource",
+        "effects": []
     },
     "dreadful_staff": {
         "code": "dreadful_staff",
         "level": 25,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_water",
+                "value": 25
+            },
+            {
+                "name": "attack_earth",
+                "value": 25
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 25,
@@ -2173,11 +3518,45 @@
     },
     "bandit_armor": {
         "code": "bandit_armor",
-        "level": 25
+        "level": 25,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 160
+            },
+            {
+                "name": "dmg_fire",
+                "value": 20
+            },
+            {
+                "name": "dmg_earth",
+                "value": 20
+            },
+            {
+                "name": "res_earth",
+                "value": 6
+            },
+            {
+                "name": "res_water",
+                "value": 6
+            }
+        ]
     },
     "skull_wand": {
         "code": "skull_wand",
         "level": 25,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_air",
+                "value": 25
+            },
+            {
+                "name": "attack_fire",
+                "value": 25
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 25,
@@ -2208,6 +3587,25 @@
     "lizard_skin_armor": {
         "code": "lizard_skin_armor",
         "level": 25,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 150
+            },
+            {
+                "name": "dmg_water",
+                "value": 22
+            },
+            {
+                "name": "res_water",
+                "value": 10
+            },
+            {
+                "name": "res_fire",
+                "value": 5
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 25,
@@ -2234,6 +3632,29 @@
     "serpent_skin_legs_armor": {
         "code": "serpent_skin_legs_armor",
         "level": 25,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 140
+            },
+            {
+                "name": "haste",
+                "value": 3
+            },
+            {
+                "name": "dmg_air",
+                "value": 17
+            },
+            {
+                "name": "res_air",
+                "value": 6
+            },
+            {
+                "name": "res_earth",
+                "value": 3
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 25,
@@ -2260,6 +3681,29 @@
     "lizard_skin_legs_armor": {
         "code": "lizard_skin_legs_armor",
         "level": 25,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 140
+            },
+            {
+                "name": "haste",
+                "value": 3
+            },
+            {
+                "name": "dmg_water",
+                "value": 17
+            },
+            {
+                "name": "res_water",
+                "value": 6
+            },
+            {
+                "name": "res_fire",
+                "value": 3
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 25,
@@ -2286,6 +3730,29 @@
     "piggy_pants": {
         "code": "piggy_pants",
         "level": 25,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 140
+            },
+            {
+                "name": "haste",
+                "value": 3
+            },
+            {
+                "name": "dmg_fire",
+                "value": 17
+            },
+            {
+                "name": "res_fire",
+                "value": 6
+            },
+            {
+                "name": "res_water",
+                "value": 3
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 25,
@@ -2312,6 +3779,17 @@
     "topaz_amulet": {
         "code": "topaz_amulet",
         "level": 25,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 70
+            },
+            {
+                "name": "dmg_earth",
+                "value": 18
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 25,
@@ -2338,6 +3816,17 @@
     "emerald_amulet": {
         "code": "emerald_amulet",
         "level": 25,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 70
+            },
+            {
+                "name": "dmg_air",
+                "value": 18
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 25,
@@ -2363,11 +3852,24 @@
     },
     "lizard_skin": {
         "code": "lizard_skin",
-        "level": 25
+        "level": 25,
+        "type": "resource",
+        "effects": []
     },
     "sapphire_amulet": {
         "code": "sapphire_amulet",
         "level": 25,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 70
+            },
+            {
+                "name": "dmg_water",
+                "value": 18
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 25,
@@ -2394,6 +3896,17 @@
     "ruby_amulet": {
         "code": "ruby_amulet",
         "level": 25,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 70
+            },
+            {
+                "name": "dmg_fire",
+                "value": 18
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 25,
@@ -2420,6 +3933,25 @@
     "serpent_skin_armor": {
         "code": "serpent_skin_armor",
         "level": 25,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 150
+            },
+            {
+                "name": "dmg_air",
+                "value": 22
+            },
+            {
+                "name": "res_air",
+                "value": 10
+            },
+            {
+                "name": "res_earth",
+                "value": 5
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 25,
@@ -2445,11 +3977,24 @@
     },
     "cyclops_eye": {
         "code": "cyclops_eye",
-        "level": 25
+        "level": 25,
+        "type": "resource",
+        "effects": []
     },
     "piggy_helmet": {
         "code": "piggy_helmet",
         "level": 25,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 110
+            },
+            {
+                "name": "dmg_fire",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 25,
@@ -2476,6 +4021,25 @@
     "piggy_armor": {
         "code": "piggy_armor",
         "level": 25,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 150
+            },
+            {
+                "name": "dmg_fire",
+                "value": 22
+            },
+            {
+                "name": "res_fire",
+                "value": 10
+            },
+            {
+                "name": "res_earth",
+                "value": 5
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 25,
@@ -2502,6 +4066,25 @@
     "stormforged_armor": {
         "code": "stormforged_armor",
         "level": 25,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 150
+            },
+            {
+                "name": "dmg_earth",
+                "value": 22
+            },
+            {
+                "name": "res_earth",
+                "value": 10
+            },
+            {
+                "name": "res_water",
+                "value": 5
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 25,
@@ -2528,6 +4111,29 @@
     "stormforged_pants": {
         "code": "stormforged_pants",
         "level": 25,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 140
+            },
+            {
+                "name": "haste",
+                "value": 3
+            },
+            {
+                "name": "dmg_earth",
+                "value": 17
+            },
+            {
+                "name": "res_earth",
+                "value": 6
+            },
+            {
+                "name": "res_water",
+                "value": 3
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 25,
@@ -2553,15 +4159,30 @@
     },
     "red_cloth": {
         "code": "red_cloth",
-        "level": 28
+        "level": 28,
+        "type": "resource",
+        "effects": []
     },
     "demoniac_dust": {
         "code": "demoniac_dust",
-        "level": 28
+        "level": 28,
+        "type": "resource",
+        "effects": []
     },
     "greater_dreadful_staff": {
         "code": "greater_dreadful_staff",
         "level": 30,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_water",
+                "value": 60
+            },
+            {
+                "name": "attack_earth",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 30,
@@ -2591,15 +4212,35 @@
     },
     "owlbear_hair": {
         "code": "owlbear_hair",
-        "level": 30
+        "level": 30,
+        "type": "resource",
+        "effects": []
     },
     "death_knight_sword": {
         "code": "death_knight_sword",
-        "level": 30
+        "level": 30,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_fire",
+                "value": 40
+            },
+            {
+                "name": "attack_earth",
+                "value": 40
+            }
+        ]
     },
     "cooked_bass": {
         "code": "cooked_bass",
         "level": 30,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 160
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 30,
@@ -2614,6 +4255,29 @@
     "gold_platebody": {
         "code": "gold_platebody",
         "level": 30,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 150
+            },
+            {
+                "name": "dmg_earth",
+                "value": 20
+            },
+            {
+                "name": "dmg_water",
+                "value": 20
+            },
+            {
+                "name": "res_water",
+                "value": 6
+            },
+            {
+                "name": "res_earth",
+                "value": 6
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 30,
@@ -2644,6 +4308,25 @@
     "gold_shield": {
         "code": "gold_shield",
         "level": 30,
+        "type": "shield",
+        "effects": [
+            {
+                "name": "res_fire",
+                "value": 10
+            },
+            {
+                "name": "res_earth",
+                "value": 10
+            },
+            {
+                "name": "res_water",
+                "value": 10
+            },
+            {
+                "name": "res_air",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 30,
@@ -2674,6 +4357,17 @@
     "ruby_ring": {
         "code": "ruby_ring",
         "level": 30,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_fire",
+                "value": 17
+            },
+            {
+                "name": "dmg_water",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 30,
@@ -2703,11 +4397,20 @@
     },
     "life_crystal": {
         "code": "life_crystal",
-        "level": 30
+        "level": 30,
+        "type": "artifact",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 180
+            }
+        ]
     },
     "gold": {
         "code": "gold",
         "level": 30,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "mining",
             "level": 30,
@@ -2721,11 +4424,40 @@
     },
     "bass": {
         "code": "bass",
-        "level": 30
+        "level": 30,
+        "type": "resource",
+        "effects": []
     },
     "gold_platelegs": {
         "code": "gold_platelegs",
         "level": 30,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 150
+            },
+            {
+                "name": "haste",
+                "value": 5
+            },
+            {
+                "name": "dmg_earth",
+                "value": 17
+            },
+            {
+                "name": "dmg_air",
+                "value": 17
+            },
+            {
+                "name": "res_earth",
+                "value": 7
+            },
+            {
+                "name": "res_air",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 30,
@@ -2756,6 +4488,17 @@
     "gold_sword": {
         "code": "gold_sword",
         "level": 30,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 60
+            },
+            {
+                "name": "attack_air",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 30,
@@ -2785,19 +4528,53 @@
     },
     "lich_crown": {
         "code": "lich_crown",
-        "level": 30
+        "level": 30,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 180
+            },
+            {
+                "name": "dmg_fire",
+                "value": 22
+            },
+            {
+                "name": "dmg_earth",
+                "value": 22
+            }
+        ]
     },
     "dead_wood": {
         "code": "dead_wood",
-        "level": 30
+        "level": 30,
+        "type": "resource",
+        "effects": []
     },
     "gold_ore": {
         "code": "gold_ore",
-        "level": 30
+        "level": 30,
+        "type": "resource",
+        "effects": []
     },
     "gold_mask": {
         "code": "gold_mask",
         "level": 30,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 160
+            },
+            {
+                "name": "dmg_earth",
+                "value": 20
+            },
+            {
+                "name": "dmg_air",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 30,
@@ -2828,6 +4605,8 @@
     "dead_wood_plank": {
         "code": "dead_wood_plank",
         "level": 30,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "woodcutting",
             "level": 30,
@@ -2842,6 +4621,17 @@
     "topaz_ring": {
         "code": "topaz_ring",
         "level": 30,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_earth",
+                "value": 17
+            },
+            {
+                "name": "dmg_air",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 30,
@@ -2872,6 +4662,25 @@
     "gold_ring": {
         "code": "gold_ring",
         "level": 30,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_earth",
+                "value": 7
+            },
+            {
+                "name": "dmg_air",
+                "value": 7
+            },
+            {
+                "name": "dmg_water",
+                "value": 7
+            },
+            {
+                "name": "dmg_fire",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 30,
@@ -2902,6 +4711,17 @@
     "gold_fishing_rod": {
         "code": "gold_fishing_rod",
         "level": 30,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_water",
+                "value": 5
+            },
+            {
+                "name": "fishing",
+                "value": -20
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 30,
@@ -2931,11 +4751,24 @@
     },
     "demon_horn": {
         "code": "demon_horn",
-        "level": 30
+        "level": 30,
+        "type": "resource",
+        "effects": []
     },
     "gold_axe": {
         "code": "gold_axe",
         "level": 30,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 5
+            },
+            {
+                "name": "woodcutting",
+                "value": -20
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 30,
@@ -2966,6 +4799,21 @@
     "gold_helm": {
         "code": "gold_helm",
         "level": 30,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 160
+            },
+            {
+                "name": "dmg_water",
+                "value": 20
+            },
+            {
+                "name": "dmg_earth",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 30,
@@ -2996,6 +4844,17 @@
     "sapphire_ring": {
         "code": "sapphire_ring",
         "level": 30,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_water",
+                "value": 17
+            },
+            {
+                "name": "dmg_fire",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 30,
@@ -3026,6 +4885,17 @@
     "emerald_ring": {
         "code": "emerald_ring",
         "level": 30,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_air",
+                "value": 17
+            },
+            {
+                "name": "dmg_earth",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 30,
@@ -3056,6 +4926,17 @@
     "gold_pickaxe": {
         "code": "gold_pickaxe",
         "level": 30,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 5
+            },
+            {
+                "name": "mining",
+                "value": -20
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 30,
@@ -3086,6 +4967,33 @@
     "lizard_boots": {
         "code": "lizard_boots",
         "level": 30,
+        "type": "boots",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 110
+            },
+            {
+                "name": "dmg_water",
+                "value": 5
+            },
+            {
+                "name": "dmg_earth",
+                "value": 5
+            },
+            {
+                "name": "res_air",
+                "value": 8
+            },
+            {
+                "name": "res_fire",
+                "value": 8
+            },
+            {
+                "name": "haste",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 30,
@@ -3116,6 +5024,33 @@
     "gold_boots": {
         "code": "gold_boots",
         "level": 30,
+        "type": "boots",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 110
+            },
+            {
+                "name": "dmg_fire",
+                "value": 5
+            },
+            {
+                "name": "dmg_air",
+                "value": 5
+            },
+            {
+                "name": "res_earth",
+                "value": 8
+            },
+            {
+                "name": "res_air",
+                "value": 8
+            },
+            {
+                "name": "haste",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 30,
@@ -3146,6 +5081,21 @@
     "greater_dreadful_amulet": {
         "code": "greater_dreadful_amulet",
         "level": 30,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 90
+            },
+            {
+                "name": "dmg_earth",
+                "value": 15
+            },
+            {
+                "name": "dmg_water",
+                "value": 15
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 30,
@@ -3175,11 +5125,15 @@
     },
     "piece_of_obsidian": {
         "code": "piece_of_obsidian",
-        "level": 30
+        "level": 30,
+        "type": "resource",
+        "effects": []
     },
     "obsidian": {
         "code": "obsidian",
         "level": 30,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "mining",
             "level": 30,
@@ -3194,6 +5148,8 @@
     "sap": {
         "code": "sap",
         "level": 30,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "woodcutting",
             "level": 30,
@@ -3216,6 +5172,37 @@
     "obsidian_legs_armor": {
         "code": "obsidian_legs_armor",
         "level": 30,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 170
+            },
+            {
+                "name": "haste",
+                "value": 3
+            },
+            {
+                "name": "dmg_water",
+                "value": 18
+            },
+            {
+                "name": "dmg_earth",
+                "value": 18
+            },
+            {
+                "name": "res_water",
+                "value": 5
+            },
+            {
+                "name": "res_fire",
+                "value": 5
+            },
+            {
+                "name": "inventory_space",
+                "value": -25
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 30,
@@ -3246,6 +5233,25 @@
     "obsidian_helmet": {
         "code": "obsidian_helmet",
         "level": 30,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 170
+            },
+            {
+                "name": "dmg_fire",
+                "value": 22
+            },
+            {
+                "name": "dmg_water",
+                "value": 22
+            },
+            {
+                "name": "inventory_space",
+                "value": -25
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 30,
@@ -3276,6 +5282,33 @@
     "obsidian_armor": {
         "code": "obsidian_armor",
         "level": 30,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 180
+            },
+            {
+                "name": "dmg_earth",
+                "value": 22
+            },
+            {
+                "name": "dmg_air",
+                "value": 22
+            },
+            {
+                "name": "res_fire",
+                "value": 5
+            },
+            {
+                "name": "res_water",
+                "value": 5
+            },
+            {
+                "name": "inventory_space",
+                "value": -25
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 30,
@@ -3306,6 +5339,13 @@
     "health_potion": {
         "code": "health_potion",
         "level": 30,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "restore",
+                "value": 60
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 30,
@@ -3328,6 +5368,17 @@
     "golden_gloves": {
         "code": "golden_gloves",
         "level": 30,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 5
+            },
+            {
+                "name": "alchemy",
+                "value": -20
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 30,
@@ -3358,6 +5409,21 @@
     "lost_amulet": {
         "code": "lost_amulet",
         "level": 30,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 90
+            },
+            {
+                "name": "dmg_fire",
+                "value": 15
+            },
+            {
+                "name": "dmg_air",
+                "value": 15
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 30,
@@ -3388,6 +5454,33 @@
     "royal_skeleton_pants": {
         "code": "royal_skeleton_pants",
         "level": 30,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 150
+            },
+            {
+                "name": "haste",
+                "value": 5
+            },
+            {
+                "name": "dmg_fire",
+                "value": 17
+            },
+            {
+                "name": "dmg_air",
+                "value": 17
+            },
+            {
+                "name": "res_earth",
+                "value": 7
+            },
+            {
+                "name": "res_water",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 30,
@@ -3414,6 +5507,29 @@
     "royal_skeleton_armor": {
         "code": "royal_skeleton_armor",
         "level": 30,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 150
+            },
+            {
+                "name": "dmg_fire",
+                "value": 20
+            },
+            {
+                "name": "dmg_air",
+                "value": 20
+            },
+            {
+                "name": "res_air",
+                "value": 6
+            },
+            {
+                "name": "res_fire",
+                "value": 6
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 30,
@@ -3440,6 +5556,21 @@
     "royal_skeleton_helmet": {
         "code": "royal_skeleton_helmet",
         "level": 30,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 160
+            },
+            {
+                "name": "dmg_fire",
+                "value": 20
+            },
+            {
+                "name": "dmg_air",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 30,
@@ -3466,6 +5597,17 @@
     "elderwood_staff": {
         "code": "elderwood_staff",
         "level": 30,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_water",
+                "value": 40
+            },
+            {
+                "name": "attack_fire",
+                "value": 40
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 30,
@@ -3496,6 +5638,17 @@
     "obsidian_battleaxe": {
         "code": "obsidian_battleaxe",
         "level": 30,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 80
+            },
+            {
+                "name": "inventory_space",
+                "value": -25
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 30,
@@ -3525,23 +5678,33 @@
     },
     "cursed_book": {
         "code": "cursed_book",
-        "level": 33
+        "level": 33,
+        "type": "resource",
+        "effects": []
     },
     "magic_stone": {
         "code": "magic_stone",
-        "level": 33
+        "level": 33,
+        "type": "resource",
+        "effects": []
     },
     "malefic_cloth": {
         "code": "malefic_cloth",
-        "level": 35
+        "level": 35,
+        "type": "resource",
+        "effects": []
     },
     "strange_ore": {
         "code": "strange_ore",
-        "level": 35
+        "level": 35,
+        "type": "resource",
+        "effects": []
     },
     "diamond": {
         "code": "diamond",
         "level": 35,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "mining",
             "level": 35,
@@ -3555,11 +5718,15 @@
     },
     "magic_wood": {
         "code": "magic_wood",
-        "level": 35
+        "level": 35,
+        "type": "resource",
+        "effects": []
     },
     "strangold": {
         "code": "strangold",
         "level": 35,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "mining",
             "level": 35,
@@ -3578,6 +5745,8 @@
     "magical_plank": {
         "code": "magical_plank",
         "level": 35,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "woodcutting",
             "level": 35,
@@ -3596,6 +5765,17 @@
     "cursed_hat": {
         "code": "cursed_hat",
         "level": 35,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 170
+            },
+            {
+                "name": "dmg_fire",
+                "value": 35
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 35,
@@ -3630,6 +5810,21 @@
     "strangold_helmet": {
         "code": "strangold_helmet",
         "level": 35,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 170
+            },
+            {
+                "name": "dmg_air",
+                "value": 22
+            },
+            {
+                "name": "dmg_water",
+                "value": 22
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 35,
@@ -3664,6 +5859,33 @@
     "strangold_legs_armor": {
         "code": "strangold_legs_armor",
         "level": 35,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 150
+            },
+            {
+                "name": "haste",
+                "value": 5
+            },
+            {
+                "name": "dmg_air",
+                "value": 18
+            },
+            {
+                "name": "dmg_water",
+                "value": 20
+            },
+            {
+                "name": "res_water",
+                "value": 7
+            },
+            {
+                "name": "res_air",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 35,
@@ -3694,6 +5916,29 @@
     "strangold_armor": {
         "code": "strangold_armor",
         "level": 35,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 150
+            },
+            {
+                "name": "dmg_air",
+                "value": 24
+            },
+            {
+                "name": "dmg_water",
+                "value": 18
+            },
+            {
+                "name": "res_water",
+                "value": 6
+            },
+            {
+                "name": "res_fire",
+                "value": 6
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 35,
@@ -3724,6 +5969,21 @@
     "malefic_armor": {
         "code": "malefic_armor",
         "level": 35,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 170
+            },
+            {
+                "name": "dmg_fire",
+                "value": 30
+            },
+            {
+                "name": "res_fire",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 35,
@@ -3754,6 +6014,17 @@
     "magic_bow": {
         "code": "magic_bow",
         "level": 35,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_air",
+                "value": 65
+            },
+            {
+                "name": "attack_water",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 35,
@@ -3788,6 +6059,13 @@
     "cursed_sceptre": {
         "code": "cursed_sceptre",
         "level": 35,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_fire",
+                "value": 82
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 35,
@@ -3822,6 +6100,21 @@
     "diamond_amulet": {
         "code": "diamond_amulet",
         "level": 35,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 100
+            },
+            {
+                "name": "dmg_water",
+                "value": 20
+            },
+            {
+                "name": "dmg_earth",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 35,
@@ -3852,6 +6145,21 @@
     "magic_stone_amulet": {
         "code": "magic_stone_amulet",
         "level": 35,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 100
+            },
+            {
+                "name": "dmg_fire",
+                "value": 20
+            },
+            {
+                "name": "dmg_air",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 35,
@@ -3882,6 +6190,8 @@
     "magic_sap": {
         "code": "magic_sap",
         "level": 35,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "woodcutting",
             "level": 35,
@@ -3896,6 +6206,17 @@
     "strangold_sword": {
         "code": "strangold_sword",
         "level": 35,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_fire",
+                "value": 45
+            },
+            {
+                "name": "attack_air",
+                "value": 40
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 35,
@@ -3926,6 +6247,29 @@
     "ancient_jean": {
         "code": "ancient_jean",
         "level": 35,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 150
+            },
+            {
+                "name": "haste",
+                "value": 5
+            },
+            {
+                "name": "dmg_earth",
+                "value": 25
+            },
+            {
+                "name": "res_earth",
+                "value": 10
+            },
+            {
+                "name": "res_fire",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 35,
@@ -3956,6 +6300,13 @@
     "greater_health_potion": {
         "code": "greater_health_potion",
         "level": 35,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "restore",
+                "value": 80
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 35,
@@ -3977,15 +6328,34 @@
     },
     "diamond_stone": {
         "code": "diamond_stone",
-        "level": 35
+        "level": 35,
+        "type": "resource",
+        "effects": []
     },
     "goblin_tooth": {
         "code": "goblin_tooth",
-        "level": 35
+        "level": 35,
+        "type": "resource",
+        "effects": []
     },
     "masterful_necklace": {
         "code": "masterful_necklace",
         "level": 35,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 100
+            },
+            {
+                "name": "dmg_earth",
+                "value": 20
+            },
+            {
+                "name": "dmg_fire",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 35,
@@ -4016,6 +6386,21 @@
     "ancestral_talisman": {
         "code": "ancestral_talisman",
         "level": 35,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 100
+            },
+            {
+                "name": "dmg_air",
+                "value": 20
+            },
+            {
+                "name": "dmg_water",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 35,
@@ -4046,6 +6431,21 @@
     "dreadful_armor": {
         "code": "dreadful_armor",
         "level": 35,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 170
+            },
+            {
+                "name": "dmg_water",
+                "value": 30
+            },
+            {
+                "name": "res_water",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 35,
@@ -4076,6 +6476,25 @@
     "dreadful_shield": {
         "code": "dreadful_shield",
         "level": 35,
+        "type": "shield",
+        "effects": [
+            {
+                "name": "res_water",
+                "value": 15
+            },
+            {
+                "name": "res_earth",
+                "value": 15
+            },
+            {
+                "name": "res_fire",
+                "value": -10
+            },
+            {
+                "name": "res_air",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 35,
@@ -4106,6 +6525,17 @@
     "dreadful_battleaxe": {
         "code": "dreadful_battleaxe",
         "level": 35,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_water",
+                "value": 65
+            },
+            {
+                "name": "attack_earth",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 35,
@@ -4135,23 +6565,55 @@
     },
     "goblin_eye": {
         "code": "goblin_eye",
-        "level": 35
+        "level": 35,
+        "type": "resource",
+        "effects": []
     },
     "malefic_crystal": {
         "code": "malefic_crystal",
-        "level": 35
+        "level": 35,
+        "type": "artifact",
+        "effects": [
+            {
+                "name": "dmg_earth",
+                "value": 8
+            },
+            {
+                "name": "dmg_water",
+                "value": 8
+            },
+            {
+                "name": "dmg_air",
+                "value": 8
+            },
+            {
+                "name": "dmg_fire",
+                "value": 8
+            }
+        ]
     },
     "bat_wing": {
         "code": "bat_wing",
-        "level": 38
+        "level": 38,
+        "type": "resource",
+        "effects": []
     },
     "orc_skin": {
         "code": "orc_skin",
-        "level": 38
+        "level": 38,
+        "type": "resource",
+        "effects": []
     },
     "fish_soup": {
         "code": "fish_soup",
         "level": 40,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 350
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 40,
@@ -4173,11 +6635,33 @@
     },
     "sanguine_edge_of_rosen": {
         "code": "sanguine_edge_of_rosen",
-        "level": 40
+        "level": 40,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 75
+            },
+            {
+                "name": "attack_fire",
+                "value": 25
+            }
+        ]
     },
     "fire_shield": {
         "code": "fire_shield",
         "level": 40,
+        "type": "shield",
+        "effects": [
+            {
+                "name": "res_fire",
+                "value": 20
+            },
+            {
+                "name": "res_air",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -4208,6 +6692,17 @@
     "water_shield": {
         "code": "water_shield",
         "level": 40,
+        "type": "shield",
+        "effects": [
+            {
+                "name": "res_water",
+                "value": 20
+            },
+            {
+                "name": "res_earth",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -4238,6 +6733,17 @@
     "air_shield": {
         "code": "air_shield",
         "level": 40,
+        "type": "shield",
+        "effects": [
+            {
+                "name": "res_air",
+                "value": 20
+            },
+            {
+                "name": "res_fire",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -4268,6 +6774,17 @@
     "earth_shield": {
         "code": "earth_shield",
         "level": 40,
+        "type": "shield",
+        "effects": [
+            {
+                "name": "res_earth",
+                "value": 20
+            },
+            {
+                "name": "res_water",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -4297,11 +6814,49 @@
     },
     "rosenblood_elixir": {
         "code": "rosenblood_elixir",
-        "level": 40
+        "level": 40,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "boost_res_water",
+                "value": 20
+            },
+            {
+                "name": "boost_res_fire",
+                "value": 20
+            },
+            {
+                "name": "boost_res_air",
+                "value": 20
+            },
+            {
+                "name": "boost_res_earth",
+                "value": 20
+            }
+        ]
     },
     "batwing_helmet": {
         "code": "batwing_helmet",
         "level": 40,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 200
+            },
+            {
+                "name": "dmg_earth",
+                "value": 40
+            },
+            {
+                "name": "res_fire",
+                "value": -10
+            },
+            {
+                "name": "res_earth",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -4335,11 +6890,20 @@
     },
     "salmon": {
         "code": "salmon",
-        "level": 40
+        "level": 40,
+        "type": "resource",
+        "effects": []
     },
     "cooked_salmon": {
         "code": "cooked_salmon",
         "level": 40,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 200
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 40,
@@ -4354,6 +6918,13 @@
     "health_boost_potion": {
         "code": "health_boost_potion",
         "level": 40,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "boost_hp",
+                "value": 150
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 40,
@@ -4375,11 +6946,32 @@
     },
     "wolfrider_hair": {
         "code": "wolfrider_hair",
-        "level": 40
+        "level": 40,
+        "type": "resource",
+        "effects": []
     },
     "hork_helmet": {
         "code": "hork_helmet",
         "level": 40,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 200
+            },
+            {
+                "name": "dmg_water",
+                "value": 40
+            },
+            {
+                "name": "res_water",
+                "value": -10
+            },
+            {
+                "name": "res_air",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -4409,15 +7001,21 @@
     },
     "glowstem_leaf": {
         "code": "glowstem_leaf",
-        "level": 40
+        "level": 40,
+        "type": "resource",
+        "effects": []
     },
     "mithril_ore": {
         "code": "mithril_ore",
-        "level": 40
+        "level": 40,
+        "type": "resource",
+        "effects": []
     },
     "mithril": {
         "code": "mithril",
         "level": 40,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "mining",
             "level": 40,
@@ -4432,6 +7030,8 @@
     "maple_plank": {
         "code": "maple_plank",
         "level": 40,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "woodcutting",
             "level": 40,
@@ -4445,11 +7045,20 @@
     },
     "maple_wood": {
         "code": "maple_wood",
-        "level": 40
+        "level": 40,
+        "type": "resource",
+        "effects": []
     },
     "enchanted_health_potion": {
         "code": "enchanted_health_potion",
         "level": 40,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "restore",
+                "value": 100
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 40,
@@ -4472,6 +7081,25 @@
     "enchanted_boost_potion": {
         "code": "enchanted_boost_potion",
         "level": 40,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "boost_dmg_water",
+                "value": 20
+            },
+            {
+                "name": "boost_dmg_fire",
+                "value": 20
+            },
+            {
+                "name": "boost_dmg_earth",
+                "value": 20
+            },
+            {
+                "name": "boost_dmg_air",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 40,
@@ -4493,23 +7121,38 @@
     },
     "hellhound_bone": {
         "code": "hellhound_bone",
-        "level": 40
+        "level": 40,
+        "type": "resource",
+        "effects": []
     },
     "broken_sword": {
         "code": "broken_sword",
-        "level": 40
+        "level": 40,
+        "type": "resource",
+        "effects": []
     },
     "hellhound_hair": {
         "code": "hellhound_hair",
-        "level": 40
+        "level": 40,
+        "type": "resource",
+        "effects": []
     },
     "raw_hellhound_meat": {
         "code": "raw_hellhound_meat",
-        "level": 40
+        "level": 40,
+        "type": "resource",
+        "effects": []
     },
     "cooked_hellhound_meat": {
         "code": "cooked_hellhound_meat",
         "level": 40,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 300
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 40,
@@ -4524,6 +7167,17 @@
     "greater_emerald_amulet": {
         "code": "greater_emerald_amulet",
         "level": 40,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 130
+            },
+            {
+                "name": "dmg_air",
+                "value": 30
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 40,
@@ -4554,6 +7208,17 @@
     "greater_sapphire_amulet": {
         "code": "greater_sapphire_amulet",
         "level": 40,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 130
+            },
+            {
+                "name": "dmg_water",
+                "value": 30
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 40,
@@ -4584,6 +7249,17 @@
     "greater_topaz_amulet": {
         "code": "greater_topaz_amulet",
         "level": 40,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 130
+            },
+            {
+                "name": "dmg_earth",
+                "value": 30
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 40,
@@ -4614,6 +7290,17 @@
     "greater_ruby_amulet": {
         "code": "greater_ruby_amulet",
         "level": 40,
+        "type": "amulet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 130
+            },
+            {
+                "name": "dmg_fire",
+                "value": 30
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 40,
@@ -4644,6 +7331,17 @@
     "mithril_sword": {
         "code": "mithril_sword",
         "level": 40,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_water",
+                "value": 70
+            },
+            {
+                "name": "attack_fire",
+                "value": 30
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 40,
@@ -4678,6 +7376,29 @@
     "mithril_platebody": {
         "code": "mithril_platebody",
         "level": 40,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 180
+            },
+            {
+                "name": "dmg_fire",
+                "value": 28
+            },
+            {
+                "name": "dmg_water",
+                "value": 22
+            },
+            {
+                "name": "res_fire",
+                "value": 7
+            },
+            {
+                "name": "res_earth",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -4708,6 +7429,21 @@
     "mithril_helm": {
         "code": "mithril_helm",
         "level": 40,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 200
+            },
+            {
+                "name": "dmg_water",
+                "value": 30
+            },
+            {
+                "name": "dmg_fire",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -4738,6 +7474,33 @@
     "mithril_platelegs": {
         "code": "mithril_platelegs",
         "level": 40,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 180
+            },
+            {
+                "name": "haste",
+                "value": 6
+            },
+            {
+                "name": "dmg_water",
+                "value": 24
+            },
+            {
+                "name": "dmg_fire",
+                "value": 20
+            },
+            {
+                "name": "res_air",
+                "value": 7
+            },
+            {
+                "name": "res_water",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -4768,6 +7531,13 @@
     "bow_from_hell": {
         "code": "bow_from_hell",
         "level": 40,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_air",
+                "value": 115
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 40,
@@ -4798,6 +7568,13 @@
     "hell_staff": {
         "code": "hell_staff",
         "level": 40,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_water",
+                "value": 115
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 40,
@@ -4828,6 +7605,17 @@
     "lightning_sword": {
         "code": "lightning_sword",
         "level": 40,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_air",
+                "value": 70
+            },
+            {
+                "name": "attack_earth",
+                "value": 30
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 40,
@@ -4857,23 +7645,58 @@
     },
     "ruby_book": {
         "code": "ruby_book",
-        "level": 40
+        "level": 40,
+        "type": "artifact",
+        "effects": [
+            {
+                "name": "dmg_fire",
+                "value": 20
+            }
+        ]
     },
     "emerald_book": {
         "code": "emerald_book",
-        "level": 40
+        "level": 40,
+        "type": "artifact",
+        "effects": [
+            {
+                "name": "dmg_air",
+                "value": 20
+            }
+        ]
     },
     "sapphire_book": {
         "code": "sapphire_book",
-        "level": 40
+        "level": 40,
+        "type": "artifact",
+        "effects": [
+            {
+                "name": "dmg_water",
+                "value": 20
+            }
+        ]
     },
     "topaz_book": {
         "code": "topaz_book",
-        "level": 40
+        "level": 40,
+        "type": "artifact",
+        "effects": [
+            {
+                "name": "dmg_earth",
+                "value": 20
+            }
+        ]
     },
     "demoniac_dagger": {
         "code": "demoniac_dagger",
         "level": 40,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_fire",
+                "value": 115
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 40,
@@ -4904,6 +7727,17 @@
     "bloodblade": {
         "code": "bloodblade",
         "level": 40,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_fire",
+                "value": 70
+            },
+            {
+                "name": "attack_air",
+                "value": 30
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 40,
@@ -4934,6 +7768,17 @@
     "wrathsword": {
         "code": "wrathsword",
         "level": 40,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 70
+            },
+            {
+                "name": "attack_water",
+                "value": 30
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 40,
@@ -4964,6 +7809,17 @@
     "celest_ring": {
         "code": "celest_ring",
         "level": 40,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_fire",
+                "value": 20
+            },
+            {
+                "name": "dmg_water",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 40,
@@ -4998,6 +7854,17 @@
     "sacred_ring": {
         "code": "sacred_ring",
         "level": 40,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_fire",
+                "value": 20
+            },
+            {
+                "name": "dmg_air",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 40,
@@ -5032,6 +7899,17 @@
     "divinity_ring": {
         "code": "divinity_ring",
         "level": 40,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_earth",
+                "value": 20
+            },
+            {
+                "name": "dmg_water",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 40,
@@ -5066,6 +7944,17 @@
     "eternity_ring": {
         "code": "eternity_ring",
         "level": 40,
+        "type": "ring",
+        "effects": [
+            {
+                "name": "dmg_air",
+                "value": 20
+            },
+            {
+                "name": "dmg_earth",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "jewelrycrafting",
             "level": 40,
@@ -5100,6 +7989,29 @@
     "cultist_cloak": {
         "code": "cultist_cloak",
         "level": 40,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 180
+            },
+            {
+                "name": "dmg_air",
+                "value": 28
+            },
+            {
+                "name": "dmg_fire",
+                "value": 20
+            },
+            {
+                "name": "res_air",
+                "value": 7
+            },
+            {
+                "name": "res_water",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5130,6 +8042,29 @@
     "wratharmor": {
         "code": "wratharmor",
         "level": 40,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 180
+            },
+            {
+                "name": "dmg_water",
+                "value": 28
+            },
+            {
+                "name": "dmg_earth",
+                "value": 20
+            },
+            {
+                "name": "res_water",
+                "value": 7
+            },
+            {
+                "name": "res_air",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5160,6 +8095,37 @@
     "hell_armor": {
         "code": "hell_armor",
         "level": 40,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 250
+            },
+            {
+                "name": "dmg_fire",
+                "value": 30
+            },
+            {
+                "name": "dmg_earth",
+                "value": 30
+            },
+            {
+                "name": "res_water",
+                "value": -10
+            },
+            {
+                "name": "res_fire",
+                "value": -10
+            },
+            {
+                "name": "res_air",
+                "value": -10
+            },
+            {
+                "name": "res_earth",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5190,6 +8156,29 @@
     "white_knight_armor": {
         "code": "white_knight_armor",
         "level": 40,
+        "type": "body_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 180
+            },
+            {
+                "name": "dmg_earth",
+                "value": 28
+            },
+            {
+                "name": "dmg_air",
+                "value": 20
+            },
+            {
+                "name": "res_earth",
+                "value": 7
+            },
+            {
+                "name": "res_fire",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5220,6 +8209,33 @@
     "cultist_pants": {
         "code": "cultist_pants",
         "level": 40,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 180
+            },
+            {
+                "name": "haste",
+                "value": 6
+            },
+            {
+                "name": "dmg_fire",
+                "value": 24
+            },
+            {
+                "name": "dmg_air",
+                "value": 20
+            },
+            {
+                "name": "res_fire",
+                "value": 7
+            },
+            {
+                "name": "res_water",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5250,6 +8266,33 @@
     "wrathpants": {
         "code": "wrathpants",
         "level": 40,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 180
+            },
+            {
+                "name": "haste",
+                "value": 6
+            },
+            {
+                "name": "dmg_earth",
+                "value": 24
+            },
+            {
+                "name": "dmg_water",
+                "value": 20
+            },
+            {
+                "name": "res_fire",
+                "value": 7
+            },
+            {
+                "name": "res_earth",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5280,6 +8323,41 @@
     "hell_legs_armor": {
         "code": "hell_legs_armor",
         "level": 40,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 240
+            },
+            {
+                "name": "haste",
+                "value": 7
+            },
+            {
+                "name": "dmg_air",
+                "value": 30
+            },
+            {
+                "name": "dmg_water",
+                "value": 26
+            },
+            {
+                "name": "res_fire",
+                "value": -10
+            },
+            {
+                "name": "res_air",
+                "value": -10
+            },
+            {
+                "name": "res_earth",
+                "value": -10
+            },
+            {
+                "name": "res_water",
+                "value": -10
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5310,6 +8388,33 @@
     "white_knight_pants": {
         "code": "white_knight_pants",
         "level": 40,
+        "type": "leg_armor",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 180
+            },
+            {
+                "name": "haste",
+                "value": 6
+            },
+            {
+                "name": "dmg_air",
+                "value": 24
+            },
+            {
+                "name": "dmg_earth",
+                "value": 20
+            },
+            {
+                "name": "res_air",
+                "value": 7
+            },
+            {
+                "name": "res_fire",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5340,6 +8445,21 @@
     "cultist_hat": {
         "code": "cultist_hat",
         "level": 40,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 200
+            },
+            {
+                "name": "dmg_fire",
+                "value": 30
+            },
+            {
+                "name": "dmg_air",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5370,6 +8490,21 @@
     "wrathelmet": {
         "code": "wrathelmet",
         "level": 40,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 200
+            },
+            {
+                "name": "dmg_earth",
+                "value": 30
+            },
+            {
+                "name": "dmg_water",
+                "value": 15
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5400,6 +8535,21 @@
     "white_knight_helmet": {
         "code": "white_knight_helmet",
         "level": 40,
+        "type": "helmet",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 200
+            },
+            {
+                "name": "dmg_air",
+                "value": 30
+            },
+            {
+                "name": "dmg_earth",
+                "value": 20
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5430,6 +8580,33 @@
     "cultist_boots": {
         "code": "cultist_boots",
         "level": 40,
+        "type": "boots",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 160
+            },
+            {
+                "name": "dmg_fire",
+                "value": 8
+            },
+            {
+                "name": "dmg_earth",
+                "value": 8
+            },
+            {
+                "name": "res_air",
+                "value": 8
+            },
+            {
+                "name": "res_water",
+                "value": 8
+            },
+            {
+                "name": "haste",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5460,6 +8637,33 @@
     "mithril_boots": {
         "code": "mithril_boots",
         "level": 40,
+        "type": "boots",
+        "effects": [
+            {
+                "name": "hp",
+                "value": 160
+            },
+            {
+                "name": "dmg_air",
+                "value": 8
+            },
+            {
+                "name": "dmg_water",
+                "value": 8
+            },
+            {
+                "name": "res_fire",
+                "value": 8
+            },
+            {
+                "name": "res_earth",
+                "value": 8
+            },
+            {
+                "name": "haste",
+                "value": 7
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5490,6 +8694,17 @@
     "mithril_shield": {
         "code": "mithril_shield",
         "level": 40,
+        "type": "shield",
+        "effects": [
+            {
+                "name": "res_fire",
+                "value": 15
+            },
+            {
+                "name": "res_air",
+                "value": 15
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5520,6 +8735,17 @@
     "white_knight_shield": {
         "code": "white_knight_shield",
         "level": 40,
+        "type": "shield",
+        "effects": [
+            {
+                "name": "res_earth",
+                "value": 15
+            },
+            {
+                "name": "res_air",
+                "value": 15
+            }
+        ],
         "recipe": {
             "skill": "gearcrafting",
             "level": 40,
@@ -5550,6 +8776,13 @@
     "blade_of_hell": {
         "code": "blade_of_hell",
         "level": 40,
+        "type": "weapon",
+        "effects": [
+            {
+                "name": "attack_earth",
+                "value": 115
+            }
+        ],
         "recipe": {
             "skill": "weaponcrafting",
             "level": 40,
@@ -5579,15 +8812,21 @@
     },
     "book_from_hell": {
         "code": "book_from_hell",
-        "level": 40
+        "level": 40,
+        "type": "resource",
+        "effects": []
     },
     "efreet_cloth": {
         "code": "efreet_cloth",
-        "level": 40
+        "level": 40,
+        "type": "resource",
+        "effects": []
     },
     "maple_sap": {
         "code": "maple_sap",
         "level": 40,
+        "type": "resource",
+        "effects": [],
         "recipe": {
             "skill": "woodcutting",
             "level": 40,
@@ -5602,6 +8841,13 @@
     "maple_syrup": {
         "code": "maple_syrup",
         "level": 40,
+        "type": "consumable",
+        "effects": [
+            {
+                "name": "heal",
+                "value": 275
+            }
+        ],
         "recipe": {
             "skill": "cooking",
             "level": 40,
@@ -5616,6 +8862,13 @@
     "earth_res_potion": {
         "code": "earth_res_potion",
         "level": 40,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "boost_res_earth",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 40,
@@ -5638,6 +8891,13 @@
     "fire_res_potion": {
         "code": "fire_res_potion",
         "level": 40,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "boost_res_fire",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 40,
@@ -5660,6 +8920,13 @@
     "water_res_potion": {
         "code": "water_res_potion",
         "level": 40,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "boost_res_water",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 40,
@@ -5682,6 +8949,13 @@
     "air_res_potion": {
         "code": "air_res_potion",
         "level": 40,
+        "type": "utility",
+        "effects": [
+            {
+                "name": "boost_res_air",
+                "value": 10
+            }
+        ],
         "recipe": {
             "skill": "alchemy",
             "level": 40,

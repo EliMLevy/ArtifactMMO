@@ -99,7 +99,6 @@ def combine_maps_and_resources():
     resource_df.to_csv("./resources.csv", index=False)
     print(skipped)
 
-combine_maps_and_resources()
 
 def combine_items():
     all_items = {}
@@ -111,12 +110,14 @@ def combine_items():
             all_items[item["code"]] = {
                 "code": item["code"],
                 "level": item["level"],
+                "type": item["type"],
+                "effects": item["effects"],
             }
             if item["craft"] != None:
                 all_items[item["code"]]["recipe"] = {
                     "skill": item["craft"]["skill"],
                     "level": item["craft"]["level"],
-                    "items": item["craft"]["items"]
+                    "items": item["craft"]["items"],
                 }
 
     output_file = open("./items/all_items.json", "w+")
@@ -175,3 +176,6 @@ def convert_json_to_csv(input_file, output_file):
     df.to_csv(output_file, index=False)
 
 # convert_json_to_csv("./maps/all_maps.json", "all_maps.csv")
+
+if __name__ == "__main__":
+    combine_items()

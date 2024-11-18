@@ -22,3 +22,16 @@ paste queue
 - Make frontend responsive (very easy)
 - Combine move and action items. (Deposit all checks if we are on bank otherwise move there. Craft iron checks if we are in forge otherwise...)
 =============TODO============
+- improve plan generator to optimize plan
+- improve armor upgrading
+- improve armor crafting
+
+
+
+===============================
+- Craft iron_legs_armor
+- slime_shield
+- adventurer_boots
+- adventurer_helmet
+- multislimes_sword
+- iron_ring

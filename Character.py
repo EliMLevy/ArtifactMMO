@@ -1,7 +1,7 @@
 import time
 from datetime import datetime
 from dataclasses import dataclass, field
-from actions import accept_new_task, attack, complete_task, craft, get_character, move, recycle, rest
+from actions import accept_new_task, attack, complete_task, craft, equip, get_character, move, recycle, rest, unequip
 from data_classes import InventoryItem
 import encyclopedia as ency
 from util import handle_result_cooldown
@@ -13,6 +13,8 @@ class Character:
     def __init__(self, name):
         print(f"Character {name} created!")
         self.name = name
+        self.current_action = "collecting"
+        self.current_subaction = "woodcutting"
 
     def load_data(self):
         result = get_character(self.name)
@@ -114,6 +116,16 @@ class Character:
         self.alchemy_xp = data["alchemy_xp"]
         self.alchemy_max_xp = data["alchemy_max_xp"]
 
+
+    def run_agent(self):
+        while True:
+            if self.current_action == "idle":
+                time.sleep(3)
+                continue
+            elif self.current_action == "collecting":
+                self.complete_resource_collect(self.current_subaction)
+
+
     def execute_plan(self, plan):
         from enhanced_actions import withdraw_from_bank, deposit_all_items
         for item in plan:
@@ -140,20 +152,19 @@ class Character:
                 result = recycle(self.name, item["code"], item["quantity"])
                 handle_result_cooldown(result)
     
-    def complete_resource_collect_loop(self):
+    def complete_resource_collect(self, skill):
         from enhanced_actions import collect_highest_unlocked_resource, deposit_all_items
-        while True:
-            self.load_data()
-            if self.cooldown > 0 and datetime.now() < self.cooldown_expiration:
-                time.sleep(self.cooldown)
+        self.load_data()
+        if self.cooldown > 0 and datetime.now() < self.cooldown_expiration:
+            time.sleep(self.cooldown)
 
-            if self.needs_to_deposit():
-                print(f"[{self.name}] needs to deposit")
-                deposit_all_items(self)
-                continue
-            
-            print(f"[{self.name}] Collecting")
-            collect_highest_unlocked_resource(self, "woodcutting")
+        if self.needs_to_deposit():
+            print(f"[{self.name}] needs to deposit")
+            deposit_all_items(self)
+
+        
+        print(f"[{self.name}] Collecting {skill}")
+        collect_highest_unlocked_resource(self, skill)
             
 
     def complete_monster_tasks_loop(self):
@@ -214,3 +225,19 @@ class Character:
     def needs_to_deposit(self):
         items = sum(item.quantity for item in self.inventory)
         return items / self.inventory_max_items >= LOW_INVENTORY_SPACE_THRESHOLD
+
+    def equip_new_gear(self, slot, new_gear_code):
+        from enhanced_actions import deposit_all_items, withdraw_from_bank
+
+        # Unequip old slot
+        result = unequip(self.name, slot)
+        handle_result_cooldown(result)
+        # deposit the gear
+        deposit_all_items(self)
+
+        # withdraw the new gear
+        withdraw_from_bank(self, new_gear_code, 1)
+
+        # equip new gear
+        result = equip(self.name, new_gear_code, slot)
+        handle_result_cooldown(result)
