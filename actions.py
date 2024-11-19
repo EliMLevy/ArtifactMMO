@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import time
 from typing import Any
@@ -39,25 +40,32 @@ def equip(character: str, code: str, slot: str) -> Any:
 def get_character(name: str) -> Any:
     return send_request_to_url(f"https://api.artifactsmmo.com/characters/{name}", "", "GET", None)
 
+
+last_fetched_bank_items = None
+bank_item_fetch_refresh = 30 # seconds
+cached_bank_items = None
 def get_bank_items():
-    print("Getting bank items")
-    page = 1
-    all_results = []
-    done = False
+    global cached_bank_items, last_fetched_bank_items, bank_item_fetch_refresh
+    if cached_bank_items is None or last_fetched_bank_items is None or (datetime.now() - last_fetched_bank_items).seconds > bank_item_fetch_refresh:
+        print("Getting bank items")
+        page = 1
+        all_results = []
+        done = False
 
-    while not done:
-        result = send_request_to_url(f"https://api.artifactsmmo.com/my/bank/items?page={page}", "", "GET", None)
-        print(len(result["data"]))
-        all_results.extend(result["data"])
+        while not done:
+            result = send_request_to_url(f"https://api.artifactsmmo.com/my/bank/items?page={page}", "", "GET", None)
+            print(len(result["data"]))
+            all_results.extend(result["data"])
 
-        print(result["pages"], page)
-        if result["pages"] > page:
-            page += 1
-        else:
-            break
-        time.sleep(1)
-
-    return result["data"]
+            if result["pages"] > page:
+                page += 1
+            else:
+                break
+            time.sleep(1)
+        cached_bank_items = all_results
+        last_fetched_bank_items = datetime.now()
+        return all_results
+    return cached_bank_items
 
 def deposit_item(character: str, item: InventoryItem) -> Any:
     body = {"code": item.code, "quantity": item.quantity}

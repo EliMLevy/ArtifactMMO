@@ -1,37 +1,5 @@
-=============DONE============
-- allow the default action to get set
-- add a repeat value to the action (it gets put back at the head that number of times)
-- Add manual intervention for crafting armor for all characters
-- Joe and Tim needs swords
-- Everyone needs a ring
-- Make a dashboard to manage the queues of my people.
-=============DONE============
-=============TODO============
-- Add actions for completeing, getting new, tasks
-- http://35.173.189.69:3000/
-- make more presets: 
-IRON COLLECTING
-copy queue
-deposit all
-move x:1 y:7
-collect repeat:96
-move x:1 y:5
-craft code:iron quantity:12
-move x:4 y:1
-paste queue
-- Make frontend responsive (very easy)
-- Combine move and action items. (Deposit all checks if we are on bank otherwise move there. Craft iron checks if we are in forge otherwise...)
-=============TODO============
-- improve plan generator to optimize plan
-- improve armor upgrading
-- improve armor crafting
-
-
-
-===============================
-- Craft iron_legs_armor
-- slime_shield
-- adventurer_boots
-- adventurer_helmet
-- multislimes_sword
-- iron_ring
+- Make python application into API to assign plans
+===================TODO=================
+- Make characters get the best available gear for a fight
+- Craft tools with the jasper
+- Make the collect tool loop

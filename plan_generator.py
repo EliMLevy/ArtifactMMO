@@ -46,7 +46,7 @@ def check_monsters_or_resources(df, item_code):
     if len(locations) > 0:
         locations = locations.sort_values(by=['drop_chance'], ascending=True)
         target_location = locations.iloc[0]
-        return (target_location['x'], target_location['y'])
+        return (int(target_location['x']), int(target_location['y']))
     else:
         return None
             
@@ -67,13 +67,13 @@ def collect_resource(item_code, quantity):
     resource_location = check_monsters_or_resources(resources, item_code)
     if resource_location != None:
         return [{"action": "move", "x": resource_location[0], "y": resource_location[1]},
-            {"action": "collect", "repeat": quantity}]
+            {"action": "collect", "repeat": quantity, "code": item_code}]
     # Check monsters
     monster_location = check_monsters_or_resources(monsters, item_code)
     if monster_location != None:
         return [
             {"action": "move", "x": monster_location[0], "y": monster_location[1]},
-            {"action": "collect", "repeat": quantity}]
+            {"action": "attack", "repeat": quantity, "code": item_code}]
     else:
         return [{"action": "error", "message": f"cannot find {item_code}"}]
 
@@ -94,9 +94,10 @@ def create_plan(item_code, quantity) -> list[str]:
         return [f"Can not attain {item_code}"]
     
 
-plan = [{"action": "deposit all"}]
-plan.extend(create_plan("iron_ring", 10))
-plan.append({"action": "deposit all"})
+if __name__ == '__main__':
+    plan = [{"action": "deposit all"}]
+    plan.extend(create_plan("multislimes_sword", 3))
+    plan.append({"action": "deposit all"})
 
-for item in plan:
-    print(item, ",")
+    for item in plan:
+        print(json.dumps(item), ",")

@@ -8,15 +8,26 @@ def main():
 
     # craft_armor(characters[4])
     # for c in characters: c.equip_new_gear("shield", "slime_shield")
-    start_threads(characters)
+    threads = []
+    threads.extend(start_threads(characters))
+    wait_for_threads(threads)
 
 
+def wait_for_threads(threads):
+    # Wait for all threads to complete (they won't in this case since they're infinite loops)
+    try:
+        while True:
+            for thread in threads:
+                thread.join(timeout=1.0)  # Check each thread every second
+    except KeyboardInterrupt:
+        print("\nShutting down gracefully...")
 
-def start_threads(characters):
+def start_threads(characters: list[Character], plan=None):
     # Create threads for each character's task loop
     threads = []
     for character in characters:
         thread = threading.Thread(target=character.complete_monster_tasks_loop)
+        # thread = threading.Thread(target=character.execute_plan, args=[plan])
 
         thread.daemon = True  # Allow the program to exit even if threads are running
         threads.append(thread)
@@ -25,13 +36,9 @@ def start_threads(characters):
     for thread in threads:
         thread.start()
 
-    # Wait for all threads to complete (they won't in this case since they're infinite loops)
-    try:
-        while True:
-            for thread in threads:
-                thread.join(timeout=1.0)  # Check each thread every second
-    except KeyboardInterrupt:
-        print("\nShutting down gracefully...")
+    return threads
+
+    
 
 
 def craft_armor(joe: Character):

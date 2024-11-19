@@ -1,20 +1,30 @@
 import time
+import logging
 from datetime import datetime
 from dataclasses import dataclass, field
 from actions import accept_new_task, attack, complete_task, craft, equip, get_character, move, recycle, rest, unequip
 from data_classes import InventoryItem
 import encyclopedia as ency
 from util import handle_result_cooldown
+from gear_analyzer import find_best_weapon_for_monster
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 
 LOW_HP_THRESHOLD = 0.5
 LOW_INVENTORY_SPACE_THRESHOLD = 0.9
 
 class Character:
     def __init__(self, name):
-        print(f"Character {name} created!")
+        self.logger = logging.getLogger(f"{name}")
+        self.logger.info(f"Character {name} created!")
         self.name = name
-        self.current_action = "collecting"
-        self.current_subaction = "woodcutting"
+        self.default_action = "monster tasks"
+        self.default_subaction = ""
+        self.plan = []
 
     def load_data(self):
         result = get_character(self.name)
@@ -119,38 +129,44 @@ class Character:
 
     def run_agent(self):
         while True:
-            if self.current_action == "idle":
+            if self.plan != None and len(self.plan) > 0:
+                self.execute_action(self.plan.pop(0))
+            elif self.default_action == "idle":
+                self.logger.info("Performing idle sleep")
                 time.sleep(3)
-                continue
-            elif self.current_action == "collecting":
-                self.complete_resource_collect(self.current_subaction)
+            elif self.default_action == "collecting":
+                self.complete_resource_collect(self.default_subaction)
+            elif self.default_action == "monster tasks":
+                self.complete_monster_tasks()
 
+    def execute_action(self, action):
+        from enhanced_actions import withdraw_from_bank, deposit_all_items
+        self.load_data()
+        if self.cooldown > 0 and datetime.now() < self.cooldown_expiration:
+            time.sleep(self.cooldown)
+
+        if action["action"] == "deposit all":
+            self.logger.info(f"Depositing all")
+            deposit_all_items(self)
+        elif action["action"] == "withdraw":
+            self.logger.info(f"Withdrawing {action['code']} x{action['quantity']}")
+            withdraw_from_bank(self, action["code"], action["quantity"])
+        elif action["action"] == "move":
+            self.logger.info(f"Moving to {action['x']},{action['y']}")
+            result = move(self.name, action["x"], action["y"])
+            handle_result_cooldown(result)
+        elif action["action"] == "craft":
+            self.logger.info(f"Crafting {action['code']} x{action['quantity']}")
+            result = craft(self.name, action["code"], action["quantity"])
+            handle_result_cooldown(result)
+        elif action["action"] == "recycle":
+            self.logger.info(f"Recycling {action['code']} x{action['quantity']}")
+            result = recycle(self.name, action["code"], action["quantity"])
+            handle_result_cooldown(result)
 
     def execute_plan(self, plan):
-        from enhanced_actions import withdraw_from_bank, deposit_all_items
         for item in plan:
-            self.load_data()
-            if self.cooldown > 0 and datetime.now() < self.cooldown_expiration:
-                time.sleep(self.cooldown)
-
-            if item["action"] == "deposit all":
-                print(f"[{self.name}] Depositing all")
-                deposit_all_items(self)
-            elif item["action"] == "withdraw":
-                print(f"[{self.name}] Withdrawing {item['code']} x{item['quantity']}")
-                withdraw_from_bank(self, item["code"], item["quantity"])
-            elif item["action"] == "move":
-                print(f"[{self.name}] Moving to {item['x']},{item['y']}")
-                result = move(self.name, item["x"], item["y"])
-                handle_result_cooldown(result)
-            elif item["action"] == "craft":
-                print(f"[{self.name}] Crafting {item['code']} x{item['quantity']}")
-                result = craft(self.name, item["code"], item["quantity"])
-                handle_result_cooldown(result)
-            elif item["action"] == "recycle":
-                print(f"[{self.name}] Recycling {item['code']} x{item['quantity']}")
-                result = recycle(self.name, item["code"], item["quantity"])
-                handle_result_cooldown(result)
+            self.execute_action(item)
     
     def complete_resource_collect(self, skill):
         from enhanced_actions import collect_highest_unlocked_resource, deposit_all_items
@@ -159,57 +175,59 @@ class Character:
             time.sleep(self.cooldown)
 
         if self.needs_to_deposit():
-            print(f"[{self.name}] needs to deposit")
+            self.logger.debug(f"needs to deposit")
             deposit_all_items(self)
 
-        
-        print(f"[{self.name}] Collecting {skill}")
+        self.logger.info(f"Collecting {skill}")
         collect_highest_unlocked_resource(self, skill)
             
 
-    def complete_monster_tasks_loop(self):
+    def complete_monster_tasks(self):
         from enhanced_actions import move_to_location, deposit_all_items
+        self.load_data()
+        # Check for cooldown
+        if self.cooldown > 0 and datetime.now() < self.cooldown_expiration:
+            time.sleep(self.cooldown)
 
-        while True:
-            self.load_data()
-            # Check for cooldown
-            if self.cooldown > 0 and datetime.now() < self.cooldown_expiration:
-                time.sleep(self.cooldown)
-
-            # Check for task
-            if self.task is None or len(self.task) == 0:
-                # get a task from task master
-                print(f"[{self.name}] Getting task")
-                move_to_location(self, "monsters")
-                result = accept_new_task(self.name)
-                handle_result_cooldown(result)
-                continue
-            
-            # If progress is finished, complete the task
-            if self.task_progress >= self.task_total:
-                print(f"[{self.name}] Completing task")
-                move_to_location(self, "monsters")
-                complete_task(self.name)
-                continue
-
-            if self.needs_to_deposit():
-                deposit_all_items(self)
-                continue
-        
-            # If above is false
-            # Move to location of task
-            print(f"[{self.name}] Moving to tasks {self.task}")
-            move_to_location(self, self.task)
-
-            if self.needs_rest():
-                print(f"[{self.name}] Resting!")
-                result = rest(self.name)
-                handle_result_cooldown(result)
-                
-            # attack
-            print(f"[{self.name}] attacking {self.task}")
-            result = attack(self.name)
+        # Check for task
+        if self.task is None or len(self.task) == 0:
+            # get a task from task master
+            self.logger.info(f"Getting task")
+            move_to_location(self, "monsters")
+            result = accept_new_task(self.name)
             handle_result_cooldown(result)
+            return
+        
+        # If progress is finished, complete the task
+        if self.task_progress >= self.task_total:
+            self.logger.info(f"Completing task")
+            move_to_location(self, "monsters")
+            complete_task(self.name)
+            return
+
+        if self.needs_to_deposit():
+            deposit_all_items(self)
+            return
+    
+        best_weapon = find_best_weapon_for_monster(self.task, self.level, self.weapon_slot, self.inventory)
+        if best_weapon != False and best_weapon["code"] != self.weapon_slot:
+            self.logger.info(f"The {best_weapon['code']} is better against {self.task} than {self.weapon_slot}")
+            self.equip_new_gear("weapon", best_weapon["code"])
+
+        # If above is false
+        # Move to location of task
+        self.logger.info(f"Moving to tasks {self.task}")
+        move_to_location(self, self.task)
+
+        if self.needs_rest():
+            self.logger.debug(f"Resting!")
+            result = rest(self.name)
+            handle_result_cooldown(result)
+            
+        # attack
+        self.logger.info(f"attacking {self.task}")
+        result = attack(self.name)
+        handle_result_cooldown(result)
 
     def get_skill_level(self, skill: str):
         if skill == "fishing":
@@ -226,18 +244,45 @@ class Character:
         items = sum(item.quantity for item in self.inventory)
         return items / self.inventory_max_items >= LOW_INVENTORY_SPACE_THRESHOLD
 
+    def get_active_gear(self, slot):
+        if slot == "weapon":
+            return self.weapon_slot
+        if slot == "shield":
+            return self.shield_slot
+        if slot == "helmet":
+            return self.helmet_slot
+        if slot == "body_armor":
+            return self.body_armor_slot
+        if slot == "leg_armor":
+            return self.leg_armor_slot
+        if slot == "boots":
+            return self.boots_slot
+        if slot == "ring1":
+            return self.ring1_slot
+        if slot == "ring2":
+            return self.ring2_slot
+        if slot == "amulet":
+            return self.amulet_slot
+
     def equip_new_gear(self, slot, new_gear_code):
         from enhanced_actions import deposit_all_items, withdraw_from_bank
 
+        if self.get_active_gear(slot) == new_gear_code:
+            self.logger.info(f"{new_gear_code} already active in {slot}")
+            return
+
         # Unequip old slot
+        self.logger.info(f"Unequipping {slot}")
         result = unequip(self.name, slot)
         handle_result_cooldown(result)
         # deposit the gear
+        self.logger.info(f"Depositing all")
         deposit_all_items(self)
 
         # withdraw the new gear
         withdraw_from_bank(self, new_gear_code, 1)
 
         # equip new gear
+        self.logger.info(f"equipping {new_gear_code} into {slot}")
         result = equip(self.name, new_gear_code, slot)
         handle_result_cooldown(result)

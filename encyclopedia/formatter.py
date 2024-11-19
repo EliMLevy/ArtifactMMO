@@ -127,7 +127,7 @@ def combine_maps_and_monsters():
     monster_file = open("./monsters/monsters_1.json")
     monsters = json.loads(monster_file.read())
 
-    monster_df = pd.DataFrame(columns=["resource_code", "x", "y", "drop_chance", "map_code"])
+    monster_df = pd.DataFrame(columns=["resource_code", "x", "y", "drop_chance", "map_code", "attack_fire","attack_earth","attack_water","attack_air","res_fire","res_earth","res_water","res_air"])
     for monster in monsters["data"]:
         maps_file = open("./maps/all_maps.json")
         maps = json.loads(maps_file.read())
@@ -140,7 +140,8 @@ def combine_maps_and_monsters():
             # For each drop, add row to the df
             for drop in monster["drops"]:
                 for location in locations:
-                    monster_df.loc[len(monster_df)] = [drop["code"], location["x"], location["y"], drop["rate"], location["content"]["code"]]
+                    monster_df.loc[len(monster_df)] = [drop["code"], location["x"], location["y"], drop["rate"], location["content"]["code"],
+                                                      monster["attack_fire"],monster["attack_earth"],monster["attack_water"],monster["attack_air"],monster["res_fire"],monster["res_earth"],monster["res_water"],monster["res_air"] ]
         else:
             skipped.append(monster["code"])
 
@@ -178,4 +179,4 @@ def convert_json_to_csv(input_file, output_file):
 # convert_json_to_csv("./maps/all_maps.json", "all_maps.csv")
 
 if __name__ == "__main__":
-    combine_items()
+    combine_maps_and_monsters()

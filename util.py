@@ -1,3 +1,4 @@
+from datetime import datetime
 import time
 import requests
 from dotenv import load_dotenv
@@ -39,7 +40,9 @@ def send_request_to_url(url, path, method, body):
 
 def handle_result_cooldown(result):
     if "data" in result and "cooldown" in result["data"]:
+        start = datetime.now()
         time.sleep(result["data"]["cooldown"]["remaining_seconds"])
+
     
 # Example usage:
 # send_request("character_name", "/endpoint", "POST", {"key": "value"})
