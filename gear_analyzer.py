@@ -38,7 +38,7 @@ def find_best_weapon_for_monster(monster_code, max_level, available_in_bank=True
            return True
         if available_in_bank:
             in_bank = any(bank_item["code"] == item["code"] for bank_item in bank_items)
-            in_inventory = True
+            in_inventory = False
             if current_inventory is not None:
                 in_inventory = any(inv_item["code"] == item["code"] for inv_item in current_inventory)
             return item["type"] == "weapon" and item["level"] <= max_level and (in_bank or in_inventory)
