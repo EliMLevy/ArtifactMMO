@@ -125,7 +125,7 @@ def generate_crafting_plan(item_code, quantity_needed, all_items, max_inventory_
     return plan
 
 if __name__ == "__main__":
-    plan = generate_crafting_plan("fire_bow", 5, items, 120)
+    plan = generate_crafting_plan("leather_hat", 5, items, 120)
     print(json.dumps({"action": "deposit all"}), ",")
     for step in plan:
         print(json.dumps(step), ",")

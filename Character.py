@@ -6,7 +6,7 @@ from actions import accept_new_task, attack, complete_task, craft, equip, get_ch
 from data_classes import InventoryItem
 import encyclopedia as ency
 from util import handle_result_cooldown
-from gear_analyzer import find_best_weapon_for_monster
+from gear_analyzer import find_best_armor_for_monster, find_best_weapon_for_monster
 
 # Configure logging
 logging.basicConfig(
@@ -17,12 +17,14 @@ logging.basicConfig(
 LOW_HP_THRESHOLD = 0.5
 LOW_INVENTORY_SPACE_THRESHOLD = 0.9
 
+GEAR_SLOTS = ["shield","helmet","body_armor","leg_armor","boots","ring"]
+
 class Character:
     def __init__(self, name):
         self.logger = logging.getLogger(f"{name}")
         self.logger.info(f"Character {name} created!")
         self.name = name
-        self.default_action = "monster tasks"
+        self.default_action = "idle" #"monster tasks"
         self.default_subaction = ""
         self.plan = []
 
@@ -132,7 +134,7 @@ class Character:
             if self.plan != None and len(self.plan) > 0:
                 self.execute_action(self.plan.pop(0))
             elif self.default_action == "idle":
-                self.logger.info("Performing idle sleep")
+                # self.logger.info("Performing idle sleep")
                 time.sleep(3)
             elif self.default_action == "collecting":
                 self.complete_resource_collect(self.default_subaction)
@@ -213,6 +215,16 @@ class Character:
             self.logger.info(f"The {best_weapon['code']} is better against {self.task} than {self.weapon_slot}")
             self.equip_new_gear("weapon", best_weapon["code"])
 
+        for gear_slot in GEAR_SLOTS:
+            best_gear = find_best_armor_for_monster(self.task, gear_slot, self.level, available_in_bank=True, current_armor=self.get_active_gear(gear_slot), current_inventory=self.inventory )
+            # self.logger.info(f"Found best gear: {best_gear}")
+            if best_gear != False and best_gear["code"] != self.get_active_gear(gear_slot):
+                self.logger.info(f"The {best_gear['code']} is better against {self.task} than {self.get_active_gear(gear_slot)}")
+                if gear_slot == "ring":
+                    self.equip_new_gear("ring1", best_gear["code"])
+                else:
+                    self.equip_new_gear(gear_slot, best_gear["code"])
+
         # If above is false
         # Move to location of task
         self.logger.info(f"Moving to tasks {self.task}")
@@ -256,7 +268,7 @@ class Character:
             return self.leg_armor_slot
         if slot == "boots":
             return self.boots_slot
-        if slot == "ring1":
+        if slot == "ring1" or slot == "ring":
             return self.ring1_slot
         if slot == "ring2":
             return self.ring2_slot
