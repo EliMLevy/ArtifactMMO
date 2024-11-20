@@ -21,25 +21,72 @@ maps = json.loads(maps_file.read())
 
 bank_items = get_bank_items()
 
-def is_item_in_bank(item_code):
-    item = next((item for item in bank_items if item["code"] == item_code), None)
-    return item is not None
+
+class Plan():
+    def __init__(self):
+        self.withdrawal = [] # for ingredients we just need to withdraw
+        self.dependencies = [] # for ingredients we need to craft
+        self.target_craft = None
+    
+    def split_plan(self):
+        '''
+        Split the target craft into two
+        calculate the crafts that need to be done for each plan
+        Calculate the withdrawals for each plan
+        '''
+        split = self.target_craft["quantity"] // 2 # Integer division to maintain whole number
+        plan_1 = Plan()
+        plan_1.target_craft = {
+            "action": "craft",
+            "code": self.target_craft["code"],
+            "quantity": split
+        }
+        plan_1_proportion = split / self.target_craft["quantity"]
+        plan_2 = Plan()
+        plan_2.target_craft = {
+            "action": "craft",
+            "code": self.target_craft["code"],
+            "quantity": self.target_craft["quantity"] - split
+        }
+        plan_2_proportion = (self.target_craft["quantity"] - split) / self.target_craft["quantity"]
+
+
+        for withdrawal in self.withdrawals:
+            plan_1.withdrawals.append({
+                "action": "withdraw",
+                "code": withdrawal["code"],
+                "quantity": withdrawal["quantity"] * plan_1_proportion
+            })
+            plan_2.withdrawals.append({
+                "action": "withdraw",
+                "code": withdrawal["code"],
+                "quantity": withdrawal["quantity"] * plan_2_proportion
+            })
+        return plan_1, plan_2
+
+    def is_feasible(self, max_items):
+        total_items = 0
+        for withdrawal in self.withdrawals:
+            total_items += withdrawal["quantity"] 
+        return total_items <= max_items
+
+    def split_if_infeasible(self, max_items):
+        if not self.is_feasible(max_items):
+            
+
+
+    def __str__(self):
+        result = f"===={self.target_craft['code']} x{self.target_craft['quantity']}===\n" 
+        for d in self.dependencies:
+            result += str(d) + "\n"
+        for w in self.withdrawal:
+            result +=  f"withdraw {w['code']} x{w['quantity']}\n"
+        result += f"===={self.target_craft['code']}===="
+        return result
 
 def get_quantity_of_item_in_bank(item_code):   
     return next((item["quantity"] for item in bank_items if item["code"] == item_code), 0)
     
-'''
-input -> [{withdraw, 160, iron_ore}, {craft, 20, iron}]
-output -> [{withdraw, 100, iron}, {craft, 12, iron}, {withdraw, 60, iron_ore}, {craft, 8, iron}]
-'''
-def review_plan(plan):
-    # Step through plan and keep track of inventory.
-    # withdraw, collect, attack increase space used.
-    # Craft -> get conversion rate
-    # deposit all -> inventory space used = 0
-    
-    # If we need to withdraw, collect or attack too many items then we need to split 
-    pass
 
 def check_monsters_or_resources(df, item_code):
     locations = df[df["resource_code"] == item_code]
@@ -56,8 +103,7 @@ def gather_craftable_item(target_item, quantity):
         plan.extend(create_plan(ingredient["code"], quantity * ingredient["quantity"]))
     skill_needed = target_item["recipe"]["skill"]
     if skill_needed in maps:
-        plan.extend([{"action": "move", "x": maps[skill_needed][0]['x'], "y": maps[skill_needed][0]['y']},
-                     {"action": "craft", "code": target_item['code'], "quantity": quantity }])
+        plan.extend([{"action": "craft", "code": target_item['code'], "quantity": quantity }])
     else:
         plan.append({"action": "error", "message": f"Cannot find {skill_needed}"})
     return plan
@@ -66,38 +112,50 @@ def collect_resource(item_code, quantity):
     # Check resources
     resource_location = check_monsters_or_resources(resources, item_code)
     if resource_location != None:
-        return [{"action": "move", "x": resource_location[0], "y": resource_location[1]},
-            {"action": "collect", "repeat": quantity, "code": item_code}]
+        return [{"action": "collect", "repeat": quantity, "code": item_code}]
     # Check monsters
     monster_location = check_monsters_or_resources(monsters, item_code)
     if monster_location != None:
-        return [
-            {"action": "move", "x": monster_location[0], "y": monster_location[1]},
-            {"action": "attack", "repeat": quantity, "code": item_code}]
+        return [{"action": "attack", "repeat": quantity, "code": item_code}]
     else:
         return [{"action": "error", "message": f"cannot find {item_code}"}]
 
-def create_plan(item_code, quantity) -> list[str]:
+'''
+Each call to create_plan will create a plan.
+a plan has one or more withdrawals
+and ONE craft
+This becomes very easy to determine if the plan is feasible or needs to be split -> just sum up the withdrawals
+This also makes it easier to split -> one plan becomes two plans -> craft a portion of the target and withdraw a portion
+'''
+def create_plan(plan: Plan, item_code, quantity) -> list[str]:
     if get_quantity_of_item_in_bank(item_code) >= quantity:
-        return [{"action": "withdraw", "code": item_code, "quantity": quantity}]
+        print(f"withdrawing {item_code}")
+        plan.target_craft = {"code": item_code, "quantity": quantity}
+        plan.withdrawal.append({"action": "withdraw", "code": item_code, "quantity": quantity})
+        return plan
         
 
     if item_code in items:
-        plan = []
         target_item = items[item_code]
         if "recipe" in target_item:
-            plan.extend(gather_craftable_item(target_item, quantity))
+            for ingredient in target_item["recipe"]["items"]:
+                plan.dependencies.append(create_plan(Plan(), ingredient["code"], quantity * ingredient["quantity"]))
         else:
-            plan.extend(collect_resource(item_code, quantity))
+            return f"UNIMPLEMENTED: {item_code} needs collection"
+        plan.target_craft = {"action": "craft", "code": target_item['code'], "quantity": quantity }
         return plan
     else:
-        return [f"Can not attain {item_code}"]
+        return f"Can not attain {item_code}"
     
 
-if __name__ == '__main__':
-    plan = [{"action": "deposit all"}]
-    plan.extend(create_plan("multislimes_sword", 3))
-    plan.append({"action": "deposit all"})
+def run_create_plan(code, quantity):
+    # plan = [{"action": "deposit all"}]
+    # plan.extend(create_plan(Plan(), code, quantity))
+    # plan.append({"action": "deposit all"})
+    return create_plan(Plan(), code, quantity)
 
-    for item in plan:
-        print(json.dumps(item), ",")
+if __name__ == '__main__':
+    plan = run_create_plan("greater_wooden_staff", 5)
+    print(plan)
+    # for item in plan:
+    #     print(json.dumps(item), ",")
