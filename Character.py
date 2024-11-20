@@ -24,7 +24,7 @@ class Character:
         self.logger = logging.getLogger(f"{name}")
         self.logger.info(f"Character {name} created!")
         self.name = name
-        self.default_action = "idle" #"monster tasks"
+        self.default_action = "monster tasks"
         self.default_subaction = ""
         self.plan = []
 
