@@ -1,8 +1,10 @@
 # Get the player
+import json
 import pandas as pd
 
 from actions import get_bank_items
 from encyclopedia import get_items_that_match, get_monster_spot
+from plan_generator import generate_crafting_plan
 
 # Go through the various gear slots- weapon, boots, helmet, shielf, ring, leg armor, body armor, amulet
 
@@ -11,9 +13,9 @@ slots = ["weapon","shield","helmet","body_armor","leg_armor","boots", "ring", "a
 columns = ["hp","haste","attack_fire","attack_earth","attack_water","attack_air","dmg_fire","dmg_earth","dmg_water","dmg_air","res_fire","res_earth","res_water","res_air"]
 
 def generate_gear_comparisons(max_level):
-  def filter_items(item):
-    return item["type"] == slot and item["level"] <= max_level
   for slot in slots:
+    def filter_items(item):
+        return item["type"] == slot and item["level"] <= max_level
     possible_armor = get_items_that_match(filter_items)
     rows = []
     for armor in possible_armor:
@@ -40,8 +42,8 @@ def find_best_weapon_for_monster(monster_code, max_level, available_in_bank=True
             in_bank = any(bank_item["code"] == item["code"] for bank_item in bank_items)
             in_inventory = False
             if current_inventory is not None:
-                in_inventory = any(inv_item["code"] == item["code"] for inv_item in current_inventory)
-            return item["type"] == "weapon" and item["level"] <= max_level and (in_bank)
+                in_inventory = any(inv_item.code == item["code"] for inv_item in current_inventory)
+            return item["type"] == "weapon" and item["level"] <= max_level and (in_bank or in_inventory)
         else:
             return item["type"] == "weapon" and item["level"] <= max_level
     target_monster_df = get_monster_spot(monster_code)
@@ -53,7 +55,7 @@ def find_best_weapon_for_monster(monster_code, max_level, available_in_bank=True
     candidate_weapons = get_items_that_match(filter_weapons)
 
     if len(candidate_weapons) == 0:
-    #    print(f"No candidate weapons for max level {max_level}")
+       print(f"No candidate weapons for max level {max_level}")
        return False
 
     best_weapon = None
@@ -67,16 +69,21 @@ def find_best_weapon_for_monster(monster_code, max_level, available_in_bank=True
         if total_dmg > best_dmg:
            best_dmg = total_dmg
            best_weapon = weapon
-        # print(f"Against {monster_code}, {weapon['code']} will do {total_dmg} dmg")
 
-    # print(f"Best weapon: {best_weapon} for {best_dmg} dmg")
     return best_weapon
-    # Check the resistances that the monster has
-    # choose a weapon that maximizes damage
 
-    # Check the damages that the monster does
-    # Choose the armor that takes the least damage
+
+def gather_craftable_weapons_for_level(level):
+    def filter_items(item):
+        return item["type"] == "weapon" and item["level"] == level
+    weapons = get_items_that_match(filter_items)
+    for item in weapons:
+        print(item["code"])
+        plan = generate_crafting_plan(item["code"], 5)
+        for step in plan:
+            print(json.dumps(step), ",")
+   
+
 
 if __name__ == "__main__":
-    weapon = find_best_weapon_for_monster("flying_serpent", 15, available_in_bank=False, current_weapon="iron_sword")
-    print(weapon)
+    gather_craftable_weapons_for_level(10)

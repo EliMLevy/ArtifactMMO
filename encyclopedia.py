@@ -24,3 +24,8 @@ def get_locations_by_skill(skill):
 def get_items_that_match(condition):
     return [item for item in items.values() if condition(item)]
 
+def get_item_by_name(item_code):
+    if item_code in items:
+        return items[item_code]
+    else:
+        return None

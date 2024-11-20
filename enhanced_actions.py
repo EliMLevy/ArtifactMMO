@@ -70,8 +70,18 @@ def collect_highest_unlocked_resource(character: Character, skill: str):
     handle_result_cooldown(result)
 
 # Craft specific item
-# - Use plan generator to generate a plan for that item
-
+def go_and_craft_item(character: Character, item_code: str, quantity: int):
+    # Find where the item is
+    item = ency.get_item_by_name(item_code)
+    if item is not None:
+        if "recipe" in item:
+            move_to_location(character, item["recipe"]["skill"])
+            result = craft(character.name, item_code, quantity)
+            handle_result_cooldown(result)
+        else:
+            print(f"{item_code} is not craftable")
+    else:
+        print(f"{item_code} can not be found")
 # Equip item
 # - ??
 

@@ -140,7 +140,7 @@ class Character:
                 self.complete_monster_tasks()
 
     def execute_action(self, action):
-        from enhanced_actions import withdraw_from_bank, deposit_all_items
+        from enhanced_actions import withdraw_from_bank, deposit_all_items,go_and_craft_item
         self.load_data()
         if self.cooldown > 0 and datetime.now() < self.cooldown_expiration:
             time.sleep(self.cooldown)
@@ -157,8 +157,7 @@ class Character:
             handle_result_cooldown(result)
         elif action["action"] == "craft":
             self.logger.info(f"Crafting {action['code']} x{action['quantity']}")
-            result = craft(self.name, action["code"], action["quantity"])
-            handle_result_cooldown(result)
+            go_and_craft_item(self, action["code"], action["quantity"])
         elif action["action"] == "recycle":
             self.logger.info(f"Recycling {action['code']} x{action['quantity']}")
             result = recycle(self.name, action["code"], action["quantity"])
@@ -209,7 +208,7 @@ class Character:
             deposit_all_items(self)
             return
     
-        best_weapon = find_best_weapon_for_monster(self.task, self.level, self.weapon_slot, self.inventory)
+        best_weapon = find_best_weapon_for_monster(self.task, self.level, available_in_bank=True,  current_weapon=self.weapon_slot, current_inventory=self.inventory)
         if best_weapon != False and best_weapon["code"] != self.weapon_slot:
             self.logger.info(f"The {best_weapon['code']} is better against {self.task} than {self.weapon_slot}")
             self.equip_new_gear("weapon", best_weapon["code"])
