@@ -1,9 +1,20 @@
+import math
 from actions import *
 import encyclopedia as ency
 from Character import Character
 from util import handle_result_cooldown
 
-BANK_LOCATION = (4, 1)
+BANK_LOCATION_1 = [4, 1]
+BANK_LOCATION_2 = [7, 13]
+
+def get_closest_bank(x, y):
+    loc_1_dist = math.dist([x,y], BANK_LOCATION_1)
+    loc_2_dist = math.dist([x,y], BANK_LOCATION_2)
+    if loc_1_dist < loc_2_dist:
+        return BANK_LOCATION_1
+    else:
+        return BANK_LOCATION_2
+
 
 # Deposit all
 # - move to bank
@@ -11,7 +22,10 @@ BANK_LOCATION = (4, 1)
 def deposit_all_items(character: Character):
     current_map = ency.get_location(character.x, character.y)
     if current_map.empty or (current_map["content_code"] != "bank").bool():
-        result = move(character.name, BANK_LOCATION[0], BANK_LOCATION[1])
+        bank_location = get_closest_bank(character.x, character.y)
+        result = move(character.name, bank_location[0], bank_location[1])
+        character.x = bank_location[0]
+        character.y = bank_location[1]
         handle_result_cooldown(result)
 
     for slot in character.inventory:
@@ -26,7 +40,10 @@ def deposit_all_items(character: Character):
 def withdraw_from_bank(character: Character, item_code: str, quantity: int):
     current_map = ency.get_location(character.x, character.y)
     if current_map.empty or (current_map["content_code"] != "bank").bool():
-        result = move(character.name, BANK_LOCATION[0], BANK_LOCATION[1])
+        bank_location = get_closest_bank(character.x, character.y)
+        result = move(character.name, bank_location[0], bank_location[1])
+        character.x = bank_location[0]
+        character.y = bank_location[1]
         handle_result_cooldown(result)
     
     result = withdraw_item(character.name, item_code, quantity)
@@ -64,6 +81,19 @@ def collect_highest_unlocked_resource(character: Character, skill: str):
     location = locations.iloc[0]
     if (character.x != location["x"]) or (character.y != location["y"]):
         result = move(character.name, int(location["x"]), int(location["y"]))
+        handle_result_cooldown(result)
+    
+    result = collect(character.name)
+    handle_result_cooldown(result)
+
+def go_and_collect_item(character: Character, code: str):
+    # Find resource location
+    locations = ency.get_location_by_resource(code)
+    location = locations.iloc[0]
+    if (character.x != location["x"]) or (character.y != location["y"]):
+        result = move(character.name, int(location["x"]), int(location["y"]))
+        character.x = location["x"]
+        character.y = location["y"]
         handle_result_cooldown(result)
     
     result = collect(character.name)
