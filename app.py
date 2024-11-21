@@ -15,7 +15,6 @@ for c in characters: c.load_data()
 threads = []
 for character in characters:
     thread = threading.Thread(target=character.run_agent)
-    # thread = threading.Thread(target=character.execute_plan, args=[plan])
 
     thread.daemon = True  # Allow the program to exit even if threads are running
     threads.append(thread)
