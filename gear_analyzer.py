@@ -150,7 +150,7 @@ def gather_craftable_weapons_for_level(level):
 
 if __name__ == "__main__":
     # gather_craftable_weapons_for_level(10)
-    GEAR_SLOTS = ["shield","helmet","body_armor","leg_armor","boots","ring"]
+    GEAR_SLOTS = ["shield","helmet","body_armor","leg_armor","boots","ring", "amulet"]
     for gear in GEAR_SLOTS:
         result = find_best_armor_for_monster("pig", gear, 15, False)
         print(f"Slot: {gear}. Result: {result['code']}")
