@@ -2,21 +2,8 @@ import pandas as pd
 import json
 
 from actions import get_bank_items
+from encyclopedia import get_item_by_name
 
-# Given an item, create a plan for aquiring it
-# - Look the item up in the items
-# - if it isnt craftable, look it up in the resources and monsters
-#   - if found, go there and collect
-# - if it is craftable, repeat for ingredients
-
-resources = pd.read_csv("./encyclopedia/resources.csv")
-monsters = pd.read_csv("./encyclopedia/monsters.csv")
-
-items_file = open("./encyclopedia/items/all_items.json")
-items = json.loads(items_file.read())
-
-maps_file = open("./encyclopedia/maps/all_maps.json")
-maps = json.loads(maps_file.read())
 
 bank_items = get_bank_items()
 
@@ -47,7 +34,7 @@ def calculate_batch_size(quantity_needed, item_requirements, max_inventory_items
     # Return the smaller of what we need and what we can fit
     return min(quantity_needed, max_craftable)
 
-def generate_crafting_plan(item_code, quantity_needed, all_items, max_inventory_items):
+def generate_crafting_plan(item_code, quantity_needed, max_inventory_items, use_bank=True):
     """
     Generates a plan for crafting items, considering items available in bank
     and inventory space limitations.
@@ -69,25 +56,28 @@ def generate_crafting_plan(item_code, quantity_needed, all_items, max_inventory_
     
     while remaining_quantity > 0:
         # First check if we have any in bank
-        bank_quantity = get_quantity_of_item_in_bank(item_code)
-        if bank_quantity > 0:
-            # Calculate how much we can withdraw based on inventory space
-            withdraw_quantity = min(bank_quantity, remaining_quantity, max_inventory_items)
-            
-            plan.append({
-                "action": "withdraw",
-                "code": item_code,
-                "quantity": withdraw_quantity
-            })
-            remaining_quantity -= withdraw_quantity
+        if use_bank:
+            bank_quantity = get_quantity_of_item_in_bank(item_code)
+            if bank_quantity > 0:
+                # Calculate how much we can withdraw based on inventory space
+                withdraw_quantity = min(bank_quantity, remaining_quantity, max_inventory_items)
+                
+                plan.append({
+                    "action": "withdraw",
+                    "code": item_code,
+                    "quantity": withdraw_quantity
+                })
+                remaining_quantity -= withdraw_quantity
         
         # If we still need more, we need to craft them
         if remaining_quantity > 0:
-            item_info = all_items[item_code]
+            item_info = get_item_by_name(item_code)
             
             # If item has no recipe, it needs to be collected
             if "recipe" not in item_info:
-                raise ValueError(f"Item {item_code} needs to be collected - no recipe available")
+                plan.append({"action": "collect", "code": item_code, "quantity": remaining_quantity})
+                return plan
+                # raise ValueError(f"Item {item_code} needs to be collected - no recipe available")
             
             # Calculate how many we can craft in this batch based on inventory limits
             batch_size = calculate_batch_size(
@@ -108,7 +98,6 @@ def generate_crafting_plan(item_code, quantity_needed, all_items, max_inventory_
                 ingredient_plan = generate_crafting_plan(
                     ingredient_code,
                     ingredient_quantity,
-                    all_items,
                     max_inventory_items
                 )
                 plan.extend(ingredient_plan)
@@ -125,7 +114,7 @@ def generate_crafting_plan(item_code, quantity_needed, all_items, max_inventory_
     return plan
 
 if __name__ == "__main__":
-    plan = generate_crafting_plan("leather_hat", 5, items, 120)
+    plan = generate_crafting_plan("iron", 35, 120)
     print(json.dumps({"action": "deposit all"}), ",")
     for step in plan:
         print(json.dumps(step), ",")
