@@ -21,6 +21,9 @@ def get_location_by_name(code):
 def get_locations_by_skill(skill):
     return resources.loc[resources["skill"] == skill]
 
+def get_location_by_resource(code):
+    return resources.loc[resources["resource_code"] == code]
+
 def get_items_that_match(condition):
     return [item for item in items.values() if condition(item)]
 
