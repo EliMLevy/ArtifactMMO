@@ -67,6 +67,10 @@ def get_bank_items():
         return all_results
     return cached_bank_items
 
+def get_bank_quantity(item_code: str):
+    bank_items = get_bank_items()
+    return next((item["quantity"] for item in bank_items if item["code"] == item_code), 0)
+
 def deposit_item(character: str, item: InventoryItem) -> Any:
     body = {"code": item.code, "quantity": item.quantity}
     return send_request(character, "/action/bank/deposit", "POST", body)
@@ -84,3 +88,7 @@ def accept_new_task(character: str):
 
 def complete_task(character: str):
     return send_request(character, "/action/task/complete", "POST", None)
+
+def trade_with_task_master(character: str, code: str, quantity: int):
+    body = {"code": code, "quantity": quantity}
+    return send_request(character, "/action/task/trade", "POST", body)
