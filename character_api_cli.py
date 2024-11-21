@@ -1,3 +1,4 @@
+import json
 import click
 import requests
 
@@ -29,7 +30,7 @@ def submit_plan(character, plan):
 @cli.command()
 @click.argument('character')
 @click.argument('action')
-@click.option('--subaction', help='Optional subaction for the default action')
+@click.argument('subaction', required=False)
 def set_default(character, action, subaction):
     """Set the default action for a character"""
     try:
@@ -37,22 +38,34 @@ def set_default(character, action, subaction):
             "character": character,
             "action": action
         }
-        if subaction:
-            payload["subaction"] = subaction
         
+        # Parse subaction if provided
+        if subaction:
+            try:
+                # Try to parse as JSON first
+                subaction = subaction.replace("'", '"')
+                parsed_subaction = json.loads(subaction)
+                payload["subaction"] = parsed_subaction
+            except json.JSONDecodeError:
+                # If not JSON, treat as a simple string
+                payload["subaction"] = subaction
+        print(payload)
         response = requests.post(
             f"{BASE_URL}/setdefault", 
             json=payload
         )
         response.raise_for_status()
         
+        click.echo(f"Set default action for {character} to {action}")
         if subaction:
-            click.echo(f"Set default action for {character} to {action} with subaction {subaction}")
-        else:
-            click.echo(f"Set default action for {character} to {action}")
+            click.echo(f"Subaction: {subaction}")
     except requests.RequestException as e:
         click.echo(f"Error setting default action: {e}", err=True)
 
+# ... (rest of the previous code remains the same)
+
+if __name__ == '__main__':
+    cli()
 @cli.command()
 @click.argument('character')
 def empty_plan(character):
@@ -69,3 +82,10 @@ def empty_plan(character):
 
 if __name__ == '__main__':
     cli()
+
+
+'''
+python character_api_cli.py set-default Tim craft "{'code':'iron','quantity':12}"
+python character_api_cli.py set-default Bobby attack cow
+
+'''
