@@ -89,6 +89,9 @@ def collect_highest_unlocked_resource(character: Character, skill: str):
 def go_and_collect_item(character: Character, code: str):
     # Find resource location
     locations = ency.get_location_by_resource(code)
+    if len(locations) == 0:
+        print(f"Item {code} does not exists")
+        return
     location = locations.iloc[0]
     if (character.x != location["x"]) or (character.y != location["y"]):
         result = move(character.name, int(location["x"]), int(location["y"]))
