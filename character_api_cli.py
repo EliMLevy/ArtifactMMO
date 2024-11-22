@@ -11,15 +11,24 @@ def cli():
 
 @cli.command()
 @click.argument('character')
-@click.argument('plan', nargs=-1)
+@click.argument('plan')
 def submit_plan(character, plan):
     """Submit a plan for a specific character"""
     try:
+        try:
+            # Try to parse as JSON first
+            plan = plan.replace("'", '"')
+            parsed_plan = json.loads(plan)
+            plan = parsed_plan
+        except json.JSONDecodeError:
+            # If not JSON, treat as a simple string
+            pass
+
         response = requests.post(
             f"{BASE_URL}/submitplan", 
             json={
                 "character": character,
-                "plan": list(plan)
+                "plan": plan
             }
         )
         response.raise_for_status()
