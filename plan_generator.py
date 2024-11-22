@@ -114,9 +114,13 @@ def generate_crafting_plan(item_code, quantity_needed, max_inventory_items, use_
     return plan
 
 if __name__ == "__main__":
-    plan = generate_crafting_plan("iron", 35, 120)
-    print(json.dumps({"action": "deposit all"}), ",")
-    for step in plan:
-        print(json.dumps(step), ",")
+    plan = generate_crafting_plan("iron_pickaxe", 5, 120)
+    plan.insert(0, {"action": "deposit all"})
+    print(plan)
+    
+
+    # for step in plan:
+    #     print(json.dumps(step), ",")
     print(json.dumps({"action": "deposit all"}))
     
+
