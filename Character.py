@@ -143,7 +143,7 @@ class Character:
             if self.plan != None and len(self.plan) > 0:
                 self.execute_action(self.plan.pop(0))
             elif self.default_action == "idle":
-                time.sleep(10)
+                time.sleep(3)
             elif self.default_action == "tasks":
                 self.complete_tasks(self.default_subaction)
             elif self.default_action == "collect loop": # Collects the highest resource unlocked for the lowest skill
@@ -353,6 +353,8 @@ class Character:
             return self.mining_level
         if skill == "woodcutting":
             return self.woodcutting_level
+        if skill == "alchemy":
+            return self.alchemy_level
 
     def needs_rest(self):
         return self.hp / self.max_hp < LOW_HP_THRESHOLD

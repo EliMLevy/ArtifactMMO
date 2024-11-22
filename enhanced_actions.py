@@ -77,7 +77,9 @@ def collect_highest_unlocked_resource(character: Character, skill: str):
     locations = ency.get_locations_by_skill(skill)
     locations = locations.loc[locations["level"] <= lvl]
     locations.sort_values(by="level", inplace=True, ascending=False)
-
+    if len(locations) == 0:
+        print(f"No locations found for {skill} under level {lvl}")
+        return
     location = locations.iloc[0]
     if (character.x != location["x"]) or (character.y != location["y"]):
         result = move(character.name, int(location["x"]), int(location["y"]))
