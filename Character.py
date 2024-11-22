@@ -19,7 +19,7 @@ logging.basicConfig(
 LOW_HP_THRESHOLD = 0.6
 LOW_INVENTORY_SPACE_THRESHOLD = 0.9
 
-GEAR_SLOTS = ["shield","helmet","body_armor","leg_armor","boots","ring"]
+GEAR_SLOTS = ["shield","helmet","body_armor","leg_armor","boots","ring", "amulet"]
 
 class Character:
     def __init__(self, name):
@@ -139,11 +139,13 @@ class Character:
                 self.execute_action(self.plan.pop(0))
             elif self.default_action == "idle":
                 time.sleep(10)
-            elif self.default_action == "collecting":
-                self.complete_resource_collect(self.default_subaction)
             elif self.default_action == "tasks":
                 self.complete_tasks(self.default_subaction)
-            elif self.default_action == "collect":
+            elif self.default_action == "collect loop": # Collects the highest resource unlocked for the lowest skill
+                self.improve_collect_skills()
+            elif self.default_action == "collecting": # Collects the high resource unlocked for a specific skill
+                self.complete_resource_collect(self.default_subaction)
+            elif self.default_action == "collect": # Collects a specific resource
                 if self.needs_to_deposit():
                     self.logger.debug(f"needs to deposit")
                     deposit_all_items(self)
@@ -204,9 +206,24 @@ class Character:
             self.logger.debug(f"needs to deposit")
             deposit_all_items(self)
 
+        if skill == "mining" and self.weapon_slot != 'iron_pickaxe':
+            self.equip_new_gear("weapon", "iron_pickaxe")
+
         self.logger.info(f"Collecting {skill}")
         collect_highest_unlocked_resource(self, skill)
             
+    def improve_collect_skills(self):
+        # Find the most untrained skill
+        self.load_data()
+        skills = {
+            "mining": self.mining_level,
+            "woodcutting": self.woodcutting_level,
+            "fishing": self.fishing_level,
+            "alchemy": self.alchemy_level
+        }
+        most_untrained = min(skills, key=skills.get)
+        # self.complete_resource_collect
+        self.complete_resource_collect(most_untrained)
 
     def complete_tasks(self, task_type):
         from enhanced_actions import move_to_location, deposit_all_items
@@ -402,6 +419,8 @@ class Character:
         self.logger.info(f"Unequipping {slot}")
         result = unequip(self.name, slot)
         handle_result_cooldown(result)
+        # reload data so that the inventory is accurate
+        self.load_data()
         # deposit the gear
         self.logger.info(f"Depositing all")
         deposit_all_items(self)
@@ -416,3 +435,7 @@ class Character:
 
     def get_quantity_of_inv_item(self, item_code):
         return next((item.quantity for item in self.inventory if item.code == item_code), 0)
+    
+    def improve_gear_crafting_stat():
+        # Find the gear at the highest level unlocked that is the cheapest to make
+        pass
