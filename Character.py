@@ -29,9 +29,14 @@ class Character:
         self.default_action = "idle" # "tasks"
         self.default_subaction = "monsters"
         self.plan = []
+        self.last_loaded_data = None
 
     def load_data(self):
+        if self.last_loaded_data != None and (datetime.now() - self.last_loaded_data).total_seconds() <= 5:
+            # Our data is likely up to date. Lets not risk sending too many requests
+            return
         result = get_character(self.name)
+        self.last_loaded_data = datetime.now()
         self.set_data(result["data"])
     
     def set_data(self, data: dict):
@@ -189,6 +194,15 @@ class Character:
             self.logger.info(f"Colecting {action['code']} x{action['quantity']}")
             for i in range(int(action["quantity"])):
                 go_and_collect_item(self, action["code"])
+        elif action["action"] == "monster drop":
+            self.logger.info(f"Acquiring monster drop {action['code']} x{action['quantity']}")
+            while self.get_quantity_of_inv_item(action["code"]) < action["quantity"]:
+                self.load_data()
+                if self.needs_to_deposit():
+                    self.logger.debug(f"needs to deposit")
+                    deposit_all_items(self)
+                self.logger.info("Attacking monster")
+                self.attack_monster(action["monster code"])
         else:
             time.sleep(5)
 
