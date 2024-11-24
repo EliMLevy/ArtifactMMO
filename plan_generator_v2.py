@@ -113,13 +113,19 @@ class Plan():
         return result
 
 
-def generate_plan(item_code, quantity, max_inventory_space):
-    plan = Plan(item_code, quantity,max_inventory_space, use_bank=False)
-    return plan.get_executable([])
+def generate_plan(item_code, quantity, max_inventory_space, use_bank=False):
+    plan = Plan(item_code, quantity,max_inventory_space, use_bank=use_bank)
+    result = plan.get_executable([])
+    if len(result) == 0:
+        # If we have enough in the bank it will return an empty plan
+        return [{"action": "withdraw", "code": item_code, "quantity": quantity}]
+    else:
+        return result
 
 
 if __name__ == "__main__":
 
-    executable = generate_plan("iron_legs_armor", 5)
+    executable = generate_plan("spruce_plank", 15, max_inventory_space=120)
+    print(executable)
     for step in executable:
         print(step)
