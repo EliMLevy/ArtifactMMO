@@ -298,7 +298,7 @@ class Character:
         # If we get here, we are not finished with task but there is no more to withdraw
         # We need to create a plan for acquiring it, then proceed
         acquire_amount = min(self.task_total - self.task_progress, math.floor(self.inventory_max_items * 0.75)) # we may need to do several trips
-        plan = generate_plan(self.task, acquire_amount, math.floor(self.inventory_max_items * 0.75))
+        plan = generate_plan(self.task, acquire_amount, math.floor(self.inventory_max_items * 0.75), use_bank=True)
         self.logger.info(f"Plan to acquire {self.task}: {plan}")
 
         self.execute_plan(plan)
@@ -314,12 +314,13 @@ class Character:
             result = rest(self.name)
             handle_result_cooldown(result)
 
-
+        self.load_data()
         best_weapon = find_best_weapon_for_monster(monster_code, self.level, available_in_bank=True,  current_weapon=self.weapon_slot, current_inventory=self.inventory)
         if best_weapon != False and best_weapon["code"] != self.weapon_slot:
             self.logger.info(f"The {best_weapon['code']} is better against {monster_code} than {self.weapon_slot}")
             self.equip_new_gear("weapon", best_weapon["code"])
 
+        self.load_data()
         for gear_slot in GEAR_SLOTS:
             best_gear = find_best_armor_for_monster(monster_code, gear_slot, self.level, available_in_bank=True, current_armor=self.get_active_gear(gear_slot), current_inventory=self.inventory )
             # self.logger.info(f"Found best gear: {best_gear}")
@@ -329,10 +330,22 @@ class Character:
                     self.equip_new_gear("ring1", best_gear["code"])
                 else:
                     self.equip_new_gear(gear_slot, best_gear["code"])
+        
+        
+        # Equip health potion
+        # If we are out, we need to generate a plan to acquire some
+        # self.load_data()
+        # if len(self.utility1_slot) > 0 and self.utility1_slot != "small_health_potion":
+        #     unequip(self.name, "utility1")
+        # if len(self.utility1_slot) == 0 or self.utility1_slot == "small_health_potion":
+        #     if self.utility1_slot_quantity < 1:
+        #         potions_left = self.get_quantity_of_inv_item("small_health_potion")
+        #         if potions_left > 0:
+        #             equip(self.name, "small_health_potion", "utility1", quantity=1)
+        #         else:
+        #             plan = generate_plan("small_health_potion", 30, max_inventory_space=math.floor(self.inventory_max_items * 0.75), use_bank=True)
 
 
-
-        # If above is false
         # Move to location of task
         self.logger.info(f"Moving to tasks {monster_code}")
         move_to_location(self, monster_code)
@@ -385,42 +398,6 @@ class Character:
         if slot == "utility2":
             return self.utility2_slot, self.utility2_slot_quantity
 
-    def equip_utility(self, slot, utility_code, quantity, extra_in_inv):
-        '''
-        Args:
-            slot: the utility slot to put item into. Either utility1 or utility2
-            utility_code: the item code for the item
-            quantity: the amount that we want in our utility slot
-            extra_in_inv: if we need to craft more, how much should we craft
-        '''
-        util, util_quantity = self.get_active_gear(slot)
-        if util == utility_code and quantity <= util_quantity:
-            return
-
-        self.logger.info(f"Equipping more {utility_code} x{quantity}")
-        quantity_to_equip = quantity    
-        if util != utility_code:
-            # Unequip the undesired utility
-            result = unequip(self.name, slot)
-            handle_result_cooldown(result)
-        else:
-            quantity_to_equip -= util_quantity
-
-        quantity_in_inventory = self.get_quantity_of_inv_item(util_quantity)
-        if quantity_in_inventory > 0:
-            result = equip(self.name, utility_code, slot) 
-            quantity_to_equip -= quantity_in_inventory
-            handle_result_cooldown(result)
-
-
-        # If we get here, we dont have any more in our inv, so we need a plan to acquire some
-        if quantity_to_equip > 0:
-            plan = generate_plan(utility_code, max(quantity_to_equip, extra_in_inv), math.floor(self.inventory_max_items * 0.75))
-            self.logger.info(f"Acquiring more {utility_code} with this plan: {plan}")
-            self.execute_plan(plan)
-            # At this point we can return and the next time it is called it should be in our inventory
-
-        
 
     def equip_new_gear(self, slot, new_gear_code):
         from enhanced_actions import deposit_all_items, withdraw_from_bank
