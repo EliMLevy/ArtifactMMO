@@ -2,7 +2,6 @@ import math
 from actions import get_bank_quantity
 from encyclopedia import get_item_by_name, get_location_by_monster_drop, get_location_by_resource
 
-MAX_INVENTORY_SPACE = 120
 
 
 class Plan():
@@ -11,7 +10,7 @@ class Plan():
     The asumption is that once the dependencies are completed, the action will be able to 
     succeed and it will result in the player having the required items in their inventory.
     '''
-    def __init__(self, code, quantity, use_bank=True):
+    def __init__(self, code, quantity, max_inventory_space, use_bank=True):
         # Figure out dependendies
         self.code = code
         self.quantity = quantity # this will be used to withdraw the final amount (includes stuff in bank)
@@ -19,6 +18,7 @@ class Plan():
         self.item = get_item_by_name(code)
         self.dependencies: list[Plan] = []
         self.final_action = None
+        self.max_inventory_space = max_inventory_space
 
         if self.item is None:
             raise Exception(f"Failed to find item {code}")
@@ -38,11 +38,11 @@ class Plan():
             if "recipe" in self.item:
                 sum_of_ingredients = 0
                 for ingredient in self.item["recipe"]["items"]:
-                    new_plan = Plan(ingredient["code"], ingredient["quantity"] * self.quantity_needed)
+                    new_plan = Plan(ingredient["code"], ingredient["quantity"] * self.quantity_needed, self.max_inventory_space)
                     sum_of_ingredients += new_plan.final_action["quantity"]
                     self.dependencies.append(new_plan)
                 self.final_action = {"action": "craft", "code": self.code, "quantity": self.quantity_needed}
-                if sum_of_ingredients > MAX_INVENTORY_SPACE:
+                if sum_of_ingredients > self.max_inventory_space:
                     self.split_step()
             else:
                 # If it isnt craftable, the final action will be to collect it
@@ -68,13 +68,13 @@ class Plan():
         are plans for self.code but the quantity is an amount that respects inventory space
         '''
         if "recipe" not in self.item:  # If no requirements (base item), just return what fits in inventory
-            return min(self.quantity, MAX_INVENTORY_SPACE)
+            return min(self.quantity, self.max_inventory_space)
     
         # Calculate how many items we need in inventory per craft
         total_items_per_craft = sum(ingredient["quantity"] for ingredient in self.item["recipe"]["items"])
         
         # Calculate max items we can craft based on inventory space
-        max_craftable = MAX_INVENTORY_SPACE // total_items_per_craft
+        max_craftable = self.max_inventory_space // total_items_per_craft
         
         # Return the smaller of what we need and what we can fit
         max_batch_size = min(self.quantity, max_craftable)
@@ -85,7 +85,7 @@ class Plan():
         for i in range(batches_needed):
             if quantity_remaining < 0:
                 raise Exception(f"We have an erro in our logic {self.code} {self.quantity} {max_batch_size}")
-            self.dependencies.append(Plan(self.code, min(max_batch_size, quantity_remaining)))
+            self.dependencies.append(Plan(self.code, min(max_batch_size, quantity_remaining), self.max_inventory_space))
             quantity_remaining -= max_batch_size
         self.final_action = {"action": "noop", "desc": f"split {self.code} x{self.quantity} into {batches_needed} batchs", "code": self.code,  "quantity": self.quantity}
 
@@ -99,7 +99,7 @@ class Plan():
                 executable.append({"action": "withdraw", "code": d.final_action["code"], "quantity": d.quantity})
 
             executable.append(self.final_action)
-            return executable
+        return executable
 
     def __str__(self):
         result = f"====PLAN FOR: {self.code}====\n"
@@ -113,11 +113,13 @@ class Plan():
         return result
 
 
-if __name__ == "__main__":
-    plan = Plan("steel_boots", 1)
-    # print(plan)
+def generate_plan(item_code, quantity, max_inventory_space):
+    plan = Plan(item_code, quantity,max_inventory_space, use_bank=False)
+    return plan.get_executable([])
 
-    executable = []
-    plan.get_executable(executable)
+
+if __name__ == "__main__":
+
+    executable = generate_plan("iron_legs_armor", 5)
     for step in executable:
         print(step)
