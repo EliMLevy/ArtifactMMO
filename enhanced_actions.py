@@ -125,7 +125,9 @@ def move_to_location(character: Character, location_name: str):
     location = ency.get_location_by_name(location_name)
     if len(location) > 0:
         location = location.iloc[0]
-        
+    else:
+        print(f"Could not find locations for {location_name}")
+        return
     if character.x != location["x"] or character.y != location["y"]:
         result = move(character.name, int(location["x"]), int(location["y"]))
         handle_result_cooldown(result)
