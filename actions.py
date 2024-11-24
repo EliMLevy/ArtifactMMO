@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import threading
 import time
 from typing import Any
 
@@ -44,8 +45,10 @@ def get_character(name: str) -> Any:
 last_fetched_bank_items = None
 bank_item_fetch_refresh = 30 # seconds
 cached_bank_items = None
+lock = threading.Lock()
 def get_bank_items():
     global cached_bank_items, last_fetched_bank_items, bank_item_fetch_refresh
+    lock.acquire()
     if cached_bank_items is None or last_fetched_bank_items is None or (datetime.now() - last_fetched_bank_items).seconds > bank_item_fetch_refresh:
         print("Getting bank items")
         page = 1
@@ -65,6 +68,7 @@ def get_bank_items():
         cached_bank_items = all_results
         last_fetched_bank_items = datetime.now()
         return all_results
+    lock.release()
     return cached_bank_items
 
 def get_bank_quantity(item_code: str):
