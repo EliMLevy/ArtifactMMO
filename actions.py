@@ -67,6 +67,7 @@ def get_bank_items():
             time.sleep(1)
         cached_bank_items = all_results
         last_fetched_bank_items = datetime.now()
+        lock.release()
         return all_results
     lock.release()
     return cached_bank_items
