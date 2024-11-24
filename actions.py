@@ -33,8 +33,8 @@ def unequip(character: str, slot: str) -> Any:
     raw = {"slot": slot}
     return send_request(character, "/action/unequip", "POST", raw)
 
-def equip(character: str, code: str, slot: str) -> Any:
-    raw = {"code": code, "slot": slot}
+def equip(character: str, code: str, slot: str, quantity: int = 1) -> Any:
+    raw = {"code": code, "slot": slot, "quantity": quantity}
     return send_request(character, "/action/equip", "POST", raw)
 
 def get_character(name: str) -> Any:
