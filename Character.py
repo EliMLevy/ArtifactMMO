@@ -2,11 +2,10 @@ import math
 import time
 import logging
 from datetime import datetime, timezone
-from dataclasses import dataclass, field
 from actions import accept_new_task, attack, complete_task, craft, equip, get_bank_quantity, get_character, move, recycle, rest, trade_with_task_master, unequip
 from data_classes import InventoryItem
 import encyclopedia as ency
-from plan_generator import generate_crafting_plan
+from plan_generator_v2 import generate_plan
 from util import handle_result_cooldown
 from gear_analyzer import find_best_armor_for_monster, find_best_weapon_for_monster
 
@@ -162,7 +161,7 @@ class Character:
                 self.attack_monster(self.default_subaction)
             elif self.default_action == "craft":
                 deposit_all_items(self)
-                plan = generate_crafting_plan(self.default_subaction["code"], self.default_subaction["quantity"], math.floor(self.inventory_max_items * 0.75), use_bank=False)
+                plan = generate_plan(self.default_subaction["code"], self.default_subaction["quantity"], math.floor(self.inventory_max_items * 0.75))
                 self.logger.info(f"Plan to acquire {self.default_subaction['code']}: {plan}")
                 self.execute_plan(plan)
             
@@ -233,7 +232,6 @@ class Character:
             "mining": self.mining_level,
             "woodcutting": self.woodcutting_level,
             "fishing": self.fishing_level,
-            "alchemy": self.alchemy_level
         }
         most_untrained = min(skills, key=skills.get)
         # self.complete_resource_collect
@@ -300,7 +298,7 @@ class Character:
         # If we get here, we are not finished with task but there is no more to withdraw
         # We need to create a plan for acquiring it, then proceed
         acquire_amount = min(self.task_total - self.task_progress, math.floor(self.inventory_max_items * 0.75)) # we may need to do several trips
-        plan = generate_crafting_plan(self.task, acquire_amount, math.floor(self.inventory_max_items * 0.75))
+        plan = generate_plan(self.task, acquire_amount, math.floor(self.inventory_max_items * 0.75))
         self.logger.info(f"Plan to acquire {self.task}: {plan}")
 
         self.execute_plan(plan)
@@ -417,7 +415,7 @@ class Character:
 
         # If we get here, we dont have any more in our inv, so we need a plan to acquire some
         if quantity_to_equip > 0:
-            plan = generate_crafting_plan(utility_code, max(quantity_to_equip, extra_in_inv), math.floor(self.inventory_max_items * 0.75))
+            plan = generate_plan(utility_code, max(quantity_to_equip, extra_in_inv), math.floor(self.inventory_max_items * 0.75))
             self.logger.info(f"Acquiring more {utility_code} with this plan: {plan}")
             self.execute_plan(plan)
             # At this point we can return and the next time it is called it should be in our inventory
