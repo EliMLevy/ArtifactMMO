@@ -1,8 +1,8 @@
 import math
 import time
 import logging
-from datetime import datetime, timezone
-from actions import accept_new_task, attack, complete_task, craft, equip, get_bank_quantity, get_character, move, recycle, rest, trade_with_task_master, unequip
+from datetime import datetime, timedelta, timezone
+from actions import accept_new_task, attack, complete_task, craft, equip, get_bank_quantity, get_character, move, recycle, rest, trade_with_task_master, unequip, use_item
 from data_classes import InventoryItem
 import encyclopedia as ency
 from plan_generator_v2 import generate_plan
@@ -26,7 +26,7 @@ class Character:
         self.logger.info(f"Character {name} created!")
         self.name = name
         self.default_action = "idle" # "tasks"
-        self.default_subaction = "monsters"
+        self.default_subaction = ""
         self.plan = []
         self.last_loaded_data = None
 
@@ -139,6 +139,8 @@ class Character:
         from enhanced_actions import go_and_collect_item, deposit_all_items
         while True:
             self.load_data()
+            if self.cooldown > 0 and datetime.now() + timedelta(hours=5) < self.cooldown_expiration:
+                time.sleep(self.cooldown)
             if self.plan != None and len(self.plan) > 0:
                 self.execute_action(self.plan.pop(0))
             elif self.default_action == "idle":
@@ -306,11 +308,23 @@ class Character:
 
 
     def attack_monster(self, monster_code):
-        from enhanced_actions import move_to_location
+        from enhanced_actions import move_to_location, withdraw_from_bank
+
+        # Pack up consumables
+        inv_items_wanted = [
+            # {"code": "small_health_potion", "min_quantity": 1, "desired_quantity": 15},
+            {"code": "cooked_gudgeon", "min_quantity": 1, "desired_quantity": 50},
+        ]
+        for item in inv_items_wanted:
+            if self.get_quantity_of_inv_item(item["code"]) < item["min_quantity"] and get_bank_quantity(item["code"]) > item["desired_quantity"]:
+                self.logger.info(f"Need more {item['code']}")
+                # Withdraw 
+                withdraw_from_bank(self, item["code"], item["desired_quantity"])
 
         # Rest before unequipping any gear because its possible that we are very low hp
         if self.needs_rest():
             self.logger.debug(f"Resting!")
+            self.try_consuming_consumables()
             result = rest(self.name)
             handle_result_cooldown(result)
 
@@ -423,6 +437,31 @@ class Character:
         self.logger.info(f"equipping {new_gear_code} into {slot}")
         result = equip(self.name, new_gear_code, slot)
         handle_result_cooldown(result)
+
+    def try_consuming_consumables(self):
+        # If we have consumables in our inventory,
+        # Eat the one that will give us the biggest health boost 
+        best_food = None
+        best_food_health = 1
+        quantity_in_inv = 0
+        for inv_item in self.inventory:
+            if len(inv_item.code) > 0:
+                item = ency.get_item_by_name(inv_item.code)
+                if item is not None and item["type"] == 'consumable':
+                    healing = next((effect["value"] for effect in item["effects"] if effect["name"] == "heal"), 0)
+                    if best_food == None or healing > best_food_health:
+                        best_food = item
+                        best_food_health = healing
+                        quantity_in_inv = inv_item.quantity
+                
+
+
+        if best_food is not None:
+            quantity = min(quantity_in_inv, math.floor((self.max_hp - self.hp) / best_food_health))
+            self.logger.info(f"Using {quantity} {best_food['code']}s becuase I need {(self.max_hp - self.hp)} hp")
+            result = use_item(self.name, best_food["code"], quantity)
+            handle_result_cooldown(result)
+
 
     def get_quantity_of_inv_item(self, item_code):
         return next((item.quantity for item in self.inventory if item.code == item_code), 0)

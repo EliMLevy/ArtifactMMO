@@ -29,7 +29,7 @@ def send_request_to_url(url, path, method, body):
         result = response.json()
 
         if "error" in result:
-            print("Failed:", url, result["error"])
+            print("Failed:", url, path, result["error"])
         if response.status_code != 200:
             print("Unexpected status:", response.status_code, result)
             
@@ -41,7 +41,7 @@ def send_request_to_url(url, path, method, body):
 def handle_result_cooldown(result):
     if "data" in result and "cooldown" in result["data"]:
         start = datetime.now()
-        time.sleep(result["data"]["cooldown"]["remaining_seconds"])
+        time.sleep(result["data"]["cooldown"]["remaining_seconds"] + 1)
 
     
 # Example usage:
