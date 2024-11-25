@@ -102,7 +102,7 @@ def combine_maps_and_resources():
 
 def combine_items():
     all_items = {}
-    for i in range(1, 5):
+    for i in range(1, 8):
         item_file = open(f"./items/Items_{i}.json")
         items = json.loads(item_file.read())
 
@@ -179,4 +179,4 @@ def convert_json_to_csv(input_file, output_file):
 # convert_json_to_csv("./maps/all_maps.json", "all_maps.csv")
 
 if __name__ == "__main__":
-    combine_maps_and_monsters()
+    combine_items()

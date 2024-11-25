@@ -1,32 +1,99 @@
 {
     "data": [
         {
-            "name": "Health Potion",
-            "code": "health_potion",
-            "level": 30,
-            "type": "utility",
-            "subtype": "potion",
-            "description": "Restores 60HP at the start of the turn if the player has lost more than 50% of his health points.",
+            "name": "Skeleton Bone",
+            "code": "skeleton_bone",
+            "level": 18,
+            "type": "resource",
+            "subtype": "mob",
+            "description": "",
+            "effects": [],
+            "craft": null,
+            "tradeable": true
+        },
+        {
+            "name": "Skeleton Skull",
+            "code": "skeleton_skull",
+            "level": 18,
+            "type": "resource",
+            "subtype": "mob",
+            "description": "",
+            "effects": [],
+            "craft": null,
+            "tradeable": true
+        },
+        {
+            "name": "Birch Wood",
+            "code": "birch_wood",
+            "level": 20,
+            "type": "resource",
+            "subtype": "woodcutting",
+            "description": "",
+            "effects": [],
+            "craft": null,
+            "tradeable": true
+        },
+        {
+            "name": "Magic Wizard Hat",
+            "code": "magic_wizard_hat",
+            "level": 20,
+            "type": "helmet",
+            "subtype": "",
+            "description": "",
             "effects": [
                 {
-                    "name": "restore",
-                    "value": 60
+                    "name": "hp",
+                    "value": 90
+                },
+                {
+                    "name": "dmg_water",
+                    "value": 16
                 }
             ],
             "craft": {
-                "skill": "alchemy",
-                "level": 30,
+                "skill": "gearcrafting",
+                "level": 20,
                 "items": [
                     {
-                        "code": "nettle_leaf",
+                        "code": "ogre_skin",
                         "quantity": 2
                     },
                     {
-                        "code": "sunflower",
-                        "quantity": 1
+                        "code": "wolf_hair",
+                        "quantity": 4
                     },
                     {
-                        "code": "sap",
+                        "code": "blue_slimeball",
+                        "quantity": 10
+                    },
+                    {
+                        "code": "hardwood_plank",
+                        "quantity": 2
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Cooked Trout",
+            "code": "cooked_trout",
+            "level": 20,
+            "type": "consumable",
+            "subtype": "food",
+            "description": "",
+            "effects": [
+                {
+                    "name": "heal",
+                    "value": 225
+                }
+            ],
+            "craft": {
+                "skill": "cooking",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "trout",
                         "quantity": 1
                     }
                 ],
@@ -35,44 +102,203 @@
             "tradeable": true
         },
         {
-            "name": "Golden Gloves",
-            "code": "golden_gloves",
-            "level": 30,
-            "type": "weapon",
-            "subtype": "tool",
-            "description": "Reduces cooldown by 20% when a character harvest a plant.",
+            "name": "Ogre Skin",
+            "code": "ogre_skin",
+            "level": 20,
+            "type": "resource",
+            "subtype": "mob",
+            "description": "",
+            "effects": [],
+            "craft": null,
+            "tradeable": true
+        },
+        {
+            "name": "Ring of Chance",
+            "code": "ring_of_chance",
+            "level": 20,
+            "type": "ring",
+            "subtype": "",
+            "description": "",
             "effects": [
                 {
-                    "name": "attack_earth",
-                    "value": 5
+                    "name": "dmg_fire",
+                    "value": 8
                 },
                 {
-                    "name": "alchemy",
-                    "value": -20
+                    "name": "dmg_water",
+                    "value": 8
+                },
+                {
+                    "name": "dmg_air",
+                    "value": 8
+                },
+                {
+                    "name": "dmg_earth",
+                    "value": 8
+                }
+            ],
+            "craft": {
+                "skill": "jewelrycrafting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "jasper_crystal",
+                        "quantity": 1
+                    },
+                    {
+                        "code": "steel",
+                        "quantity": 6
+                    },
+                    {
+                        "code": "red_slimeball",
+                        "quantity": 2
+                    },
+                    {
+                        "code": "blue_slimeball",
+                        "quantity": 2
+                    },
+                    {
+                        "code": "pig_skin",
+                        "quantity": 4
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Battlestaff",
+            "code": "battlestaff",
+            "level": 20,
+            "type": "weapon",
+            "subtype": "staff",
+            "description": "",
+            "effects": [
+                {
+                    "name": "attack_water",
+                    "value": 40
                 }
             ],
             "craft": {
                 "skill": "weaponcrafting",
-                "level": 30,
+                "level": 20,
                 "items": [
                     {
-                        "code": "dead_wood_plank",
-                        "quantity": 7
+                        "code": "hardwood_plank",
+                        "quantity": 6
                     },
                     {
-                        "code": "obsidian",
+                        "code": "steel",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "wolf_bone",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "blue_slimeball",
+                        "quantity": 5
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Forest Whip",
+            "code": "forest_whip",
+            "level": 20,
+            "type": "weapon",
+            "subtype": "whip",
+            "description": "",
+            "effects": [
+                {
+                    "name": "attack_air",
+                    "value": 40
+                }
+            ],
+            "craft": {
+                "skill": "weaponcrafting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "green_slimeball",
                         "quantity": 2
                     },
                     {
-                        "code": "emerald",
-                        "quantity": 1
+                        "code": "wolf_hair",
+                        "quantity": 5
                     },
                     {
-                        "code": "magical_cure",
+                        "code": "ogre_eye",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "hardwood_plank",
+                        "quantity": 4
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Ogre Eye",
+            "code": "ogre_eye",
+            "level": 20,
+            "type": "resource",
+            "subtype": "mob",
+            "description": "",
+            "effects": [],
+            "craft": null,
+            "tradeable": true
+        },
+        {
+            "name": "Coal",
+            "code": "coal",
+            "level": 20,
+            "type": "resource",
+            "subtype": "mining",
+            "description": "",
+            "effects": [],
+            "craft": null,
+            "tradeable": true
+        },
+        {
+            "name": "Steel Helm",
+            "code": "steel_helm",
+            "level": 20,
+            "type": "helmet",
+            "subtype": "",
+            "description": "",
+            "effects": [
+                {
+                    "name": "hp",
+                    "value": 90
+                },
+                {
+                    "name": "dmg_earth",
+                    "value": 16
+                }
+            ],
+            "craft": {
+                "skill": "gearcrafting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "steel",
+                        "quantity": 8
+                    },
+                    {
+                        "code": "ogre_skin",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "wolf_bone",
                         "quantity": 2
                     },
                     {
-                        "code": "demoniac_dust",
+                        "code": "flying_wing",
                         "quantity": 3
                     }
                 ],
@@ -81,10 +307,334 @@
             "tradeable": true
         },
         {
-            "name": "Lost Amulet",
-            "code": "lost_amulet",
-            "level": 30,
-            "type": "amulet",
+            "name": "Steel Boots",
+            "code": "steel_boots",
+            "level": 20,
+            "type": "boots",
+            "subtype": "",
+            "description": "",
+            "effects": [
+                {
+                    "name": "hp",
+                    "value": 80
+                },
+                {
+                    "name": "res_earth",
+                    "value": 8
+                },
+                {
+                    "name": "res_fire",
+                    "value": 8
+                },
+                {
+                    "name": "haste",
+                    "value": 6
+                }
+            ],
+            "craft": {
+                "skill": "gearcrafting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "hardwood_plank",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "steel",
+                        "quantity": 6
+                    },
+                    {
+                        "code": "ogre_eye",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "ogre_skin",
+                        "quantity": 2
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Hardwood Plank",
+            "code": "hardwood_plank",
+            "level": 20,
+            "type": "resource",
+            "subtype": "plank",
+            "description": "",
+            "effects": [],
+            "craft": {
+                "skill": "woodcutting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "ash_wood",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "birch_wood",
+                        "quantity": 5
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Trout",
+            "code": "trout",
+            "level": 20,
+            "type": "resource",
+            "subtype": "fishing",
+            "description": "",
+            "effects": [],
+            "craft": null,
+            "tradeable": true
+        },
+        {
+            "name": "Steel Armor",
+            "code": "steel_armor",
+            "level": 20,
+            "type": "body_armor",
+            "subtype": "",
+            "description": "",
+            "effects": [
+                {
+                    "name": "hp",
+                    "value": 90
+                },
+                {
+                    "name": "dmg_earth",
+                    "value": 15
+                },
+                {
+                    "name": "dmg_water",
+                    "value": 15
+                },
+                {
+                    "name": "res_earth",
+                    "value": 5
+                },
+                {
+                    "name": "res_water",
+                    "value": 5
+                }
+            ],
+            "craft": {
+                "skill": "gearcrafting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "steel",
+                        "quantity": 7
+                    },
+                    {
+                        "code": "wolf_hair",
+                        "quantity": 2
+                    },
+                    {
+                        "code": "pig_skin",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "skeleton_skull",
+                        "quantity": 2
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Steel Battleaxe",
+            "code": "steel_battleaxe",
+            "level": 20,
+            "type": "weapon",
+            "subtype": "axe",
+            "description": "",
+            "effects": [
+                {
+                    "name": "attack_earth",
+                    "value": 40
+                }
+            ],
+            "craft": {
+                "skill": "weaponcrafting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "steel",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "hardwood_plank",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "skeleton_bone",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "wolf_hair",
+                        "quantity": 4
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Steel Legs Armor",
+            "code": "steel_legs_armor",
+            "level": 20,
+            "type": "leg_armor",
+            "subtype": "",
+            "description": "",
+            "effects": [
+                {
+                    "name": "hp",
+                    "value": 80
+                },
+                {
+                    "name": "haste",
+                    "value": 2
+                },
+                {
+                    "name": "dmg_water",
+                    "value": 10
+                },
+                {
+                    "name": "dmg_earth",
+                    "value": 10
+                },
+                {
+                    "name": "res_water",
+                    "value": 6
+                }
+            ],
+            "craft": {
+                "skill": "gearcrafting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "steel",
+                        "quantity": 7
+                    },
+                    {
+                        "code": "skeleton_skull",
+                        "quantity": 2
+                    },
+                    {
+                        "code": "feather",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "pig_skin",
+                        "quantity": 2
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Skeleton Pants",
+            "code": "skeleton_pants",
+            "level": 20,
+            "type": "leg_armor",
+            "subtype": "",
+            "description": "",
+            "effects": [
+                {
+                    "name": "hp",
+                    "value": 80
+                },
+                {
+                    "name": "haste",
+                    "value": 2
+                },
+                {
+                    "name": "dmg_fire",
+                    "value": 10
+                },
+                {
+                    "name": "dmg_air",
+                    "value": 10
+                },
+                {
+                    "name": "res_fire",
+                    "value": 6
+                }
+            ],
+            "craft": {
+                "skill": "gearcrafting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "wolf_bone",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "skeleton_bone",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "wolf_hair",
+                        "quantity": 2
+                    },
+                    {
+                        "code": "ash_plank",
+                        "quantity": 7
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Skull Staff",
+            "code": "skull_staff",
+            "level": 20,
+            "type": "weapon",
+            "subtype": "staff",
+            "description": "",
+            "effects": [
+                {
+                    "name": "attack_fire",
+                    "value": 40
+                }
+            ],
+            "craft": {
+                "skill": "weaponcrafting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "skeleton_skull",
+                        "quantity": 1
+                    },
+                    {
+                        "code": "skeleton_bone",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "steel",
+                        "quantity": 5
+                    },
+                    {
+                        "code": "hardwood_plank",
+                        "quantity": 5
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Skeleton Armor",
+            "code": "skeleton_armor",
+            "level": 20,
+            "type": "body_armor",
             "subtype": "",
             "description": "",
             "effects": [
@@ -99,143 +649,35 @@
                 {
                     "name": "dmg_air",
                     "value": 15
-                }
-            ],
-            "craft": {
-                "skill": "jewelrycrafting",
-                "level": 30,
-                "items": [
-                    {
-                        "code": "gold",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "obsidian",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "cyclops_eye",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "demoniac_dust",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "red_cloth",
-                        "quantity": 3
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Royal Skeleton Pants",
-            "code": "royal_skeleton_pants",
-            "level": 30,
-            "type": "leg_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 150
-                },
-                {
-                    "name": "haste",
-                    "value": 5
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 17
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 17
-                },
-                {
-                    "name": "res_earth",
-                    "value": 7
-                },
-                {
-                    "name": "res_water",
-                    "value": 7
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 30,
-                "items": [
-                    {
-                        "code": "gold",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "skeleton_pants",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "owlbear_hair",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "vampire_blood",
-                        "quantity": 3
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Royal Skeleton Armor",
-            "code": "royal_skeleton_armor",
-            "level": 30,
-            "type": "body_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 150
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 20
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 20
-                },
-                {
-                    "name": "res_air",
-                    "value": 6
                 },
                 {
                     "name": "res_fire",
-                    "value": 6
+                    "value": 5
+                },
+                {
+                    "name": "res_air",
+                    "value": 5
                 }
             ],
             "craft": {
                 "skill": "gearcrafting",
-                "level": 30,
+                "level": 20,
                 "items": [
                     {
-                        "code": "gold",
-                        "quantity": 8
+                        "code": "skeleton_bone",
+                        "quantity": 6
                     },
                     {
-                        "code": "skeleton_armor",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "red_cloth",
+                        "code": "wolf_bone",
                         "quantity": 3
                     },
                     {
-                        "code": "demoniac_dust",
-                        "quantity": 3
+                        "code": "pig_skin",
+                        "quantity": 2
+                    },
+                    {
+                        "code": "steel",
+                        "quantity": 4
                     }
                 ],
                 "quantity": 1
@@ -243,45 +685,41 @@
             "tradeable": true
         },
         {
-            "name": "Royal Skeleton Helmet",
-            "code": "royal_skeleton_helmet",
-            "level": 30,
+            "name": "Skeleton Helmet",
+            "code": "skeleton_helmet",
+            "level": 20,
             "type": "helmet",
             "subtype": "",
             "description": "",
             "effects": [
                 {
                     "name": "hp",
-                    "value": 160
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 20
+                    "value": 90
                 },
                 {
                     "name": "dmg_air",
-                    "value": 20
+                    "value": 16
                 }
             ],
             "craft": {
                 "skill": "gearcrafting",
-                "level": 30,
+                "level": 20,
                 "items": [
                     {
-                        "code": "gold",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "skeleton_helmet",
+                        "code": "skeleton_skull",
                         "quantity": 1
                     },
                     {
-                        "code": "owlbear_hair",
-                        "quantity": 4
+                        "code": "skeleton_bone",
+                        "quantity": 3
                     },
                     {
-                        "code": "cyclops_eye",
-                        "quantity": 4
+                        "code": "wolf_bone",
+                        "quantity": 2
+                    },
+                    {
+                        "code": "iron",
+                        "quantity": 7
                     }
                 ],
                 "quantity": 1
@@ -289,45 +727,24 @@
             "tradeable": true
         },
         {
-            "name": "Elderwood Staff",
-            "code": "elderwood_staff",
-            "level": 30,
-            "type": "weapon",
-            "subtype": "staff",
+            "name": "Steel",
+            "code": "steel",
+            "level": 20,
+            "type": "resource",
+            "subtype": "alloy",
             "description": "",
-            "effects": [
-                {
-                    "name": "attack_water",
-                    "value": 40
-                },
-                {
-                    "name": "attack_fire",
-                    "value": 40
-                }
-            ],
+            "effects": [],
             "craft": {
-                "skill": "weaponcrafting",
-                "level": 30,
+                "skill": "mining",
+                "level": 20,
                 "items": [
                     {
-                        "code": "dead_wood_plank",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "lizard_skin",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "cyclops_eye",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "red_cloth",
+                        "code": "iron_ore",
                         "quantity": 3
                     },
                     {
-                        "code": "skeleton_skull",
-                        "quantity": 3
+                        "code": "coal",
+                        "quantity": 5
                     }
                 ],
                 "quantity": 1
@@ -335,45 +752,45 @@
             "tradeable": true
         },
         {
-            "name": "Obsidian Battleaxe",
-            "code": "obsidian_battleaxe",
-            "level": 30,
-            "type": "weapon",
-            "subtype": "axe",
+            "name": "Dreadful Ring",
+            "code": "dreadful_ring",
+            "level": 20,
+            "type": "ring",
+            "subtype": "",
             "description": "",
             "effects": [
                 {
-                    "name": "attack_earth",
-                    "value": 80
+                    "name": "hp",
+                    "value": 20
                 },
                 {
-                    "name": "inventory_space",
-                    "value": -25
+                    "name": "dmg_earth",
+                    "value": 11
+                },
+                {
+                    "name": "dmg_water",
+                    "value": 11
                 }
             ],
             "craft": {
-                "skill": "weaponcrafting",
-                "level": 30,
+                "skill": "jewelrycrafting",
+                "level": 20,
                 "items": [
                     {
-                        "code": "obsidian",
+                        "code": "steel",
                         "quantity": 7
                     },
                     {
-                        "code": "dead_wood_plank",
+                        "code": "ogre_eye",
                         "quantity": 4
-                    },
-                    {
-                        "code": "lizard_skin",
-                        "quantity": 3
                     },
                     {
                         "code": "cyclops_eye",
                         "quantity": 3
                     },
                     {
-                        "code": "demoniac_dust",
-                        "quantity": 3
+                        "code": "jasper_crystal",
+                        "quantity": 1
                     }
                 ],
                 "quantity": 1
@@ -381,63 +798,19 @@
             "tradeable": true
         },
         {
-            "name": "Cursed Book",
-            "code": "cursed_book",
-            "level": 33,
-            "type": "resource",
-            "subtype": "mob",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Magic Stone",
-            "code": "magic_stone",
-            "level": 33,
-            "type": "resource",
-            "subtype": "mob",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Malefic Cloth",
-            "code": "malefic_cloth",
-            "level": 35,
-            "type": "resource",
-            "subtype": "mob",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Strange Ore",
-            "code": "strange_ore",
-            "level": 35,
-            "type": "resource",
-            "subtype": "mining",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Diamond",
-            "code": "diamond",
-            "level": 35,
+            "name": "Sapphire",
+            "code": "sapphire",
+            "level": 20,
             "type": "resource",
             "subtype": "precious_stone",
             "description": "",
             "effects": [],
             "craft": {
                 "skill": "mining",
-                "level": 35,
+                "level": 20,
                 "items": [
                     {
-                        "code": "diamond_stone",
+                        "code": "sapphire_stone",
                         "quantity": 10
                     }
                 ],
@@ -446,35 +819,20 @@
             "tradeable": true
         },
         {
-            "name": "Magic Wood",
-            "code": "magic_wood",
-            "level": 35,
+            "name": "Emerald",
+            "code": "emerald",
+            "level": 20,
             "type": "resource",
-            "subtype": "woodcutting",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Strangold",
-            "code": "strangold",
-            "level": 35,
-            "type": "resource",
-            "subtype": "alloy",
+            "subtype": "precious_stone",
             "description": "",
             "effects": [],
             "craft": {
                 "skill": "mining",
-                "level": 35,
+                "level": 20,
                 "items": [
                     {
-                        "code": "gold_ore",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "strange_ore",
-                        "quantity": 5
+                        "code": "emerald_stone",
+                        "quantity": 10
                     }
                 ],
                 "quantity": 1
@@ -482,157 +840,20 @@
             "tradeable": true
         },
         {
-            "name": "Magical Plank",
-            "code": "magical_plank",
-            "level": 35,
-            "type": "resource",
-            "subtype": "plank",
-            "description": "",
-            "effects": [],
-            "craft": {
-                "skill": "woodcutting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "dead_wood",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "magic_wood",
-                        "quantity": 5
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Cursed Hat",
-            "code": "cursed_hat",
-            "level": 35,
-            "type": "helmet",
+            "name": "Steel Shield",
+            "code": "steel_shield",
+            "level": 20,
+            "type": "shield",
             "subtype": "",
             "description": "",
             "effects": [
                 {
-                    "name": "hp",
-                    "value": 170
+                    "name": "res_fire",
+                    "value": 7
                 },
                 {
-                    "name": "dmg_fire",
-                    "value": 35
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "magical_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "malefic_cloth",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "cursed_book",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "owlbear_hair",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "diamond",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "enchanted_fabric",
-                        "quantity": 1
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Strangold Helmet",
-            "code": "strangold_helmet",
-            "level": 35,
-            "type": "helmet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 170
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 22
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 22
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 7
-                    },
-                    {
-                        "code": "demoniac_dust",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "magic_stone",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "lizard_skin",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "diamond",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "magical_cure",
-                        "quantity": 1
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Strangold Legs Armor",
-            "code": "strangold_legs_armor",
-            "level": 35,
-            "type": "leg_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 150
-                },
-                {
-                    "name": "haste",
-                    "value": 5
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 18
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 20
+                    "name": "res_earth",
+                    "value": 7
                 },
                 {
                     "name": "res_water",
@@ -645,84 +866,259 @@
             ],
             "craft": {
                 "skill": "gearcrafting",
-                "level": 35,
+                "level": 20,
                 "items": [
                     {
-                        "code": "strangold",
-                        "quantity": 8
+                        "code": "steel",
+                        "quantity": 6
                     },
                     {
-                        "code": "magical_cure",
+                        "code": "serpent_skin",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "wolf_bone",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "ogre_eye",
+                        "quantity": 2
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Steel Ring",
+            "code": "steel_ring",
+            "level": 20,
+            "type": "ring",
+            "subtype": "",
+            "description": "",
+            "effects": [
+                {
+                    "name": "dmg_earth",
+                    "value": 5
+                },
+                {
+                    "name": "dmg_air",
+                    "value": 5
+                },
+                {
+                    "name": "dmg_water",
+                    "value": 5
+                },
+                {
+                    "name": "dmg_fire",
+                    "value": 5
+                }
+            ],
+            "craft": {
+                "skill": "jewelrycrafting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "steel",
+                        "quantity": 7
+                    },
+                    {
+                        "code": "skeleton_bone",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "cowhide",
                         "quantity": 2
                     },
                     {
-                        "code": "cursed_book",
+                        "code": "serpent_skin",
                         "quantity": 3
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Ruby",
+            "code": "ruby",
+            "level": 20,
+            "type": "resource",
+            "subtype": "precious_stone",
+            "description": "",
+            "effects": [],
+            "craft": {
+                "skill": "mining",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "ruby_stone",
+                        "quantity": 10
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Pig Skin",
+            "code": "pig_skin",
+            "level": 20,
+            "type": "resource",
+            "subtype": "mob",
+            "description": "",
+            "effects": [],
+            "craft": null,
+            "tradeable": true
+        },
+        {
+            "name": "Tromatising Mask",
+            "code": "tromatising_mask",
+            "level": 20,
+            "type": "helmet",
+            "subtype": "mask",
+            "description": "",
+            "effects": [
+                {
+                    "name": "hp",
+                    "value": 90
+                },
+                {
+                    "name": "dmg_fire",
+                    "value": 16
+                }
+            ],
+            "craft": {
+                "skill": "gearcrafting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "steel",
+                        "quantity": 7
+                    },
+                    {
+                        "code": "pig_skin",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "flying_wing",
+                        "quantity": 2
+                    },
+                    {
+                        "code": "skeleton_bone",
+                        "quantity": 3
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Skull Ring",
+            "code": "skull_ring",
+            "level": 20,
+            "type": "ring",
+            "subtype": "",
+            "description": "",
+            "effects": [
+                {
+                    "name": "hp",
+                    "value": 20
+                },
+                {
+                    "name": "dmg_fire",
+                    "value": 11
+                },
+                {
+                    "name": "dmg_air",
+                    "value": 11
+                }
+            ],
+            "craft": {
+                "skill": "jewelrycrafting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "steel",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "wolf_bone",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "skeleton_skull",
+                        "quantity": 1
+                    },
+                    {
+                        "code": "jasper_crystal",
+                        "quantity": 2
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Topaz",
+            "code": "topaz",
+            "level": 20,
+            "type": "resource",
+            "subtype": "precious_stone",
+            "description": "",
+            "effects": [],
+            "craft": {
+                "skill": "mining",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "topaz_stone",
+                        "quantity": 10
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Dreadful Amulet",
+            "code": "dreadful_amulet",
+            "level": 20,
+            "type": "amulet",
+            "subtype": "",
+            "description": "",
+            "effects": [
+                {
+                    "name": "hp",
+                    "value": 40
+                },
+                {
+                    "name": "dmg_water",
+                    "value": 10
+                },
+                {
+                    "name": "dmg_earth",
+                    "value": 10
+                }
+            ],
+            "craft": {
+                "skill": "jewelrycrafting",
+                "level": 20,
+                "items": [
+                    {
+                        "code": "hardwood_plank",
+                        "quantity": 6
                     },
                     {
                         "code": "ogre_eye",
                         "quantity": 4
                     },
                     {
-                        "code": "red_cloth",
-                        "quantity": 3
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Strangold Armor",
-            "code": "strangold_armor",
-            "level": 35,
-            "type": "body_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 150
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 24
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 18
-                },
-                {
-                    "name": "res_water",
-                    "value": 6
-                },
-                {
-                    "name": "res_fire",
-                    "value": 6
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "owlbear_hair",
+                        "code": "pig_skin",
                         "quantity": 3
                     },
                     {
-                        "code": "magic_stone",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "demon_horn",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "magical_cure",
+                        "code": "flying_wing",
                         "quantity": 2
                     }
                 ],
@@ -731,86 +1127,36 @@
             "tradeable": true
         },
         {
-            "name": "Malefic Armor",
-            "code": "malefic_armor",
-            "level": 35,
-            "type": "body_armor",
+            "name": "Skull Amulet",
+            "code": "skull_amulet",
+            "level": 20,
+            "type": "amulet",
             "subtype": "",
             "description": "",
             "effects": [
                 {
                     "name": "hp",
-                    "value": 170
+                    "value": 40
+                },
+                {
+                    "name": "dmg_air",
+                    "value": 10
                 },
                 {
                     "name": "dmg_fire",
-                    "value": 30
-                },
-                {
-                    "name": "res_fire",
                     "value": 10
                 }
             ],
             "craft": {
-                "skill": "gearcrafting",
-                "level": 35,
+                "skill": "jewelrycrafting",
+                "level": 20,
                 "items": [
                     {
-                        "code": "magical_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "malefic_cloth",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "owlbear_hair",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "magic_stone",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "magical_cure",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Magic Bow",
-            "code": "magic_bow",
-            "level": 35,
-            "type": "weapon",
-            "subtype": "bow",
-            "description": "",
-            "effects": [
-                {
-                    "name": "attack_air",
-                    "value": 65
-                },
-                {
-                    "name": "attack_water",
-                    "value": 20
-                }
-            ],
-            "craft": {
-                "skill": "weaponcrafting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "magical_plank",
+                        "code": "hardwood_plank",
                         "quantity": 7
                     },
                     {
-                        "code": "magic_stone",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "lizard_skin",
+                        "code": "skeleton_skull",
                         "quantity": 3
                     },
                     {
@@ -818,11 +1164,7 @@
                         "quantity": 3
                     },
                     {
-                        "code": "sapphire",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "magical_cure",
+                        "code": "serpent_skin",
                         "quantity": 2
                     }
                 ],
@@ -831,300 +1173,25 @@
             "tradeable": true
         },
         {
-            "name": "Cursed Sceptre",
-            "code": "cursed_sceptre",
-            "level": 35,
-            "type": "weapon",
-            "subtype": "sceptre",
-            "description": "",
+            "name": "Minor Health Potion",
+            "code": "minor_health_potion",
+            "level": 20,
+            "type": "utility",
+            "subtype": "potion",
+            "description": "Restores 40HP at the start of the turn if the player has lost more than 50% of his health points.",
             "effects": [
                 {
-                    "name": "attack_fire",
-                    "value": 82
-                }
-            ],
-            "craft": {
-                "skill": "weaponcrafting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "magical_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "cursed_book",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "magic_stone",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "malefic_cloth",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "diamond",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "magical_cure",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Diamond Amulet",
-            "code": "diamond_amulet",
-            "level": 35,
-            "type": "amulet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 100
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 20
-                },
-                {
-                    "name": "dmg_earth",
-                    "value": 10
-                }
-            ],
-            "craft": {
-                "skill": "jewelrycrafting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "magical_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "diamond",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "obsidian",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "cursed_book",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "magical_cure",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Magic Stone Amulet",
-            "code": "magic_stone_amulet",
-            "level": 35,
-            "type": "amulet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 100
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 20
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 10
-                }
-            ],
-            "craft": {
-                "skill": "jewelrycrafting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 6
-                    },
-                    {
-                        "code": "malefic_cloth",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "magic_stone",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "lizard_skin",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "magical_cure",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Magic Sap",
-            "code": "magic_sap",
-            "level": 35,
-            "type": "resource",
-            "subtype": "sap",
-            "description": "",
-            "effects": [],
-            "craft": {
-                "skill": "woodcutting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "magic_wood",
-                        "quantity": 30
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Strangold Sword",
-            "code": "strangold_sword",
-            "level": 35,
-            "type": "weapon",
-            "subtype": "sword",
-            "description": "",
-            "effects": [
-                {
-                    "name": "attack_fire",
-                    "value": 45
-                },
-                {
-                    "name": "attack_air",
+                    "name": "restore",
                     "value": 40
                 }
             ],
             "craft": {
-                "skill": "weaponcrafting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 7
-                    },
-                    {
-                        "code": "goblin_tooth",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "demoniac_dust",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "magic_stone",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "magical_cure",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Ancient Jean",
-            "code": "ancient_jean",
-            "level": 35,
-            "type": "leg_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 150
-                },
-                {
-                    "name": "haste",
-                    "value": 5
-                },
-                {
-                    "name": "dmg_earth",
-                    "value": 25
-                },
-                {
-                    "name": "res_earth",
-                    "value": 10
-                },
-                {
-                    "name": "res_fire",
-                    "value": -10
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "magical_plank",
-                        "quantity": 6
-                    },
-                    {
-                        "code": "magical_cure",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "cursed_book",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "obsidian",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "lizard_skin",
-                        "quantity": 5
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Greater Health Potion",
-            "code": "greater_health_potion",
-            "level": 35,
-            "type": "utility",
-            "subtype": "potion",
-            "description": "Restores 80HP at the start of the turn if the player has lost more than 50% of his health points.",
-            "effects": [
-                {
-                    "name": "restore",
-                    "value": 80
-                }
-            ],
-            "craft": {
                 "skill": "alchemy",
-                "level": 35,
+                "level": 20,
                 "items": [
                     {
-                        "code": "glowstem_leaf",
+                        "code": "nettle_leaf",
                         "quantity": 2
-                    },
-                    {
-                        "code": "egg",
-                        "quantity": 1
                     },
                     {
                         "code": "algae",
@@ -1136,271 +1203,49 @@
             "tradeable": true
         },
         {
-            "name": "Diamond Stone",
-            "code": "diamond_stone",
-            "level": 35,
-            "type": "resource",
-            "subtype": "mining",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Goblin Tooth",
-            "code": "goblin_tooth",
-            "level": 35,
-            "type": "resource",
-            "subtype": "mob",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Masterful Necklace",
-            "code": "masterful_necklace",
-            "level": 35,
-            "type": "amulet",
+            "name": "Serpent Skin Boots",
+            "code": "serpent_skin_boots",
+            "level": 20,
+            "type": "boots",
             "subtype": "",
             "description": "",
             "effects": [
                 {
                     "name": "hp",
-                    "value": 100
-                },
-                {
-                    "name": "dmg_earth",
-                    "value": 20
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 10
-                }
-            ],
-            "craft": {
-                "skill": "jewelrycrafting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 6
-                    },
-                    {
-                        "code": "malefic_cloth",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "magic_stone",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "goblin_tooth",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Ancestral Talisman",
-            "code": "ancestral_talisman",
-            "level": 35,
-            "type": "amulet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 100
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 20
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 10
-                }
-            ],
-            "craft": {
-                "skill": "jewelrycrafting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "magical_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "diamond",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "cursed_book",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "goblin_tooth",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Dreadful Armor",
-            "code": "dreadful_armor",
-            "level": 35,
-            "type": "body_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 170
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 30
+                    "value": 80
                 },
                 {
                     "name": "res_water",
-                    "value": 10
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "obsidian",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "malefic_cloth",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "ogre_eye",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "goblin_eye",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "enchanted_fabric",
-                        "quantity": 1
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Dreadful Shield",
-            "code": "dreadful_shield",
-            "level": 35,
-            "type": "shield",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "res_water",
-                    "value": 15
-                },
-                {
-                    "name": "res_earth",
-                    "value": 15
-                },
-                {
-                    "name": "res_fire",
-                    "value": -10
+                    "value": 8
                 },
                 {
                     "name": "res_air",
-                    "value": -10
+                    "value": 8
+                },
+                {
+                    "name": "haste",
+                    "value": 6
                 }
             ],
             "craft": {
                 "skill": "gearcrafting",
-                "level": 35,
+                "level": 20,
                 "items": [
                     {
-                        "code": "obsidian",
-                        "quantity": 8
+                        "code": "hardwood_plank",
+                        "quantity": 3
                     },
                     {
-                        "code": "goblin_eye",
-                        "quantity": 5
+                        "code": "steel",
+                        "quantity": 6
                     },
                     {
-                        "code": "cursed_book",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "ruby",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 1
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Dreadful Battleaxe",
-            "code": "dreadful_battleaxe",
-            "level": 35,
-            "type": "weapon",
-            "subtype": "axe",
-            "description": "",
-            "effects": [
-                {
-                    "name": "attack_water",
-                    "value": 65
-                },
-                {
-                    "name": "attack_earth",
-                    "value": 20
-                }
-            ],
-            "craft": {
-                "skill": "weaponcrafting",
-                "level": 35,
-                "items": [
-                    {
-                        "code": "magical_plank",
-                        "quantity": 7
-                    },
-                    {
-                        "code": "goblin_eye",
+                        "code": "serpent_skin",
                         "quantity": 4
                     },
                     {
-                        "code": "lizard_skin",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "goblin_tooth",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "jasper_crystal",
-                        "quantity": 3
+                        "code": "ogre_skin",
+                        "quantity": 2
                     }
                 ],
                 "quantity": 1
@@ -1408,70 +1253,9 @@
             "tradeable": true
         },
         {
-            "name": "Goblin Eye",
-            "code": "goblin_eye",
-            "level": 35,
-            "type": "resource",
-            "subtype": "mob",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Malefic Crystal",
-            "code": "malefic_crystal",
-            "level": 35,
-            "type": "artifact",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "dmg_earth",
-                    "value": 8
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 8
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 8
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 8
-                }
-            ],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Bat Wing",
-            "code": "bat_wing",
-            "level": 38,
-            "type": "resource",
-            "subtype": "mob",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Orc Skin",
-            "code": "orc_skin",
-            "level": 38,
-            "type": "resource",
-            "subtype": "mob",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Fish Soup",
-            "code": "fish_soup",
-            "level": 40,
+            "name": "Apple Pie",
+            "code": "apple_pie",
+            "level": 20,
             "type": "consumable",
             "subtype": "food",
             "description": "",
@@ -1483,345 +1267,14 @@
             ],
             "craft": {
                 "skill": "cooking",
-                "level": 40,
+                "level": 20,
                 "items": [
                     {
-                        "code": "milk_bucket",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "salmon",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "trout",
-                        "quantity": 1
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Sanguine Edge of Rosen",
-            "code": "sanguine_edge_of_rosen",
-            "level": 40,
-            "type": "weapon",
-            "subtype": "sword",
-            "description": "Commemorative weapon in honor of Rosenstjerne. First player to drop an artifact in the game.",
-            "effects": [
-                {
-                    "name": "attack_earth",
-                    "value": 75
-                },
-                {
-                    "name": "attack_fire",
-                    "value": 25
-                }
-            ],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Fire Shield",
-            "code": "fire_shield",
-            "level": 40,
-            "type": "shield",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "res_fire",
-                    "value": 20
-                },
-                {
-                    "name": "res_air",
-                    "value": -10
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 6
-                    },
-                    {
-                        "code": "ruby",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "red_slimeball",
-                        "quantity": 20
-                    },
-                    {
-                        "code": "orc_skin",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "rosenblood_elixir",
-                        "quantity": 1
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Water Shield",
-            "code": "water_shield",
-            "level": 40,
-            "type": "shield",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "res_water",
-                    "value": 20
-                },
-                {
-                    "name": "res_earth",
-                    "value": -10
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 6
-                    },
-                    {
-                        "code": "sapphire",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "blue_slimeball",
-                        "quantity": 20
-                    },
-                    {
-                        "code": "hellhound_bone",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "rosenblood_elixir",
-                        "quantity": 1
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Air Shield",
-            "code": "air_shield",
-            "level": 40,
-            "type": "shield",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "res_air",
-                    "value": 20
-                },
-                {
-                    "name": "res_fire",
-                    "value": -10
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 6
-                    },
-                    {
-                        "code": "emerald",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "green_slimeball",
-                        "quantity": 20
-                    },
-                    {
-                        "code": "wolfrider_hair",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "rosenblood_elixir",
-                        "quantity": 1
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Earth Shield",
-            "code": "earth_shield",
-            "level": 40,
-            "type": "shield",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "res_earth",
-                    "value": 20
-                },
-                {
-                    "name": "res_water",
-                    "value": -10
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 6
-                    },
-                    {
-                        "code": "topaz",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "yellow_slimeball",
-                        "quantity": 20
-                    },
-                    {
-                        "code": "bat_wing",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "rosenblood_elixir",
-                        "quantity": 1
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Rosenblood Elixir",
-            "code": "rosenblood_elixir",
-            "level": 40,
-            "type": "utility",
-            "subtype": "potion",
-            "description": "Gives 20% resistance in all elements at the start of fight.",
-            "effects": [
-                {
-                    "name": "boost_res_water",
-                    "value": 20
-                },
-                {
-                    "name": "boost_res_fire",
-                    "value": 20
-                },
-                {
-                    "name": "boost_res_air",
-                    "value": 20
-                },
-                {
-                    "name": "boost_res_earth",
-                    "value": 20
-                }
-            ],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Batwing Helmet",
-            "code": "batwing_helmet",
-            "level": 40,
-            "type": "helmet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 200
-                },
-                {
-                    "name": "dmg_earth",
-                    "value": 40
-                },
-                {
-                    "name": "res_fire",
-                    "value": -10
-                },
-                {
-                    "name": "res_earth",
-                    "value": -10
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 6
-                    },
-                    {
-                        "code": "topaz",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "rosenblood_elixir",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "bat_wing",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "orc_skin",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "enchanted_fabric",
+                        "code": "apple",
                         "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Salmon",
-            "code": "salmon",
-            "level": 40,
-            "type": "resource",
-            "subtype": "fishing",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Cooked Salmon",
-            "code": "cooked_salmon",
-            "level": 40,
-            "type": "consumable",
-            "subtype": "food",
-            "description": "",
-            "effects": [
-                {
-                    "name": "heal",
-                    "value": 200
-                }
-            ],
-            "craft": {
-                "skill": "cooking",
-                "level": 40,
-                "items": [
+                    },
                     {
-                        "code": "salmon",
+                        "code": "egg",
                         "quantity": 1
                     }
                 ],
@@ -1830,119 +1283,9 @@
             "tradeable": true
         },
         {
-            "name": "Health Boost Potion",
-            "code": "health_boost_potion",
-            "level": 40,
-            "type": "utility",
-            "subtype": "potion",
-            "description": "Gives 150HP at the start of the fight.",
-            "effects": [
-                {
-                    "name": "boost_hp",
-                    "value": 150
-                }
-            ],
-            "craft": {
-                "skill": "alchemy",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "shrimp",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "sap",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "nettle_leaf",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Wolfrider Hair",
-            "code": "wolfrider_hair",
-            "level": 40,
-            "type": "resource",
-            "subtype": "mob",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Hork Helmet",
-            "code": "hork_helmet",
-            "level": 40,
-            "type": "helmet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 200
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 40
-                },
-                {
-                    "name": "res_water",
-                    "value": -10
-                },
-                {
-                    "name": "res_air",
-                    "value": -10
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 7
-                    },
-                    {
-                        "code": "orc_skin",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "rosenblood_elixir",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "bat_wing",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "jasper_crystal",
-                        "quantity": 5
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Glowstem Leaf",
-            "code": "glowstem_leaf",
-            "level": 40,
-            "type": "resource",
-            "subtype": "alchemy",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Mithril Ore",
-            "code": "mithril_ore",
-            "level": 40,
+            "name": "Emerald Stone",
+            "code": "emerald_stone",
+            "level": 20,
             "type": "resource",
             "subtype": "mining",
             "description": "",
@@ -1951,736 +1294,112 @@
             "tradeable": true
         },
         {
-            "name": "Mithril",
-            "code": "mithril",
-            "level": 40,
+            "name": "Topaz Stone",
+            "code": "topaz_stone",
+            "level": 20,
             "type": "resource",
-            "subtype": "bar",
-            "description": "",
-            "effects": [],
-            "craft": {
-                "skill": "mining",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "mithril_ore",
-                        "quantity": 8
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Maple Plank",
-            "code": "maple_plank",
-            "level": 40,
-            "type": "resource",
-            "subtype": "plank",
-            "description": "",
-            "effects": [],
-            "craft": {
-                "skill": "woodcutting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "maple_wood",
-                        "quantity": 8
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Maple Wood",
-            "code": "maple_wood",
-            "level": 40,
-            "type": "resource",
-            "subtype": "woodcutting",
+            "subtype": "mining",
             "description": "",
             "effects": [],
             "craft": null,
             "tradeable": true
         },
         {
-            "name": "Enchanted Health Potion",
-            "code": "enchanted_health_potion",
-            "level": 40,
-            "type": "utility",
-            "subtype": "potion",
-            "description": "Restores 100HP at the start of the turn if the player has lost more than 50% of his health points.",
-            "effects": [
-                {
-                    "name": "restore",
-                    "value": 100
-                }
-            ],
-            "craft": {
-                "skill": "alchemy",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "glowstem_leaf",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "sunflower",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "magic_sap",
-                        "quantity": 1
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Enchanted Boost Potion",
-            "code": "enchanted_boost_potion",
-            "level": 40,
-            "type": "utility",
-            "subtype": "potion",
-            "description": "Gives 20% damage in all elements at the start of fight.",
-            "effects": [
-                {
-                    "name": "boost_dmg_water",
-                    "value": 20
-                },
-                {
-                    "name": "boost_dmg_fire",
-                    "value": 20
-                },
-                {
-                    "name": "boost_dmg_earth",
-                    "value": 20
-                },
-                {
-                    "name": "boost_dmg_air",
-                    "value": 20
-                }
-            ],
-            "craft": {
-                "skill": "alchemy",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "glowstem_leaf",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "bat_wing",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "magic_sap",
-                        "quantity": 1
-                    }
-                ],
-                "quantity": 0
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Hellhound Bone",
-            "code": "hellhound_bone",
-            "level": 40,
+            "name": "Ruby Stone",
+            "code": "ruby_stone",
+            "level": 20,
             "type": "resource",
-            "subtype": "mob",
+            "subtype": "mining",
             "description": "",
             "effects": [],
             "craft": null,
             "tradeable": true
         },
         {
-            "name": "Broken Sword",
-            "code": "broken_sword",
-            "level": 40,
+            "name": "Sapphire Stone",
+            "code": "sapphire_stone",
+            "level": 20,
             "type": "resource",
-            "subtype": "mob",
+            "subtype": "mining",
             "description": "",
             "effects": [],
             "craft": null,
             "tradeable": true
         },
         {
-            "name": "Hellhound Hair",
-            "code": "hellhound_hair",
-            "level": 40,
+            "name": "Nettle Leaf",
+            "code": "nettle_leaf",
+            "level": 20,
             "type": "resource",
-            "subtype": "mob",
+            "subtype": "alchemy",
             "description": "",
             "effects": [],
             "craft": null,
             "tradeable": true
         },
         {
-            "name": "Raw Hellhound Meat",
-            "code": "raw_hellhound_meat",
-            "level": 40,
-            "type": "resource",
-            "subtype": "mob",
-            "description": "",
-            "effects": [],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Cooked Hellhound Meat",
-            "code": "cooked_hellhound_meat",
-            "level": 40,
-            "type": "consumable",
-            "subtype": "food",
-            "description": "",
-            "effects": [
-                {
-                    "name": "heal",
-                    "value": 300
-                }
-            ],
-            "craft": {
-                "skill": "cooking",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "raw_hellhound_meat",
-                        "quantity": 1
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Greater Emerald Amulet",
-            "code": "greater_emerald_amulet",
-            "level": 40,
-            "type": "amulet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 130
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 30
-                }
-            ],
-            "craft": {
-                "skill": "jewelrycrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "maple_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "emerald_amulet",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "emerald",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "hellhound_bone",
-                        "quantity": 6
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Greater Sapphire Amulet",
-            "code": "greater_sapphire_amulet",
-            "level": 40,
-            "type": "amulet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 130
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 30
-                }
-            ],
-            "craft": {
-                "skill": "jewelrycrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "maple_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "sapphire_amulet",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "sapphire",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "hellhound_bone",
-                        "quantity": 6
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Greater Topaz Amulet",
-            "code": "greater_topaz_amulet",
-            "level": 40,
-            "type": "amulet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 130
-                },
-                {
-                    "name": "dmg_earth",
-                    "value": 30
-                }
-            ],
-            "craft": {
-                "skill": "jewelrycrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "maple_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "topaz_amulet",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "topaz",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "hellhound_bone",
-                        "quantity": 6
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Greater Ruby Amulet",
-            "code": "greater_ruby_amulet",
-            "level": 40,
-            "type": "amulet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 130
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 30
-                }
-            ],
-            "craft": {
-                "skill": "jewelrycrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "maple_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "ruby_amulet",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "ruby",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "hellhound_bone",
-                        "quantity": 6
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Mithril Sword",
-            "code": "mithril_sword",
-            "level": 40,
+            "name": "Wooden Club",
+            "code": "wooden_club",
+            "level": 20,
             "type": "weapon",
-            "subtype": "sword",
+            "subtype": "club",
             "description": "",
             "effects": [
                 {
-                    "name": "attack_water",
-                    "value": 70
-                },
-                {
-                    "name": "attack_fire",
-                    "value": 30
+                    "name": "attack_earth",
+                    "value": 35
                 }
             ],
-            "craft": {
-                "skill": "weaponcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "mithril",
-                        "quantity": 7
-                    },
-                    {
-                        "code": "magic_stone",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "bat_wing",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "wolfrider_hair",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "broken_sword",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
+            "craft": null,
             "tradeable": true
         },
         {
-            "name": "Mithril Platebody",
-            "code": "mithril_platebody",
-            "level": 40,
-            "type": "body_armor",
-            "subtype": "",
+            "name": "Vampire Blood",
+            "code": "vampire_blood",
+            "level": 24,
+            "type": "resource",
+            "subtype": "mob",
             "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 180
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 28
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 22
-                },
-                {
-                    "name": "res_fire",
-                    "value": 7
-                },
-                {
-                    "name": "res_earth",
-                    "value": 7
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "mithril",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "orc_skin",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "bat_wing",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "goblin_tooth",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "enchanted_fabric",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
+            "effects": [],
+            "craft": null,
             "tradeable": true
         },
         {
-            "name": "Mithril Helm",
-            "code": "mithril_helm",
-            "level": 40,
-            "type": "helmet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 200
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 30
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 20
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "mithril",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "diamond",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "goblin_tooth",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "vampire_blood",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "jasper_crystal",
-                        "quantity": 5
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Mithril Platelegs",
-            "code": "mithril_platelegs",
-            "level": 40,
-            "type": "leg_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 180
-                },
-                {
-                    "name": "haste",
-                    "value": 6
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 24
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 20
-                },
-                {
-                    "name": "res_air",
-                    "value": 7
-                },
-                {
-                    "name": "res_water",
-                    "value": 7
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "mithril",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "demon_horn",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "demoniac_dust",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "vampire_blood",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "owlbear_hair",
-                        "quantity": 4
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Bow from Hell",
-            "code": "bow_from_hell",
-            "level": 40,
-            "type": "weapon",
-            "subtype": "bow",
-            "description": "",
-            "effects": [
-                {
-                    "name": "attack_air",
-                    "value": 115
-                }
-            ],
-            "craft": {
-                "skill": "weaponcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "magical_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "efreet_cloth",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "demon_horn",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "book_from_hell",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "demoniac_dust",
-                        "quantity": 4
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Hell Staff",
-            "code": "hell_staff",
-            "level": 40,
+            "name": "Dreadful Staff",
+            "code": "dreadful_staff",
+            "level": 25,
             "type": "weapon",
             "subtype": "staff",
             "description": "",
             "effects": [
                 {
                     "name": "attack_water",
-                    "value": 115
-                }
-            ],
-            "craft": {
-                "skill": "weaponcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "magical_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "efreet_cloth",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "obsidian",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "book_from_hell",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "demoniac_dust",
-                        "quantity": 4
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "lightning Sword",
-            "code": "lightning_sword",
-            "level": 40,
-            "type": "weapon",
-            "subtype": "sword",
-            "description": "",
-            "effects": [
-                {
-                    "name": "attack_air",
-                    "value": 70
+                    "value": 25
                 },
                 {
                     "name": "attack_earth",
-                    "value": 30
+                    "value": 25
                 }
             ],
             "craft": {
                 "skill": "weaponcrafting",
-                "level": 40,
+                "level": 25,
                 "items": [
                     {
-                        "code": "maple_plank",
-                        "quantity": 7
+                        "code": "cyclops_eye",
+                        "quantity": 4
                     },
                     {
-                        "code": "goblin_eye",
+                        "code": "vampire_blood",
                         "quantity": 5
                     },
                     {
-                        "code": "hellhound_hair",
-                        "quantity": 4
+                        "code": "hardwood_plank",
+                        "quantity": 6
                     },
                     {
-                        "code": "broken_sword",
+                        "code": "jasper_crystal",
                         "quantity": 1
-                    },
-                    {
-                        "code": "magical_cure",
-                        "quantity": 3
                     }
                 ],
                 "quantity": 1
@@ -2688,1054 +1407,10 @@
             "tradeable": true
         },
         {
-            "name": "Ruby Book",
-            "code": "ruby_book",
-            "level": 40,
-            "type": "artifact",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "dmg_fire",
-                    "value": 20
-                }
-            ],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Emerald Book",
-            "code": "emerald_book",
-            "level": 40,
-            "type": "artifact",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "dmg_air",
-                    "value": 20
-                }
-            ],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Sapphire Book",
-            "code": "sapphire_book",
-            "level": 40,
-            "type": "artifact",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "dmg_water",
-                    "value": 20
-                }
-            ],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Topaz Book",
-            "code": "topaz_book",
-            "level": 40,
-            "type": "artifact",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "dmg_earth",
-                    "value": 20
-                }
-            ],
-            "craft": null,
-            "tradeable": true
-        },
-        {
-            "name": "Demoniac Dagger",
-            "code": "demoniac_dagger",
-            "level": 40,
-            "type": "weapon",
-            "subtype": "sword",
-            "description": "",
-            "effects": [
-                {
-                    "name": "attack_fire",
-                    "value": 115
-                }
-            ],
-            "craft": {
-                "skill": "weaponcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "efreet_cloth",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "obsidian",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "book_from_hell",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "cursed_book",
-                        "quantity": 4
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Bloodblade",
-            "code": "bloodblade",
-            "level": 40,
-            "type": "weapon",
-            "subtype": "sword",
-            "description": "",
-            "effects": [
-                {
-                    "name": "attack_fire",
-                    "value": 70
-                },
-                {
-                    "name": "attack_air",
-                    "value": 30
-                }
-            ],
-            "craft": {
-                "skill": "weaponcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "mithril",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "goblin_tooth",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "wolfrider_hair",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "broken_sword",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Wrathsword",
-            "code": "wrathsword",
-            "level": 40,
-            "type": "weapon",
-            "subtype": "sword",
-            "description": "",
-            "effects": [
-                {
-                    "name": "attack_earth",
-                    "value": 70
-                },
-                {
-                    "name": "attack_water",
-                    "value": 30
-                }
-            ],
-            "craft": {
-                "skill": "weaponcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "mithril",
-                        "quantity": 7
-                    },
-                    {
-                        "code": "orc_skin",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "bat_wing",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "broken_sword",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "magical_cure",
-                        "quantity": 3
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Celest Ring",
-            "code": "celest_ring",
-            "level": 40,
-            "type": "ring",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "dmg_fire",
-                    "value": 20
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 20
-                }
-            ],
-            "craft": {
-                "skill": "jewelrycrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "maple_plank",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "ruby",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "sapphire",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "efreet_cloth",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Sacred Ring",
-            "code": "sacred_ring",
-            "level": 40,
-            "type": "ring",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "dmg_fire",
-                    "value": 20
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 20
-                }
-            ],
-            "craft": {
-                "skill": "jewelrycrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "maple_plank",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "ruby",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "emerald",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "efreet_cloth",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Divinity Ring",
-            "code": "divinity_ring",
-            "level": 40,
-            "type": "ring",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "dmg_earth",
-                    "value": 20
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 20
-                }
-            ],
-            "craft": {
-                "skill": "jewelrycrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "maple_plank",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "topaz",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "sapphire",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "efreet_cloth",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Eternity Ring",
-            "code": "eternity_ring",
-            "level": 40,
-            "type": "ring",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "dmg_air",
-                    "value": 20
-                },
-                {
-                    "name": "dmg_earth",
-                    "value": 20
-                }
-            ],
-            "craft": {
-                "skill": "jewelrycrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "maple_plank",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "topaz",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "emerald",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "efreet_cloth",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Cultist Cloak",
-            "code": "cultist_cloak",
-            "level": 40,
+            "name": "Bandit Armor",
+            "code": "bandit_armor",
+            "level": 25,
             "type": "body_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 180
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 28
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 20
-                },
-                {
-                    "name": "res_air",
-                    "value": 7
-                },
-                {
-                    "name": "res_water",
-                    "value": 7
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "maple_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "malefic_cloth",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "red_cloth",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "hellhound_bone",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Wratharmor",
-            "code": "wratharmor",
-            "level": 40,
-            "type": "body_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 180
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 28
-                },
-                {
-                    "name": "dmg_earth",
-                    "value": 20
-                },
-                {
-                    "name": "res_water",
-                    "value": 7
-                },
-                {
-                    "name": "res_air",
-                    "value": 7
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "mithril",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "rosenblood_elixir",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "goblin_eye",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "hellhound_bone",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "enchanted_fabric",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Hell Armor",
-            "code": "hell_armor",
-            "level": 40,
-            "type": "body_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 250
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 30
-                },
-                {
-                    "name": "dmg_earth",
-                    "value": 30
-                },
-                {
-                    "name": "res_water",
-                    "value": -10
-                },
-                {
-                    "name": "res_fire",
-                    "value": -10
-                },
-                {
-                    "name": "res_air",
-                    "value": -10
-                },
-                {
-                    "name": "res_earth",
-                    "value": -10
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "maple_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "efreet_cloth",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "rosenblood_elixir",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "demoniac_dust",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "demon_horn",
-                        "quantity": 4
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "White Knight Armor",
-            "code": "white_knight_armor",
-            "level": 40,
-            "type": "body_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 180
-                },
-                {
-                    "name": "dmg_earth",
-                    "value": 28
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 20
-                },
-                {
-                    "name": "res_earth",
-                    "value": 7
-                },
-                {
-                    "name": "res_fire",
-                    "value": 7
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "mithril",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "magic_stone",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "hellhound_hair",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "wolfrider_hair",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "enchanted_fabric",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Cultist Pants",
-            "code": "cultist_pants",
-            "level": 40,
-            "type": "leg_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 180
-                },
-                {
-                    "name": "haste",
-                    "value": 6
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 24
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 20
-                },
-                {
-                    "name": "res_fire",
-                    "value": 7
-                },
-                {
-                    "name": "res_water",
-                    "value": 7
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "strangold",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "malefic_cloth",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "wolfrider_hair",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "hellhound_hair",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "magical_cure",
-                        "quantity": 4
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Wrathpants",
-            "code": "wrathpants",
-            "level": 40,
-            "type": "leg_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 180
-                },
-                {
-                    "name": "haste",
-                    "value": 6
-                },
-                {
-                    "name": "dmg_earth",
-                    "value": 24
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 20
-                },
-                {
-                    "name": "res_fire",
-                    "value": 7
-                },
-                {
-                    "name": "res_earth",
-                    "value": 7
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "mithril",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "bat_wing",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "goblin_tooth",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "hellhound_bone",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "enchanted_fabric",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Hell Legs Armor",
-            "code": "hell_legs_armor",
-            "level": 40,
-            "type": "leg_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 240
-                },
-                {
-                    "name": "haste",
-                    "value": 7
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 30
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 26
-                },
-                {
-                    "name": "res_fire",
-                    "value": -10
-                },
-                {
-                    "name": "res_air",
-                    "value": -10
-                },
-                {
-                    "name": "res_earth",
-                    "value": -10
-                },
-                {
-                    "name": "res_water",
-                    "value": -10
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "maple_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "demon_horn",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "efreet_cloth",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "malefic_cloth",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "hellhound_bone",
-                        "quantity": 4
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "White Knight Pants",
-            "code": "white_knight_pants",
-            "level": 40,
-            "type": "leg_armor",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 180
-                },
-                {
-                    "name": "haste",
-                    "value": 6
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 24
-                },
-                {
-                    "name": "dmg_earth",
-                    "value": 20
-                },
-                {
-                    "name": "res_air",
-                    "value": 7
-                },
-                {
-                    "name": "res_fire",
-                    "value": 7
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "mithril",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "hellhound_hair",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "wolfrider_hair",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "goblin_tooth",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Cultist Hat",
-            "code": "cultist_hat",
-            "level": 40,
-            "type": "helmet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 200
-                },
-                {
-                    "name": "dmg_fire",
-                    "value": 30
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 20
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "maple_plank",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "malefic_cloth",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "hellhound_hair",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "orc_skin",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Wrathelmet",
-            "code": "wrathelmet",
-            "level": 40,
-            "type": "helmet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 200
-                },
-                {
-                    "name": "dmg_earth",
-                    "value": 30
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 15
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "mithril",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "rosenblood_elixir",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "wolfrider_hair",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "cursed_book",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "astralyte_crystal",
-                        "quantity": 2
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "White Knight Helmet",
-            "code": "white_knight_helmet",
-            "level": 40,
-            "type": "helmet",
-            "subtype": "",
-            "description": "",
-            "effects": [
-                {
-                    "name": "hp",
-                    "value": 200
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 30
-                },
-                {
-                    "name": "dmg_earth",
-                    "value": 20
-                }
-            ],
-            "craft": {
-                "skill": "gearcrafting",
-                "level": 40,
-                "items": [
-                    {
-                        "code": "mithril",
-                        "quantity": 8
-                    },
-                    {
-                        "code": "diamond",
-                        "quantity": 1
-                    },
-                    {
-                        "code": "hellhound_bone",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "orc_skin",
-                        "quantity": 3
-                    },
-                    {
-                        "code": "owlbear_hair",
-                        "quantity": 4
-                    }
-                ],
-                "quantity": 1
-            },
-            "tradeable": true
-        },
-        {
-            "name": "Cultist Boots",
-            "code": "cultist_boots",
-            "level": 40,
-            "type": "boots",
             "subtype": "",
             "description": "",
             "effects": [
@@ -3745,47 +1420,113 @@
                 },
                 {
                     "name": "dmg_fire",
-                    "value": 8
+                    "value": 20
                 },
                 {
                     "name": "dmg_earth",
-                    "value": 8
+                    "value": 20
                 },
                 {
-                    "name": "res_air",
-                    "value": 8
+                    "name": "res_earth",
+                    "value": 6
                 },
                 {
                     "name": "res_water",
-                    "value": 8
+                    "value": 6
+                }
+            ],
+            "craft": null,
+            "tradeable": true
+        },
+        {
+            "name": "Skull Wand",
+            "code": "skull_wand",
+            "level": 25,
+            "type": "weapon",
+            "subtype": "wand",
+            "description": "",
+            "effects": [
+                {
+                    "name": "attack_air",
+                    "value": 25
                 },
                 {
-                    "name": "haste",
-                    "value": 7
+                    "name": "attack_fire",
+                    "value": 25
+                }
+            ],
+            "craft": {
+                "skill": "weaponcrafting",
+                "level": 25,
+                "items": [
+                    {
+                        "code": "hardwood_plank",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "skeleton_skull",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "vampire_blood",
+                        "quantity": 2
+                    },
+                    {
+                        "code": "ogre_skin",
+                        "quantity": 3
+                    },
+                    {
+                        "code": "jasper_crystal",
+                        "quantity": 1
+                    }
+                ],
+                "quantity": 1
+            },
+            "tradeable": true
+        },
+        {
+            "name": "Lizard Skin Armor",
+            "code": "lizard_skin_armor",
+            "level": 25,
+            "type": "body_armor",
+            "subtype": "",
+            "description": "",
+            "effects": [
+                {
+                    "name": "hp",
+                    "value": 150
+                },
+                {
+                    "name": "dmg_water",
+                    "value": 22
+                },
+                {
+                    "name": "res_water",
+                    "value": 10
+                },
+                {
+                    "name": "res_fire",
+                    "value": 5
                 }
             ],
             "craft": {
                 "skill": "gearcrafting",
-                "level": 40,
+                "level": 25,
                 "items": [
                     {
-                        "code": "maple_plank",
-                        "quantity": 7
-                    },
-                    {
-                        "code": "malefic_cloth",
-                        "quantity": 2
-                    },
-                    {
-                        "code": "hellhound_hair",
-                        "quantity": 4
-                    },
-                    {
-                        "code": "orc_skin",
+                        "code": "lizard_skin",
                         "quantity": 5
                     },
                     {
-                        "code": "enchanted_fabric",
+                        "code": "dead_wood_plank",
+                        "quantity": 5
+                    },
+                    {
+                        "code": "ogre_skin",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "jasper_crystal",
                         "quantity": 2
                     }
                 ],
@@ -3794,61 +1535,53 @@
             "tradeable": true
         },
         {
-            "name": "Mithril Boots",
-            "code": "mithril_boots",
-            "level": 40,
-            "type": "boots",
+            "name": "Serpent Skin Legs Armor",
+            "code": "serpent_skin_legs_armor",
+            "level": 25,
+            "type": "leg_armor",
             "subtype": "",
             "description": "",
             "effects": [
                 {
                     "name": "hp",
-                    "value": 160
-                },
-                {
-                    "name": "dmg_air",
-                    "value": 8
-                },
-                {
-                    "name": "dmg_water",
-                    "value": 8
-                },
-                {
-                    "name": "res_fire",
-                    "value": 8
-                },
-                {
-                    "name": "res_earth",
-                    "value": 8
+                    "value": 140
                 },
                 {
                     "name": "haste",
-                    "value": 7
+                    "value": 3
+                },
+                {
+                    "name": "dmg_air",
+                    "value": 17
+                },
+                {
+                    "name": "res_air",
+                    "value": 6
+                },
+                {
+                    "name": "res_earth",
+                    "value": 3
                 }
             ],
             "craft": {
                 "skill": "gearcrafting",
-                "level": 40,
+                "level": 25,
                 "items": [
                     {
-                        "code": "mithril",
-                        "quantity": 7
+                        "code": "serpent_skin",
+                        "quantity": 5
                     },
                     {
-                        "code": "diamond",
+                        "code": "ogre_skin",
+                        "quantity": 5
+                    },
+                    {
+                        "code": "wolf_bone",
+                        "quantity": 4
+                    },
+                    {
+                        "code": "jasper_crystal",
                         "quantity": 1
-                    },
-                    {
-                        "code": "hellhound_hair",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "goblin_eye",
-                        "quantity": 5
-                    },
-                    {
-                        "code": "enchanted_fabric",
-                        "quantity": 2
                     }
                 ],
                 "quantity": 1
@@ -3858,6 +1591,6 @@
     ],
     "total": 311,
     "page": 3,
-    "size": 100,
-    "pages": 4
+    "size": 50,
+    "pages": 7
 }

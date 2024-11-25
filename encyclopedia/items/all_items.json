@@ -6,7 +6,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 30
+                "value": 75
             }
         ],
         "recipe": {
@@ -146,7 +146,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 40
+                "value": 80
             }
         ],
         "recipe": {
@@ -319,7 +319,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 15
+                "value": 50
             }
         ]
     },
@@ -481,7 +481,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 50
+                "value": 150
             }
         ],
         "recipe": {
@@ -541,7 +541,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 50
+                "value": 150
             }
         ],
         "recipe": {
@@ -843,7 +843,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 60
+                "value": 150
             }
         ],
         "recipe": {
@@ -1379,7 +1379,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 70
+                "value": 180
             }
         ],
         "recipe": {
@@ -2121,7 +2121,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 80
+                "value": 200
             }
         ],
         "recipe": {
@@ -2280,7 +2280,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 140
+                "value": 240
             }
         ],
         "recipe": {
@@ -2402,7 +2402,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 110
+                "value": 225
             }
         ],
         "recipe": {
@@ -3414,7 +3414,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 250
+                "value": 350
             }
         ],
         "recipe": {
@@ -4238,7 +4238,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 160
+                "value": 300
             }
         ],
         "recipe": {
@@ -6611,7 +6611,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 350
+                "value": 600
             }
         ],
         "recipe": {
@@ -6901,7 +6901,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 200
+                "value": 400
             }
         ],
         "recipe": {
@@ -7150,7 +7150,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 300
+                "value": 600
             }
         ],
         "recipe": {
@@ -8845,7 +8845,7 @@
         "effects": [
             {
                 "name": "heal",
-                "value": 275
+                "value": 500
             }
         ],
         "recipe": {
