@@ -1,3 +1,0 @@
-rm nohup.out
-nohup python3 -m flask --app app run &
-python3 character_api_cli.py set-default Bobby collect iron_ore
