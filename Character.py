@@ -223,6 +223,8 @@ class Character:
 
         if skill == "mining" and self.weapon_slot != 'iron_pickaxe':
             self.equip_new_gear("weapon", "iron_pickaxe")
+        # if skill == "woodcutting" and self.weapon_slot != 'iron_axe':
+        #     self.equip_new_gear("weapon", "iron_axe")
 
         self.logger.info(f"Collecting {skill}")
         collect_highest_unlocked_resource(self, skill)
