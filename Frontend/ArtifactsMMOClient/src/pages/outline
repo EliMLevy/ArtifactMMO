@@ -1,0 +1,31 @@
+v-card
+    v-row
+        v-col
+            Name
+        v-col
+            lvl progress bar
+    v-row
+        v-col
+            Location:
+        v-col
+            x,y
+    v-row
+        v-col 
+            Collecting Skills:
+    v-row
+        v-col
+            mining progress bar
+        v-col
+            woodcutting progress bar
+        v-col
+            fishing progress bar
+    v-row
+        v-col
+            Crafting skills:
+    v-row
+        v-col
+            gearcrafting progress bar
+        v-col
+            weaponcrafting progress bar
+        v-col
+            cooking progress bar
