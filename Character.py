@@ -187,8 +187,8 @@ class Character:
         elif action["action"] == "craft":
             self.logger.info(f"Crafting {action['code']} x{action['quantity']}")
             deposit_all_items(self)
-            plan = generate_plan(self.default_subaction["code"], self.default_subaction["quantity"], math.floor(self.inventory_max_items * 0.75), use_bank=False)
-            self.logger.info(f"Plan to acquire {self.default_subaction['code']}: {plan}")
+            plan = generate_plan(action["code"], action["quantity"], math.floor(self.inventory_max_items * 0.75), use_bank=False)
+            self.logger.info(f"Plan to acquire {action['code']}: {plan}")
             self.execute_plan(plan)
         elif action["action"] == "recycle":
             self.logger.info(f"Recycling {action['code']} x{action['quantity']}")
