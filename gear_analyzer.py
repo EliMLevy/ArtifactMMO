@@ -3,7 +3,7 @@ import json
 import pandas as pd
 
 from actions import get_bank_items
-from encyclopedia import get_items_that_match, get_monster_spot
+from encyclopedia import get_item_by_name, get_items_that_match, get_monster_spot
 from plan_generator import generate_crafting_plan
 
 # Go through the various gear slots- weapon, boots, helmet, shielf, ring, leg armor, body armor, amulet
@@ -73,8 +73,11 @@ def find_best_weapon_for_monster(monster_code, max_level, available_in_bank=True
     return best_weapon
 
 
-def find_best_armor_for_monster(monster_code, armor_slot, max_level, available_in_bank=True, current_armor = None, current_inventory = None):
+def find_best_armor_for_monster(monster_code, armor_slot, max_level, available_in_bank=True, current_armor = None, current_inventory = None, weapon_code = None):
     bank_items = get_bank_items()
+    
+    
+    
     def filter_armors(item):
         if item["code"] == current_armor:
            return True
@@ -98,34 +101,42 @@ def find_best_armor_for_monster(monster_code, armor_slot, max_level, available_i
         print(f"Failed to get armor candidates for {monster_code} {armor_slot} {max_level} {current_armor}")
         return False
 
-    def get_dmg_value(dmg_type, armor):
-        raw_value = next((effect["value"] for effect in armor["effects"] if effect["name"] == dmg_type), 0)
-        percentage = raw_value / 100
-        return percentage
-    def get_res_value(res_type, armor):
-        raw_value = next((effect["value"] for effect in armor["effects"] if effect["name"] == res_type), 0)
-        percentage = raw_value / 100
-        return percentage
+    def get_effect(effect_name, item):
+        return next((effect["value"] for effect in item["effects"] if effect["name"] == effect_name), 0)
+    def get_as_percent(num):
+        return num / 100
+    
 
+
+    player_fire_dmg = 1
+    player_earth_dmg = 1
+    player_water_dmg = 1
+    player_air_dmg = 1
+    if weapon_code != None:
+        weapon_item = get_item_by_name(weapon_code)
+        player_fire_dmg = get_effect("attack_fire", weapon_item)
+        player_earth_dmg = get_effect("attack_earth", weapon_item)
+        player_water_dmg = get_effect("attack_water", weapon_item)
+        player_air_dmg = get_effect("attack_air", weapon_item)
 
     best_armor = None
     best_effects = 0
     for armor in candidate_armors:
-        damage_fire = get_dmg_value("dmg_fire", armor)
+        damage_fire = get_as_percent(get_effect("dmg_fire", armor)) * player_fire_dmg
         fire_damage_done = damage_fire * (1 - int(monster["res_fire"])/100)
-        resistance_fire = get_res_value("res_fire", armor) * monster["attack_fire"]
+        resistance_fire = get_as_percent(get_effect("res_fire", armor)) * monster["attack_fire"]
 
-        damage_earth = get_dmg_value("dmg_earth", armor)
+        damage_earth = get_as_percent(get_effect("dmg_earth", armor)) * player_earth_dmg
         earth_damage_done = damage_earth * (1 - int(monster["res_earth"])/100)
-        resistance_earth = get_res_value("res_earth", armor) * monster["attack_earth"]
+        resistance_earth = get_as_percent(get_effect("res_earth", armor)) * monster["attack_earth"]
 
-        damage_water = get_dmg_value("dmg_water", armor)
+        damage_water = get_as_percent(get_effect("dmg_water", armor)) * player_water_dmg
         water_damage_done = damage_water * (1 - int(monster["res_water"])/100)
-        resistance_water = get_res_value("res_water", armor) * monster["attack_water"]
+        resistance_water = get_as_percent(get_effect("res_water", armor)) * monster["attack_water"]
 
-        damage_air = get_dmg_value("dmg_air", armor)
+        damage_air = get_as_percent(get_effect("dmg_air", armor)) * player_air_dmg
         air_damage_done = damage_air * (1 - int(monster["res_air"])/100)
-        resistance_air = get_res_value("res_air", armor) * monster["attack_air"]
+        resistance_air = get_as_percent(get_effect("res_air", armor)) * monster["attack_air"]
         
         total_dmg = fire_damage_done + earth_damage_done + water_damage_done + air_damage_done
         total_res = resistance_fire + resistance_earth + resistance_water + resistance_air
@@ -146,11 +157,37 @@ def gather_craftable_weapons_for_level(level):
         for step in plan:
             print(json.dumps(step), ",")
    
+def get_potion_needed_for_monster(character_level, monster_code):
+    '''
+    If the level of the monster is < 15, return None
+    
+    get all potions that are type "utility" and level <= character level
+    Calculate the 
+    
+    potion's effects are either:
+    - boost_dmg_earth
+    - boost_dmg_air
+    - boost_dmg_fire
+    - boost_dmg_water
+    - restore (this heals character health)
+    Choose the potion that is 
+    '''
+    pass
 
 
 if __name__ == "__main__":
     # gather_craftable_weapons_for_level(10)
     GEAR_SLOTS = ["shield","helmet","body_armor","leg_armor","boots","ring", "amulet"]
+    print("=====Optimal=====")
     for gear in GEAR_SLOTS:
-        result = find_best_armor_for_monster("pig", gear, 15, False)
+        result = find_best_armor_for_monster("ogre", gear, 20, False, weapon_code="skull_staff")
         print(f"Slot: {gear}. Result: {result['code']}")
+
+
+    print("=====Available in Bank=====")
+    for gear in GEAR_SLOTS:
+        result = find_best_armor_for_monster("ogre", gear, 20, True, weapon_code="skull_staff")
+        print(f"Slot: {gear}. Result: {result['code']}")
+
+    # result = find_best_armor_for_monster("ogre", "helmet", 20, False, weapon_code="skull_staff")
+    

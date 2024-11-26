@@ -2,7 +2,7 @@ import math
 import time
 import logging
 from datetime import datetime, timedelta, timezone
-from actions import accept_new_task, attack, complete_task, craft, equip, get_bank_quantity, get_character, move, recycle, rest, trade_with_task_master, unequip, use_item
+from actions import accept_new_task, attack, complete_task, craft, equip, get_bank_items, get_bank_quantity, get_character, move, recycle, rest, trade_with_task_master, unequip, use_item
 from data_classes import InventoryItem
 import encyclopedia as ency
 from plan_generator_v2 import generate_plan
@@ -163,7 +163,7 @@ class Character:
                 self.attack_monster(self.default_subaction)
             elif self.default_action == "craft":
                 deposit_all_items(self)
-                plan = generate_plan(self.default_subaction["code"], self.default_subaction["quantity"], math.floor(self.inventory_max_items * 0.75))
+                plan = generate_plan(self.default_subaction["code"], self.default_subaction["quantity"], math.floor(self.inventory_max_items * 0.75), use_bank=False)
                 self.logger.info(f"Plan to acquire {self.default_subaction['code']}: {plan}")
                 self.execute_plan(plan)
             
@@ -186,7 +186,10 @@ class Character:
             handle_result_cooldown(result)
         elif action["action"] == "craft":
             self.logger.info(f"Crafting {action['code']} x{action['quantity']}")
-            go_and_craft_item(self, action["code"], action["quantity"])
+            deposit_all_items(self)
+            plan = generate_plan(self.default_subaction["code"], self.default_subaction["quantity"], math.floor(self.inventory_max_items * 0.75), use_bank=False)
+            self.logger.info(f"Plan to acquire {self.default_subaction['code']}: {plan}")
+            self.execute_plan(plan)
         elif action["action"] == "recycle":
             self.logger.info(f"Recycling {action['code']} x{action['quantity']}")
             result = recycle(self.name, action["code"], action["quantity"])

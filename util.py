@@ -39,6 +39,8 @@ def send_request_to_url(url, path, method, body):
         return False
 
 def handle_result_cooldown(result):
+    if result is False:
+        return
     if "data" in result and "cooldown" in result["data"]:
         start = datetime.now()
         time.sleep(result["data"]["cooldown"]["remaining_seconds"] + 1)
