@@ -186,6 +186,8 @@ class Character:
             handle_result_cooldown(result)
         elif action["action"] == "craft":
             self.logger.info(f"Crafting {action['code']} x{action['quantity']}")
+            go_and_craft_item(self, action["code"], action["quantity"])
+        elif action["action"] == "plan and craft":
             deposit_all_items(self)
             plan = generate_plan(action["code"], action["quantity"], math.floor(self.inventory_max_items * 0.75), use_bank=False)
             self.logger.info(f"Plan to acquire {action['code']}: {plan}")
