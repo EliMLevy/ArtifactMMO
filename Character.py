@@ -343,7 +343,7 @@ class Character:
 
         self.load_data()
         for gear_slot in GEAR_SLOTS:
-            best_gear = find_best_armor_for_monster(monster_code, gear_slot, self.level, available_in_bank=True, current_armor=self.get_active_gear(gear_slot), current_inventory=self.inventory )
+            best_gear = find_best_armor_for_monster(monster_code, gear_slot, self.level, available_in_bank=True, current_armor=self.get_active_gear(gear_slot), current_inventory=self.inventory, weapon_code=self.get_active_gear('weapon') )
             # self.logger.info(f"Found best gear: {best_gear}")
             if best_gear != False and best_gear["code"] != self.get_active_gear(gear_slot):
                 self.logger.info(f"The {best_gear['code']} is better against {monster_code} than {self.get_active_gear(gear_slot)}")
