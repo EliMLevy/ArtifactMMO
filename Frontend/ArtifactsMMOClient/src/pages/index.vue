@@ -17,15 +17,20 @@
 
     <!-- Character Cards -->
     <v-container>
+      <v-row>
+        <v-col cols="6">
+          <BankViewer />
+        </v-col>
+      </v-row>
       <v-row v-if="characterStore.characters.length" class="g-4">
         <v-col
           v-for="character in characterStore.characters"
           :key="character.name"
           cols="12"
-          md="6"
-          lg="4"
+          md="12"
+          lg="12"
         >
-          <CharacterCard :character="character" />
+          <CharacterCard :character="character" :logs="characterStore.logs" />
         </v-col>
       </v-row>
 
@@ -51,11 +56,20 @@ export default {
 
     const loadCharacters = () => {
       characterStore.loadData();
+      characterStore.loadLogs();
     };
-
+    let loadIntervalId = 0;
     onMounted(() => {
       loadCharacters();
+      loadIntervalId = setInterval(() => {
+        characterStore.loadData()
+        characterStore.loadLogs();
+      }, 5000);
     });
+
+    onUnmounted(() => {
+      clearInterval(loadIntervalId)
+    })
 
     return {
       characterStore,

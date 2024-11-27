@@ -111,3 +111,61 @@ export interface Log {
   created_at: string; // ISO 8601 date-time string
 }
 
+
+export interface Item {
+  code: string;
+  quantity: number;
+}
+
+
+
+export interface Drop {
+  code: string;
+  rate: number;
+  min_quantity: number;
+  max_quantity: number;
+}
+
+export interface Monster {
+  name: string;
+  code: string;
+  level: number;
+  hp: number;
+  attack_fire: number;
+  attack_earth: number;
+  attack_water: number;
+  attack_air: number;
+  res_fire: number;
+  res_earth: number;
+  res_water: number;
+  res_air: number;
+  min_gold: number;
+  max_gold: number;
+  drops: Drop[];
+}
+
+
+export interface ItemEffect {
+  name: string;
+  value: number;
+}
+
+export interface RecipeItem {
+  code: string;
+  quantity: number;
+}
+
+export interface Recipe {
+  skill: string;
+  level: number;
+  items: RecipeItem[];
+}
+
+export interface Item {
+  code: string;
+  level: number;
+  type: string;
+  effects: ItemEffect[];
+  recipe?: Recipe;
+}
+

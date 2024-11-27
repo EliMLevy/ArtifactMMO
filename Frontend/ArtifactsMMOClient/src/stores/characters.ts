@@ -20,11 +20,11 @@ export const useCharacterStore = defineStore("characters", {
           {
             headers: {
               Accept: "application/json",
-              Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}`,
+              Authorization: `Bearer ${import.meta.env.VITE_API_BEARER_TOKEN}`,
             },
           }
         );
-        this.characters = response.data;
+        this.characters = response.data.data;
       } catch (error: any) {
         this.error =
           error.response?.data?.message || "Failed to load characters.";
@@ -42,7 +42,7 @@ export const useCharacterStore = defineStore("characters", {
           {
             headers: {
               Accept: "application/json",
-              Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}`,
+              Authorization: `Bearer ${import.meta.env.VITE_API_BEARER_TOKEN}`,
             },
           }
         );
