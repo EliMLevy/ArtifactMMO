@@ -121,6 +121,7 @@ def find_best_armor_for_monster(monster_code, armor_slot, max_level, available_i
 
     best_armor = None
     best_effects = 0
+    best_hp = 0
     for armor in candidate_armors:
         damage_fire = get_as_percent(get_effect("dmg_fire", armor)) * player_fire_dmg
         fire_damage_done = damage_fire * (1 - int(monster["res_fire"])/100)
@@ -137,12 +138,15 @@ def find_best_armor_for_monster(monster_code, armor_slot, max_level, available_i
         damage_air = get_as_percent(get_effect("dmg_air", armor)) * player_air_dmg
         air_damage_done = damage_air * (1 - int(monster["res_air"])/100)
         resistance_air = get_as_percent(get_effect("res_air", armor)) * monster["attack_air"]
+
+        hp = get_effect("hp", armor)
         
         total_dmg = fire_damage_done + earth_damage_done + water_damage_done + air_damage_done
         total_res = resistance_fire + resistance_earth + resistance_water + resistance_air
         # print(f"Against {monster_code} the {armor['code']} will add {total_dmg} damage and {total_res} resistance")
-        if total_dmg + total_res > best_effects:
+        if total_dmg + total_res > best_effects or (total_dmg + total_res == best_effects and hp > best_hp):
            best_effects = total_dmg + total_res
+           best_hp = hp
            best_armor = armor
 
     return best_armor
@@ -177,7 +181,8 @@ def get_potion_needed_for_monster(character_level, monster_code):
 
 if __name__ == "__main__":
     # gather_craftable_weapons_for_level(10)
-    GEAR_SLOTS = ["shield","helmet","body_armor","leg_armor","boots","ring", "amulet"]
+    GEAR_SLOTS = ["body_armor"]
+    # GEAR_SLOTS = ["shield","helmet","body_armor","leg_armor","boots","ring", "amulet"]
     print("=====Optimal=====")
     for gear in GEAR_SLOTS:
         result = find_best_armor_for_monster("ogre", gear, 20, False, weapon_code="skull_staff")
@@ -187,6 +192,7 @@ if __name__ == "__main__":
     print("=====Available in Bank=====")
     for gear in GEAR_SLOTS:
         result = find_best_armor_for_monster("ogre", gear, 20, True, weapon_code="skull_staff")
+        # print(result)
         print(f"Slot: {gear}. Result: {result['code']}")
 
     # result = find_best_armor_for_monster("ogre", "helmet", 20, False, weapon_code="skull_staff")
