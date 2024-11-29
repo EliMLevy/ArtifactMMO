@@ -2,7 +2,7 @@ import math
 import time
 import logging
 from datetime import datetime, timedelta, timezone
-from actions import accept_new_task, attack, complete_task, craft, equip, get_bank_items, get_bank_quantity, get_character, move, recycle, rest, trade_with_task_master, unequip, use_item
+from actions import accept_new_task, attack, complete_task, equip, get_bank_quantity, get_character, move, recycle, rest, trade_with_task_master, unequip, use_item
 from data_classes import InventoryItem
 import encyclopedia as ency
 from plan_generator_v2 import generate_plan
