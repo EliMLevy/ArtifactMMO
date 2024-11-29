@@ -95,6 +95,12 @@ def go_and_collect_item(character: Character, code: str):
         print(f"Item {code} does not exists")
         return
     location = locations.iloc[0]
+
+    if location["skill"] == "mining" and character.weapon_slot != 'iron_pickaxe':
+        character.equip_new_gear("weapon", "iron_pickaxe")
+    if location["skill"] == "woodcutting" and character.weapon_slot != 'iron_axe':
+        character.equip_new_gear("weapon", "iron_axe")
+
     if (character.x != location["x"]) or (character.y != location["y"]):
         result = move(character.name, int(location["x"]), int(location["y"]))
         character.x = location["x"]
