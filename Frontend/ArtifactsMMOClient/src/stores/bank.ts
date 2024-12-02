@@ -12,7 +12,7 @@ export const useBankStore = defineStore("bankStore", {
     async getBank() {
       try {
         this.loading = true
-        const response = await axios.get(
+        let page1 = await axios.get(
           "https://api.artifactsmmo.com/my/bank/items?size=100",
           {
             headers: {
@@ -21,7 +21,18 @@ export const useBankStore = defineStore("bankStore", {
             },
           }
         );
-        this.bank = response.data.data;
+        this.bank = page1.data.data;
+
+        let page2 = await axios.get(
+          "https://api.artifactsmmo.com/my/bank/items?size=100&page=2",
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${import.meta.env.VITE_API_BEARER_TOKEN}`,
+            },
+          }
+        );
+        this.bank.push(...page2.data.data);
         this.loading = false;
 
       } catch (error) {

@@ -1,0 +1,3 @@
+<template>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAeCAYAAAA/xX6fAAAACXBIWXMAAAsTAAALEwEAmpwYAAABRElEQVRIic2WsU7DMBCGvyAqVY2QsrB0oUNWmJgQHZCQeAPegInn4XkYYOwEawdYWLpEqlJFYigDOaivORtQsfOP9u+LP1n3XzIMHV+cA1CUQwCqebO2vK0va30APN8/dvr2fEX+Q5lesMhOb4+8hWZ3r3LOS5qO8K9kWiHS+IS7ItOySOMTTm8uaW+wEzItTZrkDX9EVj1ttayj4sQbRF+k0Qn3Q4YQmfaFSPtDqMnmDy/eQuV04pyzSNMRWm8lZKPis49WVePsj4qh+NawTaoVvw/Prq8AWC5q54YhMi0hXVVNZ52Dwzxd0sgNgG/STQ/Y/zZ6GgDOvpAtFzXQh4mvlY8HANRv752ZKxmZjwdZ6+usk27iWxsbxA6Z7i9JFCGVmr35Lw1OC5GQ6Uwtmfzqg/0jlD6SrJTkEcm67jdL0Qk/AEugn3gtjA5JAAAAAElFTkSuQmCC" alt="% Air damage icon" class="component_stats__img svelte-659lsl">
+</template>

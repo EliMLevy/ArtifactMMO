@@ -1,3 +1,5 @@
+export type CharacterName = "Bobby" | "Stuart" | "George" | "Tim" | "Joe";
+
 export interface InventoryItem {
   slot: number;
   code: string;
@@ -5,7 +7,7 @@ export interface InventoryItem {
 }
 
 export interface Character {
-  name: string;
+  name: CharacterName;
   account: string;
   skin: string;
   level: number;
@@ -82,7 +84,20 @@ export interface Character {
   inventory: InventoryItem[];
 }
 
-
+export interface GearSetup {
+  weapon_slot: string;
+  shield_slot: string;
+  helmet_slot: string;
+  body_armor_slot: string;
+  leg_armor_slot: string;
+  boots_slot: string;
+  ring1_slot: string;
+  ring2_slot: string;
+  amulet_slot: string;
+  artifact1_slot: string;
+  artifact2_slot: string;
+  artifact3_slot: string;
+}
 
 export interface LogContent {
   item?: string; // For "deposit" type logs
@@ -111,13 +126,10 @@ export interface Log {
   created_at: string; // ISO 8601 date-time string
 }
 
-
 export interface Item {
   code: string;
   quantity: number;
 }
-
-
 
 export interface Drop {
   code: string;
@@ -144,7 +156,6 @@ export interface Monster {
   drops: Drop[];
 }
 
-
 export interface ItemEffect {
   name: string;
   value: number;
@@ -169,3 +180,27 @@ export interface Item {
   recipe?: Recipe;
 }
 
+export interface Content {
+  type: "resource" | "monster" | "workshop" | "bank" | "tasks_master";
+  code: string;
+}
+
+export interface MapEntry {
+  x: number;
+  y: number;
+  content: Content;
+}
+
+export type GearSlot =
+    | 'weapon_slot'
+    | 'shield_slot'
+    | 'helmet_slot'
+    | 'body_armor_slot'
+    | 'leg_armor_slot'
+    | 'boots_slot'
+    | 'ring1_slot'
+    | 'ring2_slot'
+    | 'amulet_slot'
+    | 'artifact1_slot'
+    | 'artifact2_slot'
+    | 'artifact3_slot';

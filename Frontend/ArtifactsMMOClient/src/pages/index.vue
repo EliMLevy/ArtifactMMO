@@ -1,14 +1,5 @@
 <template>
   <div class="ma-4">
-    <!-- Load Characters Button -->
-    <v-btn
-      :loading="characterStore.isLoading"
-      @click="loadCharacters"
-      color="primary"
-      class="mb-4"
-    >
-      {{ characterStore.isLoading ? "Loading..." : "Load Characters" }}
-    </v-btn>
 
     <!-- Error Message -->
     <div v-if="characterStore.error" class="error">
@@ -20,6 +11,9 @@
       <v-row>
         <v-col cols="6">
           <BankViewer />
+        </v-col>
+        <v-col cols="6">
+          <FightSimulator />
         </v-col>
       </v-row>
       <v-row v-if="characterStore.characters.length" class="g-4">
@@ -46,6 +40,9 @@
 import { useCharacterStore } from "@/stores/characters";
 import { onMounted } from "vue";
 import CharacterCard from "@/components/CharacterCard.vue";
+import { useItemsStore } from "@/stores/items";
+import { useMonsterStore } from "@/stores/monsters";
+import { useMapsStore } from "@/stores/maps";
 
 export default {
   components: {
@@ -53,23 +50,30 @@ export default {
   },
   setup() {
     const characterStore = useCharacterStore();
+    const monstersStore = useMonsterStore();
+    const itemsStore = useItemsStore();
+    const mapsStore = useMapsStore();
 
     const loadCharacters = () => {
       characterStore.loadData();
       characterStore.loadLogs();
     };
     let loadIntervalId = 0;
-    onMounted(() => {
+    onMounted(async () => {
       loadCharacters();
+      monstersStore.loadMonsters();
+      itemsStore.loadItems();
+      mapsStore.loadMaps()
+
       loadIntervalId = setInterval(() => {
-        characterStore.loadData()
+        characterStore.loadData();
         characterStore.loadLogs();
       }, 5000);
     });
 
     onUnmounted(() => {
-      clearInterval(loadIntervalId)
-    })
+      clearInterval(loadIntervalId);
+    });
 
     return {
       characterStore,

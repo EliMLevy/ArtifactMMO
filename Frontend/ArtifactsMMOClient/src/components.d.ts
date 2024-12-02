@@ -7,14 +7,26 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    2: typeof import('./components/icons/EarthIcon copy 2.vue')['default']
+    3: typeof import('./components/icons/EarthIcon copy 3.vue')['default']
+    AirIcon: typeof import('./components/icons/AirIcon.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     BankViewer: typeof import('./components/BankViewer.vue')['default']
     CharacterCard: typeof import('./components/CharacterCard.vue')['default']
     ControlPanel: typeof import('./components/ControlPanel.vue')['default']
+    copy: typeof import('./components/icons/HeartIcon copy.vue')['default']
+    Earth: typeof import('./components/icons/earth.vue')['default']
+    EarthIcon: typeof import('./components/icons/EarthIcon.vue')['default']
+    FightSimulator: typeof import('./components/FightSimulator.vue')['default']
+    FireIcon: typeof import('./components/icons/FireIcon.vue')['default']
+    HasteIcon: typeof import('./components/icons/HasteIcon.vue')['default']
+    HeartIcon: typeof import('./components/icons/HeartIcon.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     LogView: typeof import('./components/LogView.vue')['default']
     ProgressBar: typeof import('./components/ProgressBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SelectGearBtn: typeof import('./components/SelectGearBtn.vue')['default']
+    WaterIcon: typeof import('./components/icons/WaterIcon.vue')['default']
   }
 }

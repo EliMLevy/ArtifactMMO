@@ -52,15 +52,16 @@
 </template>
 
 <script setup lang="ts">
+import type { Item, Monster } from "@/ArtifactsTypes";
 import { useItemsStore } from "@/stores/items";
 import { useMonsterStore } from "@/stores/monsters";
+import type { PropType } from "vue";
+const monstersStore = useMonsterStore();
+const itemsStore = useItemsStore();
 
 const props = defineProps({
   characterName: String,
 });
-
-const monstersStore = useMonsterStore();
-const itemsStore = useItemsStore();
 
 const options = {
   "Deposit inventory": {
@@ -69,7 +70,7 @@ const options = {
   },
   Idle: {
     action: "idle",
-    "title": "idle",
+    title: "idle",
   },
   Attack: {
     action: "attack",
@@ -97,34 +98,52 @@ const options = {
     action: "train",
     title: "Train",
     suboptions: {
-        Type: ["mining", "woodcutting", "fishing", "lowest"]
-    }
+      Type: ["mining", "woodcutting", "fishing", "lowest"],
+    },
   },
   Tasks: {
     action: "tasks",
     title: "Tasks",
     suboptions: {
-        Type: ["monsters", "items"]
-    }
-  }
+      Type: ["monsters", "items"],
+    },
+  },
 };
 
-onMounted(async () => {
-  await monstersStore.loadMonsters();
-  options["Attack"].suboptions.Monster = monstersStore.monsters
-    .map((m) => m.code)
-    .sort();
+watch(
+  () => monstersStore.monsters,
+  () => {
+    options["Attack"].suboptions.Monster = monstersStore.monsters
+      .map((m) => m.code)
+      .sort();
+  }
+);
 
-  await itemsStore.loadItems();
-  options["Craft"].suboptions.Item = Object.values(itemsStore.items)
-    .map((m) => m.code)
-    .sort();
+watch(
+  () => itemsStore.items,
+  () => {
+    options["Craft"].suboptions.Item = Object.values(itemsStore.items)
+      .map((m) => m.code)
+      .sort();
 
-  options["Collect"].suboptions.Resource = Object.values(itemsStore.items)
-    .filter((i) => i.type == "resource" && i.recipe == undefined)
-    .map((m) => m.code)
-    .sort();
-});
+    options["Collect"].suboptions.Resource = Object.values(itemsStore.items)
+      .filter((i) => i.type == "resource" && i.recipe == undefined)
+      .map((m) => m.code)
+      .sort();
+  }
+);
+
+options["Attack"].suboptions.Monster = monstersStore.monsters
+  .map((m) => m.code)
+  .sort();
+options["Craft"].suboptions.Item = Object.values(itemsStore.items)
+  .map((m) => m.code)
+  .sort();
+
+options["Collect"].suboptions.Resource = Object.values(itemsStore.items)
+  .filter((i) => i.type == "resource" && i.recipe == undefined)
+  .map((m) => m.code)
+  .sort();
 
 let selected = ref({} as any);
 
@@ -143,16 +162,16 @@ function handleCopy() {
       selected.value.Quantity
     ) {
       cmd = `python3 character_api_cli.py submit-plan ${props.characterName} "[{'action': 'plan and craft', 'code': '${selected.value.Item}', 'quantity': ${selected.value.Quantity}}]"`;
-    } else if(selected.value.action == "Collect" &&  selected.value.Resource) {
-        cmd = `python3 character_api_cli.py set-default ${props.characterName} collect ${selected.value.Resource}`;
-    } else if(selected.value.action == "Train" && selected.value.Type) {
-        if(selected.value.Type == "lowest") {
-            cmd = `python3 character_api_cli.py set-default ${props.characterName} "collect loop"`;
-        } else {
-            cmd = `python3 character_api_cli.py set-default ${props.characterName} collecting ${selected.value.Type} `;
-        }
-    } else if(selected.value.action == "Tasks" && selected.value.Type) {
-        cmd = `python3 character_api_cli.py set-default ${props.characterName} tasks ${selected.value.Type} `;
+    } else if (selected.value.action == "Collect" && selected.value.Resource) {
+      cmd = `python3 character_api_cli.py set-default ${props.characterName} collect ${selected.value.Resource}`;
+    } else if (selected.value.action == "Train" && selected.value.Type) {
+      if (selected.value.Type == "lowest") {
+        cmd = `python3 character_api_cli.py set-default ${props.characterName} "collect loop"`;
+      } else {
+        cmd = `python3 character_api_cli.py set-default ${props.characterName} collecting ${selected.value.Type} `;
+      }
+    } else if (selected.value.action == "Tasks" && selected.value.Type) {
+      cmd = `python3 character_api_cli.py set-default ${props.characterName} tasks ${selected.value.Type} `;
     }
     console.log("Copying", cmd);
     navigator.clipboard.writeText(cmd);

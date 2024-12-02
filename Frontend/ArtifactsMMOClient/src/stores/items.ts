@@ -7,7 +7,7 @@ import { defineStore } from "pinia";
 export const useItemsStore = defineStore("itemsStore", {
   // State: A reactive array to store monsters
   state: () => ({
-        items: [] as Item[],
+        items: {} as {[key: string] : Item},
         isLoading: false,
         error: null
   }),
@@ -26,6 +26,9 @@ export const useItemsStore = defineStore("itemsStore", {
         } finally {
           this.isLoading = false;
         }
+    },
+    getItem(item_code: string) {
+      return this.items[item_code]
     }
   }  
 });
