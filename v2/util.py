@@ -6,10 +6,10 @@ import os
 
 load_dotenv()
 
-BASE_URL = "https://api.artifactsmmo.com/my/"  # Replace with your base URL
-API_TOKEN = os.getenv("API_TOKEN")      # Replace with your API token
+BASE_URL = "https://api.artifactsmmo.com/my/" 
+API_TOKEN = os.getenv("API_TOKEN")      
 
-def send_request(character, path, method, body):
+def send_character_request(character, path, method, body):
     url = f"{BASE_URL}{character}"
     return send_request_to_url(url, path, method, body)
 
@@ -45,6 +45,3 @@ def handle_result_cooldown(result):
         start = datetime.now()
         time.sleep(result["data"]["cooldown"]["remaining_seconds"] + 1)
 
-    
-# Example usage:
-# send_request("character_name", "/endpoint", "POST", {"key": "value"})

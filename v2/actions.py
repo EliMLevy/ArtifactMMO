@@ -43,43 +43,6 @@ def get_character(name: str) -> Any:
     return send_request_to_url(f"https://api.artifactsmmo.com/characters/{name}", "", "GET", None)
 
 
-last_fetched_bank_items = None
-bank_item_fetch_refresh = 30 # seconds
-cached_bank_items = None
-lock = threading.Lock()
-def get_bank_items(character: Character = None):
-    global cached_bank_items, last_fetched_bank_items, bank_item_fetch_refresh
-    lock.acquire()
-    if cached_bank_items is None or last_fetched_bank_items is None or (datetime.now() - last_fetched_bank_items).seconds > bank_item_fetch_refresh:
-        if character != None:
-            character.logger.info(f"Getting back items because last fetched was {last_fetched_bank_items}")
-        else:
-            print(f"No character getting bank items. Last fetched: {last_fetched_bank_items}")
-        page = 1
-        all_results = []
-        done = False
-
-        while not done:
-            result = send_request_to_url(f"https://api.artifactsmmo.com/my/bank/items?page={page}", "", "GET", None)
-            print(len(result["data"]))
-            all_results.extend(result["data"])
-
-            if result["pages"] > page:
-                page += 1
-            else:
-                break
-            time.sleep(1)
-        cached_bank_items = all_results
-        last_fetched_bank_items = datetime.now()
-        lock.release()
-        return all_results
-    lock.release()
-    return cached_bank_items
-
-def get_bank_quantity(character: Character, item_code: str):
-    bank_items = get_bank_items(character)
-    return next((item["quantity"] for item in bank_items if item["code"] == item_code), 0)
-
 def deposit_item(character: str, item: InventoryItem) -> Any:
     body = {"code": item.code, "quantity": item.quantity}
     return send_request(character, "/action/bank/deposit", "POST", body)
