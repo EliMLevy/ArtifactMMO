@@ -1,0 +1,34 @@
+Manager process that keeps track of long term goals
+goals
+- Level up characters combat
+- Crafting new gear
+- Level up crafting skills
+- level up collecting skills
+- gathering jasper crystals (completeing tasks)
+
+
+Main:
+- Compile list of craftable gear
+- Filter out items we already have crafted
+- Filter out items that need monster drops from monsters we cant defeat
+- Craft each of the remaining items and repeat
+
+Craft Item
+- Compile list of ingredients
+- Assign jobs to each character to collect ingredients
+- Characters will specialize- 2 miners, 2 woodcutters, 1 fisherman
+- All characters will try to 
+
+
+Character
+- move_to_map_code
+- craft_item
+- collect_resource (quantity)
+- collect_highest_unlocked (skill)
+- collect_drop (quantity)
+
+
+Other improvements
+- Better error handling for web requests. Always checking the error codes
+- Better collaboration between agents because they will be aware of each others goals
+- Generate plan still doesnt work in edge cases where the resources are not present. We need unit tests

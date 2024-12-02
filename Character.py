@@ -163,7 +163,7 @@ class Character:
                 self.attack_monster(self.default_subaction)
             elif self.default_action == "craft":
                 deposit_all_items(self)
-                plan = generate_plan(self.default_subaction["code"], self.default_subaction["quantity"], math.floor(self.inventory_max_items * 0.75), use_bank=False)
+                plan = generate_plan(self, self.default_subaction["code"], self.default_subaction["quantity"], math.floor(self.inventory_max_items * 0.75), use_bank=False)
                 self.logger.info(f"Plan to acquire {self.default_subaction['code']}: {plan}")
                 self.execute_plan(plan)
             
@@ -189,7 +189,7 @@ class Character:
             go_and_craft_item(self, action["code"], action["quantity"])
         elif action["action"] == "plan and craft":
             deposit_all_items(self)
-            plan = generate_plan(action["code"], action["quantity"], math.floor(self.inventory_max_items * 0.75), use_bank=False)
+            plan = generate_plan(self, action["code"], action["quantity"], math.floor(self.inventory_max_items * 0.75), use_bank=False)
             self.logger.info(f"Plan to acquire {action['code']}: {plan}")
             self.execute_plan(plan)
         elif action["action"] == "recycle":
@@ -307,7 +307,7 @@ class Character:
         # If we get here, we are not finished with task but there is no more to withdraw
         # We need to create a plan for acquiring it, then proceed
         acquire_amount = min(self.task_total - self.task_progress, math.floor(self.inventory_max_items * 0.75)) # we may need to do several trips
-        plan = generate_plan(self.task, acquire_amount, math.floor(self.inventory_max_items * 0.75), use_bank=True)
+        plan = generate_plan(self, self.task, acquire_amount, math.floor(self.inventory_max_items * 0.75), use_bank=True)
         self.logger.info(f"Plan to acquire {self.task}: {plan}")
 
         self.execute_plan(plan)
@@ -317,16 +317,14 @@ class Character:
     def attack_monster(self, monster_code):
         from enhanced_actions import move_to_location, withdraw_from_bank
 
-        # Pack up consumables
-        inv_items_wanted = [
-            # {"code": "small_health_potion", "min_quantity": 1, "desired_quantity": 15},
-            {"code": "cooked_gudgeon", "min_quantity": 1, "desired_quantity": 50},
-        ]
-        for item in inv_items_wanted:
-            if self.get_quantity_of_inv_item(item["code"]) < item["min_quantity"] and get_bank_quantity(item["code"]) > item["desired_quantity"]:
+        # We want one of these food items (in order of desire)
+        food_items = ["cooked_chicken", "cooked_wolf_meat"]
+        for item in food_items:
+            if self.get_quantity_of_inv_item(item["code"]) < item["min_quantity"] and get_bank_quantity(item["code"]) >= item["desired_quantity"]:
                 self.logger.info(f"Need more {item['code']}")
                 # Withdraw 
                 withdraw_from_bank(self, item["code"], item["desired_quantity"])
+                break
 
         # Rest before unequipping any gear because its possible that we are very low hp
         if self.needs_rest():
@@ -336,14 +334,14 @@ class Character:
             handle_result_cooldown(result)
 
         self.load_data()
-        best_weapon = find_best_weapon_for_monster(monster_code, self.level, available_in_bank=True,  current_weapon=self.weapon_slot, current_inventory=self.inventory)
+        best_weapon = find_best_weapon_for_monster(self, monster_code, self.level, available_in_bank=True,  current_weapon=self.weapon_slot, current_inventory=self.inventory)
         if best_weapon != False and best_weapon["code"] != self.weapon_slot:
             self.logger.info(f"The {best_weapon['code']} is better against {monster_code} than {self.weapon_slot}")
             self.equip_new_gear("weapon", best_weapon["code"])
 
         self.load_data()
         for gear_slot in GEAR_SLOTS:
-            best_gear = find_best_armor_for_monster(monster_code, gear_slot, self.level, available_in_bank=True, current_armor=self.get_active_gear(gear_slot), current_inventory=self.inventory, weapon_code=self.get_active_gear('weapon') )
+            best_gear = find_best_armor_for_monster(self, monster_code, gear_slot, self.level, available_in_bank=True, current_armor=self.get_active_gear(gear_slot), current_inventory=self.inventory, weapon_code=self.get_active_gear('weapon') )
             # self.logger.info(f"Found best gear: {best_gear}")
             if best_gear != False and best_gear["code"] != self.get_active_gear(gear_slot):
                 self.logger.info(f"The {best_gear['code']} is better against {monster_code} than {self.get_active_gear(gear_slot)}")

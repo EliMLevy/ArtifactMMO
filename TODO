@@ -1,5 +1,82 @@
 - Make python application into API to assign plans
-===================TODO=================
-- Make characters get the best available gear for a fight
+- Make characters get the best available weapon for a fight
+- Make characters get the best available armor for a fight
+- Make characters get the best available ring for a fight
 - Craft tools with the jasper
 - Make the collect tool loop
+===================TODO=================
+- Figure out potions and consumables in battle
+
+- Level 25 gear
+    - skull_wand - vampire_blood
+    - dreadful_staff vampire_blood + cyclops eyes
+
+    - piggy_helmet x2 vampire_blood
+
+    - bandit_armor	(from the bandit lizard)
+    - lizard_skin_armor lizard_skin dead_wood_plank
+    - serpent_skin_armor serpent_skin vampire_blood
+    - piggy_armor dead_wood_plank
+    - stormforged_armor lizard_skin dead_wood_plank
+
+    - serpent_skin_legs_armor	serpent_skin
+    - lizard_skin_legs_armor	lizard_skin
+    - piggy_pants	hardwood_plank serpent_skin
+    - stormforged_pants lizard_skin
+
+    - topaz_amulet	
+    - emerald_amulet
+    - sapphire_amulet
+    - ruby_amulet
+
+
+====Level 20=====
+skull_amulet -> 18
+{"ash_wood": 21, "birch_wood": 35, "skeleton_skull": 3, "wolf_hair": 3, "serpent_skin": 2}
+steel_legs_armor -> 19
+{"iron_ore": 21, "coal": 35, "skeleton_skull": 2, "feather": 4, "pig_skin": 2} -> x80
+
+
+battlestaff -> 15
+{"ash_wood": 18, "birch_wood": 30, "iron_ore": 12, "coal": 20, "wolf_bone": 3, "blue_slimeball": 5} -> x18
+steel_battleaxe -> 18
+{"iron_ore": 12, "coal": 20, "ash_wood": 12, "birch_wood": 20, "skeleton_bone": 4, "wolf_hair": 4}
+skull_staff -> 18
+{"skeleton_skull": 1, "skeleton_bone": 4, "iron_ore": 15, "coal": 25, "ash_wood": 15, "birch_wood": 25}
+forest_whip -> 20
+{"green_slimeball": 2, "wolf_hair": 5, "ogre_eye": 4, "ash_wood": 12, "birch_wood": 20} -> x30
+
+
+====Level 25====
+ruby_amulet -> 15
+    {"ash_wood": 24, "birch_wood": 40, "ruby_stone": 10, "wolf_hair": 5, "jasper_crystal": 2}
+skull_wand -> 24
+    {"ash_wood": 12, "birch_wood": 20, "skeleton_skull": 3, "vampire_blood": 2, "ogre_skin": 3, "jasper_crystal": 1}
+piggy_pants -> 19
+    {"pig_skin": 5, "ash_wood": 12, "birch_wood": 20, "serpent_skin": 4, "jasper_crystal": 2}
+piggy_armor -> 20
+    {"pig_skin": 5, "dead_wood": 40, "ogre_skin": 4, "jasper_crystal": 2}
+
+
+serpent_skin_legs_armor -> 20
+    {"serpent_skin": 5, "ogre_skin": 5, "wolf_bone": 4, "jasper_crystal": 1}
+serpent_skin_armor -> 24
+    {"serpent_skin": 5, "skeleton_bone": 5, "vampire_blood": 4, "jasper_crystal": 1}
+dreadful_staff -> 25
+    {"cyclops_eye": 4, "vampire_blood": 5, "ash_wood": 18, "birch_wood": 30, "jasper_crystal": 1}
+lizard_skin_armor -> 25
+    {"lizard_skin": 5, "dead_wood": 40, "ogre_skin": 4, "jasper_crystal": 2}
+lizard_skin_legs_armor -> 25
+    {"lizard_skin": 5, "flying_wing": 5, "ogre_eye": 4, "jasper_crystal": 2}
+piggy_helmet -> 25
+    {"iron_ore": 18, "coal": 30, "pig_skin": 6, "cyclops_eye": 2, "vampire_blood": 2}
+stormforged_armor -> 25
+    {"lizard_skin": 5, "dead_wood": 40, "ogre_eye": 4, "jasper_crystal": 2}
+stormforged_pants -> 25
+    {"lizard_skin": 4, "wolf_bone": 5, "ogre_skin": 5, "jasper_crystal": 2}
+topaz_amulet -> 15
+    {"ash_wood": 24, "birch_wood": 40, "topaz_stone": 10, "wolf_hair": 5, "jasper_crystal": 2}
+emerald_amulet -> 15
+    {"ash_wood": 24, "birch_wood": 40, "emerald_stone": 10, "wolf_hair": 5, "jasper_crystal": 2}
+sapphire_amulet -> 15
+    {"ash_wood": 24, "birch_wood": 40, "sapphire_stone": 10, "wolf_hair": 5, "jasper_crystal": 2}

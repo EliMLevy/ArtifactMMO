@@ -2,6 +2,7 @@
 import json
 import pandas as pd
 
+from Character import Character
 from actions import get_bank_items
 from encyclopedia import get_item_by_name, get_items_that_match, get_monster_spot
 from plan_generator import generate_crafting_plan
@@ -33,8 +34,8 @@ def generate_gear_comparisons(max_level):
     df.to_csv(f"./gear/{slot}.csv")
 
 
-def find_best_weapon_for_monster(monster_code, max_level, available_in_bank=True, current_weapon = None, current_inventory = None):
-    bank_items = get_bank_items()
+def find_best_weapon_for_monster(character: Character, monster_code, max_level, available_in_bank=True, current_weapon = None, current_inventory = None):
+    bank_items = get_bank_items(character)
     def filter_weapons(item):
         if item["code"] == current_weapon:
            return True
@@ -73,8 +74,8 @@ def find_best_weapon_for_monster(monster_code, max_level, available_in_bank=True
     return best_weapon
 
 
-def find_best_armor_for_monster(monster_code, armor_slot, max_level, available_in_bank=True, current_armor = None, current_inventory = None, weapon_code = None):
-    bank_items = get_bank_items()
+def find_best_armor_for_monster(character: Character, monster_code, armor_slot, max_level, available_in_bank=True, current_armor = None, current_inventory = None, weapon_code = None):
+    bank_items = get_bank_items(character)
     
     
     
@@ -181,17 +182,22 @@ def get_potion_needed_for_monster(character_level, monster_code):
 
 if __name__ == "__main__":
     # gather_craftable_weapons_for_level(10)
-    GEAR_SLOTS = ["body_armor"]
-    # GEAR_SLOTS = ["shield","helmet","body_armor","leg_armor","boots","ring", "amulet"]
+    # GEAR_SLOTS = ["helmet"]
+
+    weapon = find_best_weapon_for_monster("cyclops", 25, available_in_bank=False)
+    print("====Weapon====")
+    print(weapon)
+
+    GEAR_SLOTS = ["shield","helmet","body_armor","leg_armor","boots","ring", "amulet"]
     print("=====Optimal=====")
     for gear in GEAR_SLOTS:
-        result = find_best_armor_for_monster("ogre", gear, 20, False, weapon_code="skull_staff")
+        result = find_best_armor_for_monster("cyclops", gear, 25, False, weapon_code="skull_staff")
         print(f"Slot: {gear}. Result: {result['code']}")
 
 
     print("=====Available in Bank=====")
     for gear in GEAR_SLOTS:
-        result = find_best_armor_for_monster("ogre", gear, 20, True, weapon_code="skull_staff")
+        result = find_best_armor_for_monster("cyclops", gear, 25, True, current_armor='tromatising_mask', current_inventory=[])
         # print(result)
         print(f"Slot: {gear}. Result: {result['code']}")
 

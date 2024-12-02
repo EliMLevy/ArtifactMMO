@@ -1,4 +1,5 @@
 import math
+from Character import Character
 from actions import get_bank_items, get_bank_quantity
 from encyclopedia import get_item_by_name, get_location_by_monster_drop, get_location_by_resource
 
@@ -128,11 +129,22 @@ class Plan():
         return result
 
 
-def generate_plan(item_code, quantity, max_inventory_space, use_bank=False):
-    bank = [x for x in get_bank_items()]
+def generate_plan(character: Character, item_code, quantity, max_inventory_space, use_bank=False):
+    bank = [x for x in get_bank_items(character)]
     plan = Plan(item_code, quantity,max_inventory_space, bank=bank, use_bank=use_bank)
     # print(plan)
     result = plan.get_executable([])
+
+    # Post processing:
+    # - If there are multiple deposit all next to each other we can remove them
+    post_processed = []
+    last_action = ""
+    for action in result:
+        if action["action"] == "deposit all" and last_action == "deposit all":
+            continue
+        last_action = action["action"]
+        post_processed.append(action)
+
     if len(result) == 0:
         # If we have enough in the bank it will return an empty plan
         return [{"action": "withdraw", "code": item_code, "quantity": quantity}]
@@ -142,7 +154,7 @@ def generate_plan(item_code, quantity, max_inventory_space, use_bank=False):
 
 if __name__ == "__main__":
 
-    executable = generate_plan("life_ring", 5, max_inventory_space=120, use_bank=False)
+    executable = generate_plan(None, "life_ring", 5, max_inventory_space=120, use_bank=False)
     print(executable)
     for step in executable:
         print(step)

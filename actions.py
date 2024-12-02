@@ -5,6 +5,7 @@ import time
 from typing import Any
 
 # Import your utility functions
+from Character import Character
 from data_classes import InventoryItem
 from util import send_request, send_request_to_url
 
@@ -46,11 +47,14 @@ last_fetched_bank_items = None
 bank_item_fetch_refresh = 30 # seconds
 cached_bank_items = None
 lock = threading.Lock()
-def get_bank_items():
+def get_bank_items(character: Character = None):
     global cached_bank_items, last_fetched_bank_items, bank_item_fetch_refresh
     lock.acquire()
     if cached_bank_items is None or last_fetched_bank_items is None or (datetime.now() - last_fetched_bank_items).seconds > bank_item_fetch_refresh:
-        print("Getting bank items")
+        if character != None:
+            character.logger.info(f"Getting back items because last fetched was {last_fetched_bank_items}")
+        else:
+            print(f"No character getting bank items. Last fetched: {last_fetched_bank_items}")
         page = 1
         all_results = []
         done = False
@@ -72,8 +76,8 @@ def get_bank_items():
     lock.release()
     return cached_bank_items
 
-def get_bank_quantity(item_code: str):
-    bank_items = get_bank_items()
+def get_bank_quantity(character: Character, item_code: str):
+    bank_items = get_bank_items(character)
     return next((item["quantity"] for item in bank_items if item["code"] == item_code), 0)
 
 def deposit_item(character: str, item: InventoryItem) -> Any:

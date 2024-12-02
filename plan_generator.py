@@ -5,10 +5,8 @@ from actions import get_bank_items
 from encyclopedia import get_item_by_name
 
 
-bank_items = get_bank_items()
-
-def get_quantity_of_item_in_bank(item_code):   
-    return next((item["quantity"] for item in bank_items if item["code"] == item_code), 0)
+def get_quantity_of_item_in_bank(character, item_code):   
+    return next((item["quantity"] for item in get_bank_items(character) if item["code"] == item_code), 0)
 
 def calculate_batch_size(quantity_needed, item_requirements, max_inventory_items):
     """
