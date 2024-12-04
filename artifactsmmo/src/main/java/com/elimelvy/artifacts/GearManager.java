@@ -21,9 +21,9 @@ import com.elimelvy.artifacts.model.item.RecipeIngredient;
  */
 public class GearManager {
 
-    public static List<String> gearTypes = List.of("weapon", "helmet", "body_armor", "leg_armor", "boots", "amulet", "ring");
+    public static List<String> allGearTypes = List.of("weapon", "helmet", "body_armor", "leg_armor", "boots", "amulet", "ring");
     
-    public static Set<GameItem> getGearAtLevel(int level) {
+    public static Set<GameItem> getGearAtLevel(int level, List<String> gearTypes) {
         GameItemManager giMgr = GameItemManager.getInstance();
         return new HashSet<>(giMgr.getItems(item -> item.level() == level && gearTypes.contains(item.type())));
     }
@@ -35,7 +35,6 @@ public class GearManager {
         } else {
             return target.recipe().items().stream().collect(Collectors.toMap(RecipeIngredient::code, RecipeIngredient::quantity));
         }
-
     }
 
     private static Map<String, Integer> ingredientCollector(GameItem item, Map<String, Integer> ingredients, Integer multiplier) {
@@ -71,5 +70,4 @@ public class GearManager {
 
         return ingredients;
     }
-
 }

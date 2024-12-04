@@ -13,11 +13,10 @@ import com.elimelvy.artifacts.model.item.GameItemManager;
 
 public class GearManagerTest {
 
-
     @Test
     public void testGetGearAtLevel() {
         int level = 5;
-        Set<GameItem> result = GearManager.getGearAtLevel(level);
+        Set<GameItem> result = GearManager.getGearAtLevel(level, GearManager.allGearTypes);
         List<String> expected = List.of("copper_legs_armor", "feather_coat", "fire_staff", "copper_armor", "sticky_dagger", "sticky_sword", "life_amulet", "water_bow");
         Set<GameItem> expectedItems = expected.stream().map(i -> GameItemManager.getInstance().getItem(i)).collect(Collectors.toSet());
 
@@ -26,5 +25,4 @@ public class GearManagerTest {
             assertTrue(result.contains(item), "Result is missing " + item + ". " + result);
         }
     }
-    
 }

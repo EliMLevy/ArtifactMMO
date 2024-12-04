@@ -10,6 +10,9 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -19,6 +22,7 @@ public class HTTPRequester {
     private static final String API_TOKEN;
     private static final Gson gson = new Gson();
     private static final HttpClient httpClient;
+    private static final Logger logger = LoggerFactory.getLogger(HTTPRequester.class);
 
     // Static initializer to load environment variables and set up HTTP client
     static {
@@ -84,10 +88,10 @@ public class HTTPRequester {
 
             // Check for errors
             if (result.has("error")) {
-                System.out.println("Failed: " + url + path + " - " + result.get("error").getAsString());
+                logger.error("Failed: " + url + path + " - " + result);
             }
             if (response.statusCode() != 200) {
-                System.out.println("Unexpected status: " + response.statusCode() + " - " + result);
+                logger.error("Unexpected status: " + response.statusCode() + " - " + result);
             }
 
             return result;

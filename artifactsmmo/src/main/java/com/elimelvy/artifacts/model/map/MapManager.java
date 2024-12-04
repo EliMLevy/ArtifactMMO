@@ -8,13 +8,20 @@ import java.util.List;
 
 public class MapManager {
 
-    private List<Monster> monsters;
-    private List<Resource> resources;
+    private final List<Monster> monsters;
+    private final List<Resource> resources;
+    private static MapManager instance;
 
-    public MapManager() {
-
+    private MapManager() {
         this.monsters = readMonstersFromCSV("./src/main/resources/monsters.csv");
         this.resources = readResourcesFromCSV("./src/main/resources/resources.csv");
+    }
+
+    public static MapManager getInstance() {
+        if (instance == null) {
+            instance = new MapManager();
+        }
+        return instance;
     }
 
     // Static method to read CSV and create Resource list
@@ -98,5 +105,4 @@ public class MapManager {
     public List<Monster> getMonster(String resourceCode) {
         return this.monsters.stream().filter(elem -> elem.getResourceCode().equals(resourceCode)).toList();
     }
-    
 }

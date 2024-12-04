@@ -2,17 +2,13 @@ package com.elimelvy.artifacts.model;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.elimelvy.artifacts.util.InstantTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
-@SuppressWarnings("unused")
 public class Character {
-    // Logger
-    public static final Logger logger = Logger.getLogger(Character.class.getName());
 
     // Basic character information
     private String name;
@@ -189,4 +185,317 @@ public class Character {
         Gson gson = InstantTypeAdapter.createGsonWithInstant();
         return gson.fromJson(jsonObject.get("data"), Character.class);
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public String getSkin() {
+        return skin;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getXp() {
+        return xp;
+    }
+
+    public int getMaxXp() {
+        return maxXp;
+    }
+
+    public int getGold() {
+        return gold;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public int getMiningLevel() {
+        return miningLevel;
+    }
+
+    public int getMiningXp() {
+        return miningXp;
+    }
+
+    public int getMiningMaxXp() {
+        return miningMaxXp;
+    }
+
+    public int getWoodcuttingLevel() {
+        return woodcuttingLevel;
+    }
+
+    public int getWoodcuttingXp() {
+        return woodcuttingXp;
+    }
+
+    public int getWoodcuttingMaxXp() {
+        return woodcuttingMaxXp;
+    }
+
+    public int getFishingLevel() {
+        return fishingLevel;
+    }
+
+    public int getFishingXp() {
+        return fishingXp;
+    }
+
+    public int getFishingMaxXp() {
+        return fishingMaxXp;
+    }
+
+    public int getWeaponcraftingLevel() {
+        return weaponcraftingLevel;
+    }
+
+    public int getWeaponcraftingXp() {
+        return weaponcraftingXp;
+    }
+
+    public int getWeaponcraftingMaxXp() {
+        return weaponcraftingMaxXp;
+    }
+
+    public int getGearcraftingLevel() {
+        return gearcraftingLevel;
+    }
+
+    public int getGearcraftingXp() {
+        return gearcraftingXp;
+    }
+
+    public int getGearcraftingMaxXp() {
+        return gearcraftingMaxXp;
+    }
+
+    public int getJewelrycraftingLevel() {
+        return jewelrycraftingLevel;
+    }
+
+    public int getJewelrycraftingXp() {
+        return jewelrycraftingXp;
+    }
+
+    public int getJewelrycraftingMaxXp() {
+        return jewelrycraftingMaxXp;
+    }
+
+    public int getCookingLevel() {
+        return cookingLevel;
+    }
+
+    public int getCookingXp() {
+        return cookingXp;
+    }
+
+    public int getCookingMaxXp() {
+        return cookingMaxXp;
+    }
+
+    public int getAlchemyLevel() {
+        return alchemyLevel;
+    }
+
+    public int getAlchemyXp() {
+        return alchemyXp;
+    }
+
+    public int getAlchemyMaxXp() {
+        return alchemyMaxXp;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public int getMaxHp() {
+        return maxHp;
+    }
+
+    public int getHaste() {
+        return haste;
+    }
+
+    public int getCriticalStrike() {
+        return criticalStrike;
+    }
+
+    public int getStamina() {
+        return stamina;
+    }
+
+    public int getAttackFire() {
+        return attackFire;
+    }
+
+    public int getAttackEarth() {
+        return attackEarth;
+    }
+
+    public int getAttackWater() {
+        return attackWater;
+    }
+
+    public int getAttackAir() {
+        return attackAir;
+    }
+
+    public int getDmgFire() {
+        return dmgFire;
+    }
+
+    public int getDmgEarth() {
+        return dmgEarth;
+    }
+
+    public int getDmgWater() {
+        return dmgWater;
+    }
+
+    public int getDmgAir() {
+        return dmgAir;
+    }
+
+    public int getResFire() {
+        return resFire;
+    }
+
+    public int getResEarth() {
+        return resEarth;
+    }
+
+    public int getResWater() {
+        return resWater;
+    }
+
+    public int getResAir() {
+        return resAir;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getCooldown() {
+        return cooldown;
+    }
+
+    public Instant getCooldownExpiration() {
+        return cooldownExpiration;
+    }
+
+    public String getWeaponSlot() {
+        return weaponSlot;
+    }
+
+    public String getShieldSlot() {
+        return shieldSlot;
+    }
+
+    public String getHelmetSlot() {
+        return helmetSlot;
+    }
+
+    public String getBodyArmorSlot() {
+        return bodyArmorSlot;
+    }
+
+    public String getLegArmorSlot() {
+        return legArmorSlot;
+    }
+
+    public String getBootsSlot() {
+        return bootsSlot;
+    }
+
+    public String getRing1Slot() {
+        return ring1Slot;
+    }
+
+    public String getRing2Slot() {
+        return ring2Slot;
+    }
+
+    public String getAmuletSlot() {
+        return amuletSlot;
+    }
+
+    public String getArtifact1Slot() {
+        return artifact1Slot;
+    }
+
+    public String getArtifact2Slot() {
+        return artifact2Slot;
+    }
+
+    public String getArtifact3Slot() {
+        return artifact3Slot;
+    }
+
+    public String getUtility1Slot() {
+        return utility1Slot;
+    }
+
+    public int getUtility1SlotQuantity() {
+        return utility1SlotQuantity;
+    }
+
+    public String getUtility2Slot() {
+        return utility2Slot;
+    }
+
+    public int getUtility2SlotQuantity() {
+        return utility2SlotQuantity;
+    }
+
+    public String getTask() {
+        return task;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public int getTaskProgress() {
+        return taskProgress;
+    }
+
+    public int getTaskTotal() {
+        return taskTotal;
+    }
+
+    public int getInventoryMaxItems() {
+        return inventoryMaxItems;
+    }
+
+    public List<InventoryItem> getInventory() {
+        return inventory;
+    }
+
+    public int getInventoryQuantity(String code) {
+        for (InventoryItem i : this.inventory) {
+            if (code.equals(i.getCode())) {
+                return i.getQuantity();
+            }
+        }
+        return 0;
+    }
+
+    public void collectResource(String code) {
+        // TODO
+    } 
 }
