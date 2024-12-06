@@ -1,22 +1,33 @@
 package com.elimelvy.artifacts;
 
-import com.elimelvy.artifacts.model.Character;
-import com.google.gson.JsonObject;
-
 /**
  * Hello world!
  *
  */
 public class App 
 {
-    public static void main( String[] args )
+    public static void main( String[] args ) throws Exception
     {
 
-        JsonObject character = AtomicActions.getCharacter("Joe");
-        System.out.println(character);
-        Character joe = Character.fromJson(character);
-        System.out.println(joe);
+        // JsonObject characterJoe = AtomicActions.getCharacter("Joe");
+        // Character joe = Character.fromJson(characterJoe);
+        
 
-        System.out.println( "Hello World!" );
+        // Thread joeThread = new Thread(joe);
+        // joe.setTask("attack", "cow");
+        // joeThread.start();
+
+
+        // joeThread.join();
+
+        CharacterManager mgr = new CharacterManager();
+        mgr.loadCharacters();
+        mgr.runCharacters();
+
+        for(int i = 0; i < 100; i++) {
+            mgr.manageCraftingNewGear();
+            Thread.sleep(3000);
+        }
+
     }
 }

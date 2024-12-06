@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import com.elimelvy.artifacts.model.Character;
 import com.elimelvy.artifacts.model.OwnershipQuantity;
+import com.elimelvy.artifacts.model.map.MapManager;
+import com.elimelvy.artifacts.model.map.Monster;
 
 /**
  * The goal of this class is to manage the state for the duration of a crafting
@@ -116,7 +118,16 @@ public class CraftingManager {
         }
         if (resourceWithFewestCollectors != null) {
             this.workAssignments.get(resourceWithFewestCollectors).add(character.getName());
-            character.collectResource(resourceWithFewestCollectors);
+            if(MapManager.getInstance().isMonsterDrop(resourceWithFewestCollectors)) {
+                List<Monster> monsters = MapManager.getInstance().getMonster(resourceWithFewestCollectors);
+                if(!monsters.isEmpty()) {
+                    character.setTask("attack", monsters.get(0).getContentCode());
+                } else {
+                    logger.warn("Map manager returned no instances for {}", resourceWithFewestCollectors);
+                }
+            } else {
+                character.setTask("collect", resourceWithFewestCollectors);
+            }
         } else {
             logger.error("Expected there to be unfinished resources but found none!\n{}\n{}", ingredientProgress, workAssignments);
         }
@@ -127,6 +138,8 @@ public class CraftingManager {
                 .filter(ingredient -> ingredientProgress.get(ingredient) < itemsNeeded.get(ingredient))
                 .collect(Collectors.toSet());
     }
+
+    
 
     public boolean isFinished() {
         return isFinished;

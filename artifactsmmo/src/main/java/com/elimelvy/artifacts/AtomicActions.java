@@ -133,6 +133,7 @@ public class AtomicActions {
 
     /**
      * Deposit an item to bank
+     * TODO the response from this request contains all the bank items. We should update out local copy
      * 
      * @param character Character name
      * @param code      Item code to deposit
@@ -148,6 +149,9 @@ public class AtomicActions {
 
     /**
      * Withdraw an item from bank
+     * TODO the response from this request contains all the bank items. We should
+     * update out local copy
+     * 
      * 
      * @param character Character name
      * @param code      Item code to withdraw

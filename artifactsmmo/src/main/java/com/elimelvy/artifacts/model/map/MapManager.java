@@ -4,17 +4,24 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MapManager {
 
+    private final Map<String, List<MapTile>> index;
     private final List<Monster> monsters;
     private final List<Resource> resources;
     private static MapManager instance;
 
     private MapManager() {
-        this.monsters = readMonstersFromCSV("./src/main/resources/monsters.csv");
-        this.resources = readResourcesFromCSV("./src/main/resources/resources.csv");
+        this.monsters = new ArrayList<>();
+        this.resources = new ArrayList<>();
+        this.index = new HashMap<>();
+        readMonstersFromCSV("./src/main/resources/monsters.csv");
+        readResourcesFromCSV("./src/main/resources/resources.csv");
+        readAllMapsFromCSV("./src/main/resources/all_maps.csv");
     }
 
     public static MapManager getInstance() {
@@ -24,9 +31,7 @@ public class MapManager {
         return instance;
     }
 
-    // Static method to read CSV and create Resource list
-    public static List<Resource> readResourcesFromCSV(String filePath) {
-        List<Resource> resources = new ArrayList<>();
+    private void readResourcesFromCSV(String filePath) {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             // Skip the header line
@@ -54,12 +59,9 @@ public class MapManager {
         } catch (IOException e) {
             System.err.println("Error reading CSV file: " + e.getMessage());
         }
-
-        return resources;
     }
 
-    public static List<Monster> readMonstersFromCSV(String filePath) {
-        List<Monster> monsters = new ArrayList<>();
+    private void readMonstersFromCSV(String filePath) {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             // Skip the header line
@@ -90,12 +92,50 @@ public class MapManager {
                 );
 
                 monsters.add(monster);
+
             }
         } catch (IOException e) {
             System.err.println("Error reading CSV file: " + e.getMessage());
         }
 
-        return monsters;
+    }
+
+
+    private void readAllMapsFromCSV(String filePath) {
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            // Skip the header line
+            String line;
+            br.readLine();
+
+            // Read data lines
+            while ((line = br.readLine()) != null) {
+                // Split the line by comma
+                String[] values = line.split(",");
+
+                // Parse each value
+                MapTile mapTile = new MapTile(
+                        Integer.parseInt(values[0]), // x
+                        Integer.parseInt(values[1]), // y
+                        values[2], // content_type
+                        values[3] // content_code
+                );
+
+                this.index.putIfAbsent(mapTile.getContentCode(), new ArrayList<>());
+                this.index.get(mapTile.getContentCode()).add(mapTile);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading CSV file: " + e.getMessage());
+        }
+
+    }
+
+    public List<MapTile> getMap(String mapCode) {
+        return this.index.get(mapCode);
+    }
+
+    public boolean isMonsterDrop(String resourceCode) {
+        return !this.getMonster(resourceCode).isEmpty();
     }
 
     public List<Resource> getResouce(String resourceCode) {
@@ -104,5 +144,9 @@ public class MapManager {
 
     public List<Monster> getMonster(String resourceCode) {
         return this.monsters.stream().filter(elem -> elem.getResourceCode().equals(resourceCode)).toList();
+    }
+
+    public List<Monster> getByMonsterCode(String monsterCode) {
+        return this.monsters.stream().filter(elem -> elem.getContentCode().equals(monsterCode)).toList();
     }
 }

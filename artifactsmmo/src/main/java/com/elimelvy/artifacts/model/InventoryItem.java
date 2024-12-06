@@ -5,6 +5,12 @@ public class InventoryItem {
     private String code;
     private int quantity;
 
+    public InventoryItem(int slot, String code, int quantity) {
+        this.slot = slot;
+        this.code = code;
+        this.quantity = quantity;
+    }
+
     public int getSlot() {
         return slot;
     }
@@ -15,6 +21,10 @@ public class InventoryItem {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     @Override

@@ -1,493 +1,79 @@
 package com.elimelvy.artifacts.model;
 
-import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.ReentrantLock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.elimelvy.artifacts.AtomicActions;
+import com.elimelvy.artifacts.Bank;
+import com.elimelvy.artifacts.GearManager;
+import com.elimelvy.artifacts.model.item.GameItemManager;
+import com.elimelvy.artifacts.model.map.MapManager;
+import com.elimelvy.artifacts.model.map.MapTile;
+import com.elimelvy.artifacts.model.map.Monster;
+import com.elimelvy.artifacts.model.map.Resource;
+import com.elimelvy.artifacts.util.HTTPRequester;
 import com.elimelvy.artifacts.util.InstantTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
 
-public class Character {
+public class Character implements Runnable {
 
-    // Basic character information
-    private String name;
-    private String account;
-    private String skin;
-    private int level;
-    private int xp;
-    private int maxXp;
-    private int gold;
-    private int speed;
+    private final Logger logger;
+    private CharacterData data;
+    private String currentTask = "idle";
+    private String currentTaskParam1 = "";
+    private int currentTaskParam2= 0;
+    private final double INVENTORY_FULL_THRESHOLD = 0.9;
 
-    // Skill levels and XP
-    @SerializedName("mining_level")
-    private int miningLevel;
-    @SerializedName("mining_xp")
-    private int miningXp;
-    @SerializedName("mining_max_xp")
-    private int miningMaxXp;
+    private final ReentrantLock lock = new ReentrantLock();
+    private volatile CountDownLatch depositLatch;
 
-    @SerializedName("woodcutting_level")
-    private int woodcuttingLevel;
-    @SerializedName("woodcutting_xp")
-    private int woodcuttingXp;
-    @SerializedName("woodcutting_max_xp")
-    private int woodcuttingMaxXp;
-
-    @SerializedName("fishing_level")
-    private int fishingLevel;
-    @SerializedName("fishing_xp")
-    private int fishingXp;
-    @SerializedName("fishing_max_xp")
-    private int fishingMaxXp;
-
-    @SerializedName("weaponcrafting_level")
-    private int weaponcraftingLevel;
-    @SerializedName("weaponcrafting_xp")
-    private int weaponcraftingXp;
-    @SerializedName("weaponcrafting_max_xp")
-    private int weaponcraftingMaxXp;
-
-    @SerializedName("gearcrafting_level")
-    private int gearcraftingLevel;
-    @SerializedName("gearcrafting_xp")
-    private int gearcraftingXp;
-    @SerializedName("gearcrafting_max_xp")
-    private int gearcraftingMaxXp;
-
-    @SerializedName("jewelrycrafting_level")
-    private int jewelrycraftingLevel;
-    @SerializedName("jewelrycrafting_xp")
-    private int jewelrycraftingXp;
-    @SerializedName("jewelrycrafting_max_xp")
-    private int jewelrycraftingMaxXp;
-
-    @SerializedName("cooking_level")
-    private int cookingLevel;
-    @SerializedName("cooking_xp")
-    private int cookingXp;
-    @SerializedName("cooking_max_xp")
-    private int cookingMaxXp;
-
-    @SerializedName("alchemy_level")
-    private int alchemyLevel;
-    @SerializedName("alchemy_xp")
-    private int alchemyXp;
-    @SerializedName("alchemy_max_xp")
-    private int alchemyMaxXp;
-
-    // Combat and defense stats
-    private int hp;
-    private int maxHp;
-    private int haste;
-    @SerializedName("critical_strike")
-    private int criticalStrike;
-    private int stamina;
-
-    // Elemental attacks and damage
-    @SerializedName("attack_fire")
-    private int attackFire;
-    @SerializedName("attack_earth")
-    private int attackEarth;
-    @SerializedName("attack_water")
-    private int attackWater;
-    @SerializedName("attack_air")
-    private int attackAir;
-
-    @SerializedName("dmg_fire")
-    private int dmgFire;
-    @SerializedName("dmg_earth")
-    private int dmgEarth;
-    @SerializedName("dmg_water")
-    private int dmgWater;
-    @SerializedName("dmg_air")
-    private int dmgAir;
-
-    // Elemental resistances
-    @SerializedName("res_fire")
-    private int resFire;
-    @SerializedName("res_earth")
-    private int resEarth;
-    @SerializedName("res_water")
-    private int resWater;
-    @SerializedName("res_air")
-    private int resAir;
-
-    // Position and cooldown
-    private int x;
-    private int y;
-    private int cooldown;
-    @SerializedName("cooldown_expiration")
-    private Instant cooldownExpiration;
-
-    // Equipment slots
-    @SerializedName("weapon_slot")
-    private String weaponSlot;
-    @SerializedName("shield_slot")
-    private String shieldSlot;
-    @SerializedName("helmet_slot")
-    private String helmetSlot;
-    @SerializedName("body_armor_slot")
-    private String bodyArmorSlot;
-    @SerializedName("leg_armor_slot")
-    private String legArmorSlot;
-    @SerializedName("boots_slot")
-    private String bootsSlot;
-    @SerializedName("ring1_slot")
-    private String ring1Slot;
-    @SerializedName("ring2_slot")
-    private String ring2Slot;
-    @SerializedName("amulet_slot")
-    private String amuletSlot;
-    @SerializedName("artifact1_slot")
-    private String artifact1Slot;
-    @SerializedName("artifact2_slot")
-    private String artifact2Slot;
-    @SerializedName("artifact3_slot")
-    private String artifact3Slot;
-    @SerializedName("utility1_slot")
-    private String utility1Slot;
-    @SerializedName("utility1_slot_quantity")
-    private int utility1SlotQuantity;
-    @SerializedName("utility2_slot")
-    private String utility2Slot;
-    @SerializedName("utility2_slot_quantity")
-    private int utility2SlotQuantity;
-
-    // Task information
-    private String task;
-    @SerializedName("task_type")
-    private String taskType;
-    @SerializedName("task_progress")
-    private int taskProgress;
-    @SerializedName("task_total")
-    private int taskTotal;
-
-    // Inventory
-    @SerializedName("inventory_max_items")
-    private int inventoryMaxItems;
-    private List<InventoryItem> inventory;
-    
+    public Character(CharacterData data) {
+        this.data = data;
+        this.logger = LoggerFactory.getLogger("Character." + this.data.name);
+    }
 
     @Override
     public String toString() {
         return "Character{" +
-                "name='" + name + '\'' +
-                ", level=" + level +
-                ", xp=" + xp + "/" + maxXp +
-                ", gold=" + gold +
+                "name='" + data.name + '\'' +
+                ", level=" + data.level +
+                ", xp=" + data.xp + "/" + data.maxXp +
+                ", gold=" + data.gold +
                 '}';
+    }
+
+    public int getLevel() {
+        return this.data.level;
+    }
+
+    public String getName() {
+        return this.data.name;
     }
 
     // Method to parse JSON directly
     public static Character fromJson(JsonObject jsonObject) {
         Gson gson = InstantTypeAdapter.createGsonWithInstant();
-        return gson.fromJson(jsonObject.get("data"), Character.class);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public String getSkin() {
-        return skin;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public int getXp() {
-        return xp;
-    }
-
-    public int getMaxXp() {
-        return maxXp;
-    }
-
-    public int getGold() {
-        return gold;
-    }
-
-    public int getSpeed() {
-        return speed;
-    }
-
-    public int getMiningLevel() {
-        return miningLevel;
-    }
-
-    public int getMiningXp() {
-        return miningXp;
-    }
-
-    public int getMiningMaxXp() {
-        return miningMaxXp;
-    }
-
-    public int getWoodcuttingLevel() {
-        return woodcuttingLevel;
-    }
-
-    public int getWoodcuttingXp() {
-        return woodcuttingXp;
-    }
-
-    public int getWoodcuttingMaxXp() {
-        return woodcuttingMaxXp;
-    }
-
-    public int getFishingLevel() {
-        return fishingLevel;
-    }
-
-    public int getFishingXp() {
-        return fishingXp;
-    }
-
-    public int getFishingMaxXp() {
-        return fishingMaxXp;
-    }
-
-    public int getWeaponcraftingLevel() {
-        return weaponcraftingLevel;
-    }
-
-    public int getWeaponcraftingXp() {
-        return weaponcraftingXp;
-    }
-
-    public int getWeaponcraftingMaxXp() {
-        return weaponcraftingMaxXp;
-    }
-
-    public int getGearcraftingLevel() {
-        return gearcraftingLevel;
-    }
-
-    public int getGearcraftingXp() {
-        return gearcraftingXp;
-    }
-
-    public int getGearcraftingMaxXp() {
-        return gearcraftingMaxXp;
-    }
-
-    public int getJewelrycraftingLevel() {
-        return jewelrycraftingLevel;
-    }
-
-    public int getJewelrycraftingXp() {
-        return jewelrycraftingXp;
-    }
-
-    public int getJewelrycraftingMaxXp() {
-        return jewelrycraftingMaxXp;
-    }
-
-    public int getCookingLevel() {
-        return cookingLevel;
-    }
-
-    public int getCookingXp() {
-        return cookingXp;
-    }
-
-    public int getCookingMaxXp() {
-        return cookingMaxXp;
-    }
-
-    public int getAlchemyLevel() {
-        return alchemyLevel;
-    }
-
-    public int getAlchemyXp() {
-        return alchemyXp;
-    }
-
-    public int getAlchemyMaxXp() {
-        return alchemyMaxXp;
-    }
-
-    public int getHp() {
-        return hp;
-    }
-
-    public int getMaxHp() {
-        return maxHp;
-    }
-
-    public int getHaste() {
-        return haste;
-    }
-
-    public int getCriticalStrike() {
-        return criticalStrike;
-    }
-
-    public int getStamina() {
-        return stamina;
-    }
-
-    public int getAttackFire() {
-        return attackFire;
-    }
-
-    public int getAttackEarth() {
-        return attackEarth;
-    }
-
-    public int getAttackWater() {
-        return attackWater;
-    }
-
-    public int getAttackAir() {
-        return attackAir;
-    }
-
-    public int getDmgFire() {
-        return dmgFire;
-    }
-
-    public int getDmgEarth() {
-        return dmgEarth;
-    }
-
-    public int getDmgWater() {
-        return dmgWater;
-    }
-
-    public int getDmgAir() {
-        return dmgAir;
-    }
-
-    public int getResFire() {
-        return resFire;
-    }
-
-    public int getResEarth() {
-        return resEarth;
-    }
-
-    public int getResWater() {
-        return resWater;
-    }
-
-    public int getResAir() {
-        return resAir;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getCooldown() {
-        return cooldown;
-    }
-
-    public Instant getCooldownExpiration() {
-        return cooldownExpiration;
-    }
-
-    public String getWeaponSlot() {
-        return weaponSlot;
-    }
-
-    public String getShieldSlot() {
-        return shieldSlot;
-    }
-
-    public String getHelmetSlot() {
-        return helmetSlot;
-    }
-
-    public String getBodyArmorSlot() {
-        return bodyArmorSlot;
-    }
-
-    public String getLegArmorSlot() {
-        return legArmorSlot;
-    }
-
-    public String getBootsSlot() {
-        return bootsSlot;
-    }
-
-    public String getRing1Slot() {
-        return ring1Slot;
-    }
-
-    public String getRing2Slot() {
-        return ring2Slot;
-    }
-
-    public String getAmuletSlot() {
-        return amuletSlot;
-    }
-
-    public String getArtifact1Slot() {
-        return artifact1Slot;
-    }
-
-    public String getArtifact2Slot() {
-        return artifact2Slot;
-    }
-
-    public String getArtifact3Slot() {
-        return artifact3Slot;
-    }
-
-    public String getUtility1Slot() {
-        return utility1Slot;
-    }
-
-    public int getUtility1SlotQuantity() {
-        return utility1SlotQuantity;
-    }
-
-    public String getUtility2Slot() {
-        return utility2Slot;
-    }
-
-    public int getUtility2SlotQuantity() {
-        return utility2SlotQuantity;
-    }
-
-    public String getTask() {
-        return task;
-    }
-
-    public String getTaskType() {
-        return taskType;
-    }
-
-    public int getTaskProgress() {
-        return taskProgress;
-    }
-
-    public int getTaskTotal() {
-        return taskTotal;
-    }
-
-    public int getInventoryMaxItems() {
-        return inventoryMaxItems;
-    }
-
-    public List<InventoryItem> getInventory() {
-        return inventory;
+        return new Character(gson.fromJson(jsonObject.get("data"), CharacterData.class));
+    }
+
+    public void updateData(JsonObject jsonObject) {
+        if(jsonObject == null) {
+            this.logger.error("DATA IS NULL!!!");
+            return;
+        }
+        Gson gson = InstantTypeAdapter.createGsonWithInstant();
+        this.data = gson.fromJson(jsonObject, CharacterData.class);
+        this.logger.debug("Character data updated!");
     }
 
     public int getInventoryQuantity(String code) {
-        for (InventoryItem i : this.inventory) {
+        for (InventoryItem i : this.data.inventory) {
             if (code.equals(i.getCode())) {
                 return i.getQuantity();
             }
@@ -496,6 +82,288 @@ public class Character {
     }
 
     public void collectResource(String code) {
+        // Get resource map
+        List<Resource> maps = MapManager.getInstance().getResouce(code);
+        if (maps == null || maps.isEmpty()) {
+            this.logger.info("Invalid resource code: {}", code);
+            return;
+        }
+        // TODO choose the correct one
+        Resource target = this.getClosestMap(maps);
+        // Equip the correct tool if we havent already
+        switch (target.getSkill()) {
+            case "mining" -> this.equipGear("weapon", "pickaxe");
+            case "woodcutting" -> this.equipGear("weapon", "axe");
+        }
+        // Move to the right spot if we arent there already
+        this.moveToMap(target.getMapCode());
+
+        // Collect
+        JsonObject result = AtomicActions.collect(this.data.name);
+        this.handleActionResult(result);
+    }
+
+    public void attackMonster(String code) {
+        // Get resource map
+        List<Monster> maps = MapManager.getInstance().getByMonsterCode(code);
+        if (maps == null || maps.isEmpty()) {
+            this.logger.info("Invalid monster code: {}", code);
+            return;
+        }
+        // TODO choose the correct one
+        Monster target = this.getClosestMap(maps);
+        // Equip the correct gear if we havent already
+        String selection = GearManager.getBestWeaponAgainstMonster(this, code,
+                MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
+        this.equipGear("weapon_slot", selection);
+        for (String gearType : GearManager.allNonWeaponTypes) {
+            if (!gearType.equals("ring")) {
+                selection = GearManager.getBestAvailableGearAgainstMonster(this, gearType, code,
+                        MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
+                this.equipGear(gearType + "_slot", selection);
+            } else {
+                // There are two ring slots
+                selection = GearManager.getBestAvailableGearAgainstMonster(this, gearType + "1", code,
+                        MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
+                this.equipGear(gearType + "1_slot", selection);
+                selection = GearManager.getBestAvailableGearAgainstMonster(this, gearType + "2", code,
+                        MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
+                this.equipGear(gearType + "2_slot", selection);
+            }
+        }
+
+        // Move to the right spot if we arent there already
+        this.moveToMap(target.getMapCode());
+
+        // Rest if we need to rest
+        this.healIfNecessary();
+
+        // Deposit inventory if we need to deposit
+        this.depositInventoryIfNecessary();
+
+
+        // Attack
+        this.logger.info("Attacking {}!", code);
+        JsonObject result = AtomicActions.attack(this.data.name);
+        this.handleActionResult(result);
+    }
+
+    private void healIfNecessary() {
+        this.logger.info("HP: {}. Max: {}.", this.data.hp, this.data.maxHp);
+        if (this.data.hp / this.data.maxHp < 0.5) {
+            JsonObject result = AtomicActions.rest(this.data.name);
+            handleActionResult(result);
+        }
+    }
+
+    private void depositInventoryIfNecessary() {
+        double currentHolding = this.data.inventory.stream().mapToInt(item -> item.getQuantity()).sum();
+        if(currentHolding / (double)this.data.inventoryMaxItems > this.INVENTORY_FULL_THRESHOLD) {
+            this.depositInventory();
+        }
+    }
+
+    public void depositInventory() {
+        // Move to bank if necessary
+        this.moveToClosestBank();
+        // For each item in inv, deposit
+        for(InventoryItem item : new ArrayList<>(this.data.inventory)) {
+            if(item.getQuantity() > 0) {
+                JsonObject result = AtomicActions.depositItem(this.data.name, item.getCode(), item.getQuantity());
+                handleActionResult(result);
+            }
+        }
+        // This is useful for synchronizing actions after all characters have deposited.
+        // The latch is a one shot use so we can null it out afterwards
+        if(this.depositLatch != null) {
+            this.depositLatch.countDown();
+            this.depositLatch = null;
+        }
+    }
+
+    public void seDepositLatch(CountDownLatch latch) {
+        this.depositLatch = latch;
+    }
+
+    private void handleActionResult(JsonObject result) {
+        if (result.has("data")) {
+            if(result.get("data").getAsJsonObject().has("character")) {
+                this.updateData(result.get("data").getAsJsonObject().get("character").getAsJsonObject());
+            }
+            if ( result.get("data").getAsJsonObject().has("bank")) {
+                Bank.getInstance().updateBankContents(result.get("data").getAsJsonObject().get("bank"));
+            }
+        }
+
+        HTTPRequester.handleResultCooldown(result);
+    }
+
+    public void train(String type) {
+        // Type could be: mining, woodcutting, fishing, combat, or lowest
         // TODO
-    } 
+    }
+
+    public void tasks(String type) {
+        // Type could be: monsters or items
+        // TODO
+    }
+
+    public void equipGear(String slot, String code) {
+        // Check if it is already equipped
+        if (this.getGearInSlot(slot) != null && this.getGearInSlot(slot).equals(code)) {
+            return;
+        }
+
+        this.logger.info("Need to equip {} in {}", code, slot);
+
+        // Unequip if necessary
+        if (this.getGearInSlot(slot) != null && !this.getGearInSlot(slot).isEmpty()) {
+            this.logger.info("To equip {} we need to unequip {}", code, this.getGearInSlot(slot));
+            JsonObject result = AtomicActions.unequip(this.data.name, slot.replace("_slot", ""));
+            handleActionResult(result);
+        }
+
+        // Withdraw item if necessary
+        if (this.getInventoryQuantity(code) == 0) {
+            // Withdraw it from the bank
+            this.logger.info("{} not found in inventory so I need to withdraw it", code);
+            if (Bank.getInstance().getBankQuantity(code) > 0) {
+                this.depositInventory();
+                this.withdrawFromBank(code, 1);
+            } else {
+                logger.warn("Attempted to equip gear that is not available: {}", code);
+            }
+        }
+        // If the withdrawal was successful or if we already had it, equip
+        if (this.getInventoryQuantity(code) > 0) {
+            this.logger.info("Equipping {} into {}", code, slot);
+            JsonObject result = AtomicActions.equip(this.data.name, code, slot.replace("_slot", ""));
+            handleActionResult(result);
+        } else {
+            this.logger.warn("I was expecting to have {} in my inventory but found none", code);
+        }
+    }
+
+    public void withdrawFromBank(String code, int quantity) {
+        moveToClosestBank();
+
+        JsonObject result = AtomicActions.withdrawItem(this.data.name, code, quantity);
+        handleActionResult(result);
+    }
+
+    private void moveToClosestBank() {
+        List<MapTile> banks = MapManager.getInstance().getMap("bank");
+        MapTile closestBank = getClosestMap(banks);
+        if(this.data.x != closestBank.getX() || this.data.y != closestBank.getY()) {
+            JsonObject result = AtomicActions.move(this.data.name, closestBank.getX(), closestBank.getY());
+            this.handleActionResult(result);
+        }
+    }
+
+    private <T extends MapTile> T getClosestMap(List<T> maps) {
+        T closestMap = maps.get(0);
+        int closestDist = Integer.MAX_VALUE;
+        for (T m : maps) {
+            int dist = Math.abs(m.getX() - this.data.x) + Math.abs(m.getY() - this.data.y);
+            if (dist < closestDist) {
+                closestMap = m;
+                closestDist = dist;
+            }
+        }
+        return closestMap;
+    }
+
+    public String getGearInSlot(String slot) {
+        return switch (slot) {
+            case "weapon_slot" -> this.data.weaponSlot;
+            case "shield_slot" -> this.data.shieldSlot;
+            case "helmet_slot" -> this.data.helmetSlot;
+            case "body_armor_slot" -> this.data.bodyArmorSlot;
+            case "leg_armor_slot" -> this.data.legArmorSlot;
+            case "boots_slot" -> this.data.bootsSlot;
+            case "ring1_slot" -> this.data.ring1Slot;
+            case "ring2_slot" -> this.data.ring2Slot;
+            case "amulet_slot" -> this.data.amuletSlot;
+            default -> null;
+        };
+    }
+
+    public void moveToMap(String mapCode) {
+        List<MapTile> targets = MapManager.getInstance().getMap(mapCode);
+        if (!targets.isEmpty()) {
+            MapTile target = this.getClosestMap(targets);
+            if (this.data.x != target.getX() || this.data.y != target.getY()) {
+                JsonObject response = AtomicActions.move(this.data.name, target.getX(), target.getY());
+                handleActionResult(response);
+            }
+        } else {
+            this.logger.warn("Tried to move to invalid map: {}", mapCode);
+        }
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            String task;
+            String param1;
+            this.lock.lock();
+            try {
+                task = this.currentTask;
+                param1 = this.currentTaskParam1;
+            } finally {
+                this.lock.unlock();
+            }
+            this.logger.info("Doing task: {} {}", task, param1);
+
+            // TODO if we have an active cooldown, sleep
+            switch (task) {
+                case "idle" -> {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        logger.warn("I have been interupted while doing an idle sleep!");
+                    }
+                }
+                case "attack" -> this.attackMonster(param1);
+                case "craft" -> {
+                    this.logger.info("Attempting to craft {} x{}", this.currentTaskParam1, this.currentTaskParam2);
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        logger.warn("I have been interupted while doing an idle sleep!");
+                    }
+                }
+                case "collect" -> this.collectResource(param1);
+                case "train" -> this.train(param1);
+                case "tasks" -> this.tasks(param1);
+                case "deposit" -> {
+                    this.depositInventory();
+                    this.setTask("idle");
+                }
+                default -> {
+                }
+            }
+
+        }
+    }
+
+    public void setTask(String task) {
+        this.setTask(task, "", 0);
+    }
+
+    public void setTask(String task, String param1) {
+        this.setTask(task, param1, 0);
+    }
+
+    public void setTask(String task, String param1, int param2) {
+        this.lock.lock();
+        try {
+            this.logger.info("Setting task to {} {}", task, param1);
+            this.currentTask = task;
+            this.currentTaskParam1 = param1;
+            this.currentTaskParam2 = param2;
+        } finally {
+            this.lock.unlock();
+        }
+    }
 }

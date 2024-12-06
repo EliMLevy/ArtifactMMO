@@ -1,16 +1,18 @@
 package com.elimelvy.artifacts;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.elimelvy.artifacts.model.InventoryItem;
 import com.elimelvy.artifacts.util.HTTPRequester;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class Bank {
@@ -18,20 +20,17 @@ public class Bank {
     private static Bank instance;
 
     // Logger
-    private static final Logger logger = Logger.getLogger(Bank.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Bank.class);
+    private static final Gson gson = new Gson();
 
     // Synchronization lock
     private final Lock lock = new ReentrantLock();
 
     // Caching variables
-    private List<JsonObject> cachedBankItems;
-    private Instant lastFetchedBankItems;
-    private static final int BANK_ITEM_FETCH_REFRESH = 30; // seconds
+    private volatile List<InventoryItem> bankItems;
 
     // Private constructor to prevent instantiation
     private Bank() {
-        cachedBankItems = null;
-        lastFetchedBankItems = null;
     }
 
     // Singleton getter
@@ -47,65 +46,77 @@ public class Bank {
      * 
      * @return List of bank items
      */
-    public List<JsonObject> getBankItems() {
+    public List<InventoryItem> getBankItems() {
+        return this.bankItems;
+    }
+
+    public List<InventoryItem> refreshBankItems() {
         lock.lock();
         try {
             // Check if cache needs refresh
-            if (cachedBankItems == null ||
-                    lastFetchedBankItems == null ||
-                    Duration.between(lastFetchedBankItems, Instant.now()).getSeconds() > BANK_ITEM_FETCH_REFRESH) {
+            logger.info("Refreshing bank items cache.");
 
-                logger.log(Level.INFO, "Refreshing bank items cache. Last fetched: {0}", lastFetchedBankItems);
+            // Fetch bank items
+            int page = 1;
+            List<InventoryItem> allResults = new ArrayList<>();
+            boolean done = false;
 
-                // Fetch bank items
-                int page = 1;
-                List<JsonObject> allResults = new ArrayList<>();
-                boolean done = false;
+            while (!done) {
+                // Use the utility method to send request
+                String url = "https://api.artifactsmmo.com/my/bank/items?page=" + page;
+                JsonObject result = HTTPRequester.sendRequestToUrl(url, "", "GET", null);
 
-                while (!done) {
-                    // Use the utility method to send request
-                    String url = "https://api.artifactsmmo.com/my/bank/items?page=" + page;
-                    JsonObject result = HTTPRequester.sendRequestToUrl(url, "", "GET", null);
+                if (result != null && result.has("data")) {
+                    JsonArray dataArray = result.getAsJsonArray("data");
+                    // Convert JsonArray to List<JsonObject>
+                    for (int i = 0; i < dataArray.size(); i++) {
+                        allResults.add(gson.fromJson(dataArray.get(i), InventoryItem.class));
+                    }
 
-                    if (result != null && result.has("data")) {
-                        JsonArray dataArray = result.getAsJsonArray("data");
+                    logger.debug("Page results: {}", dataArray.size());
 
-                        // Convert JsonArray to List<JsonObject>
-                        for (int i = 0; i < dataArray.size(); i++) {
-                            allResults.add(dataArray.get(i).getAsJsonObject());
-                        }
-
-                        logger.log(Level.FINE, "Page results: {0}", dataArray.size());
-
-                        // Check if more pages exist
-                        if (result.has("pages") && result.get("pages").getAsInt() > page) {
-                            page++;
-                        } else {
-                            done = true;
-                        }
-
+                    // Check if more pages exist
+                    if (result.has("pages") && result.get("pages").getAsInt() > page) {
+                        page++;
                         // Small delay between pages
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
-                            logger.warning("Page fetch interrupted");
+                            logger.warn("Page fetch interrupted");
                         }
                     } else {
-                        logger.warning("Failed to retrieve bank items");
-                        break;
+                        done = true;
                     }
+                } else {
+                    logger.warn("Failed to retrieve bank items");
+                    break;
                 }
+            }
+            // Update cache
+            this.bankItems = allResults;
+            return allResults;
+        } finally {
+            lock.unlock();
+        }
+    }
 
-                // Update cache
-                cachedBankItems = allResults;
-                lastFetchedBankItems = Instant.now();
-                return allResults;
+    public synchronized void updateBankContents(JsonElement data) {
+        lock.lock();
+        try {
+            if (data != null && data.isJsonArray()) {
+                logger.debug("Updating bank contents!");
+                List<InventoryItem> allResults = new ArrayList<>();
+                JsonArray dataArray = data.getAsJsonArray();
+                // Convert JsonArray to List<JsonObject>
+                for (int i = 0; i < dataArray.size(); i++) {
+                    allResults.add(gson.fromJson(dataArray.get(i), InventoryItem.class));
+                }
+                this.bankItems = allResults;
+            } else {
+                logger.warn("Tried passing a non-json array to updateBankContents: {}", "");
             }
 
-            // Return cached items
-            logger.info("Returning cached bank items");
-            return cachedBankItems;
         } finally {
             lock.unlock();
         }
@@ -118,17 +129,24 @@ public class Bank {
      * @return Quantity of the item (0 if not found)
      */
     public int getBankQuantity(String itemCode) {
-        List<JsonObject> bankItems = getBankItems();
+        lock.lock();
+        try {
+            if(this.bankItems == null) {
+                this.refreshBankItems();
+            }
+        } finally {
+            lock.unlock();
+        }
 
-        for (JsonObject item : bankItems) {
-            if (item.has("code") && item.get("code").getAsString().equals(itemCode)) {
-                int quantity = item.has("quantity") ? item.get("quantity").getAsInt() : 0;
-                logger.log(Level.FINE, "Item {0} quantity: {1}", new Object[]{itemCode, quantity});
+        for (InventoryItem item : this.bankItems) {
+            if (item.getCode() != null && item.getCode().equals(itemCode)) {
+                int quantity = item.getQuantity();
+                logger.debug("Item {} quantity: {}", itemCode, quantity );
                 return quantity;
             }
         }
 
-        logger.log(Level.FINE, "Item {0} not found in bank", itemCode);
+        logger.debug("Item {} not found in bank", itemCode);
         return 0;
     }
 }

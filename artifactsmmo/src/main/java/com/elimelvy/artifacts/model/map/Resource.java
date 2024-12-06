@@ -1,6 +1,6 @@
 package com.elimelvy.artifacts.model.map;
 
-public class Resource {
+public class Resource extends MapTile {
     // Resource properties based on the CSV columns
     private final String resourceCode;
     private final int x;
@@ -13,6 +13,7 @@ public class Resource {
     // Constructor
     public Resource(String resourceCode, int x, int y, int dropChance,
             String mapCode, int level, String skill) {
+        super(x, y, "resource", mapCode);
         this.resourceCode = resourceCode;
         this.x = x;
         this.y = y;
@@ -29,10 +30,12 @@ public class Resource {
         return resourceCode;
     }
 
+    @Override
     public int getX() {
         return x;
     }
 
+    @Override
     public int getY() {
         return y;
     }

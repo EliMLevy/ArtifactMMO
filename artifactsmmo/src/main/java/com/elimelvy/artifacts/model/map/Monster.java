@@ -1,7 +1,6 @@
 package com.elimelvy.artifacts.model.map;
 
-
-public class Monster {
+public class Monster extends MapTile {
     // Monster properties based on the CSV columns
     private final int level;
     private final String resourceCode;
@@ -23,6 +22,7 @@ public class Monster {
             String mapCode, int attackFire, int attackEarth,
             int attackWater, int attackAir, int resFire,
             int resEarth, int resWater, int resAir) {
+        super(x, y, "monster", mapCode);
         this.level = level;
         this.resourceCode = resourceCode;
         this.x = x;
@@ -40,7 +40,7 @@ public class Monster {
     }
 
     // Static method to read CSV and create Monster list
-    
+
     // Getters (you can add setters if needed)
     public int getLevel() {
         return level;
@@ -50,10 +50,12 @@ public class Monster {
         return resourceCode;
     }
 
+    @Override
     public int getX() {
         return x;
     }
 
+    @Override
     public int getY() {
         return y;
     }
@@ -66,35 +68,35 @@ public class Monster {
         return mapCode;
     }
 
-    public int getAttackFire() {
+    public double getAttackFire() {
         return attackFire;
     }
 
-    public int getAttackEarth() {
+    public double getAttackEarth() {
         return attackEarth;
     }
 
-    public int getAttackWater() {
+    public double getAttackWater() {
         return attackWater;
     }
 
-    public int getAttackAir() {
+    public double getAttackAir() {
         return attackAir;
     }
 
-    public int getResFire() {
+    public double getResFire() {
         return resFire;
     }
 
-    public int getResEarth() {
+    public double getResEarth() {
         return resEarth;
     }
 
-    public int getResWater() {
+    public double getResWater() {
         return resWater;
     }
 
-    public int getResAir() {
+    public double getResAir() {
         return resAir;
     }
 

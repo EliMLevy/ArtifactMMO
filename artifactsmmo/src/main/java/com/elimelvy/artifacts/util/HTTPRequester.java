@@ -108,13 +108,17 @@ public class HTTPRequester {
      * @param result The API response
      */
     public static void handleResultCooldown(JsonObject result) {
-        if (result == null) return;
+        if (result == null) {
+            logger.warn("Result that got passed in was null");
+            return;
+        }
 
         if (result.has("data") && result.getAsJsonObject("data").has("cooldown")) {
             JsonObject cooldown = result.getAsJsonObject("data").getAsJsonObject("cooldown");
             int remainingSeconds = cooldown.get("remaining_seconds").getAsInt();
 
             try {
+                logger.debug("Sleeping for {} + 1", remainingSeconds);
                 TimeUnit.SECONDS.sleep(remainingSeconds + 1);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
