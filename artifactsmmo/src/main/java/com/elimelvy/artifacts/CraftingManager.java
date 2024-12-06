@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.elimelvy.artifacts.PlanGenerator.PlanStep;
 import com.elimelvy.artifacts.model.Character;
 import com.elimelvy.artifacts.model.OwnershipQuantity;
 import com.elimelvy.artifacts.model.map.MapManager;
@@ -121,12 +122,12 @@ public class CraftingManager {
             if(MapManager.getInstance().isMonsterDrop(resourceWithFewestCollectors)) {
                 List<Monster> monsters = MapManager.getInstance().getMonster(resourceWithFewestCollectors);
                 if(!monsters.isEmpty()) {
-                    character.setTask("attack", monsters.get(0).getContentCode());
+                    character.setTask(new PlanStep("attack", monsters.get(0).getContentCode(), 0, "Crafting manager assignment"));
                 } else {
                     logger.warn("Map manager returned no instances for {}", resourceWithFewestCollectors);
                 }
             } else {
-                character.setTask("collect", resourceWithFewestCollectors);
+                character.setTask(new PlanStep("collect", resourceWithFewestCollectors, 0, "Crafting manager assignment"));
             }
         } else {
             logger.error("Expected there to be unfinished resources but found none!\n{}\n{}", ingredientProgress, workAssignments);
@@ -139,7 +140,7 @@ public class CraftingManager {
                 .collect(Collectors.toSet());
     }
 
-    
+
 
     public boolean isFinished() {
         return isFinished;

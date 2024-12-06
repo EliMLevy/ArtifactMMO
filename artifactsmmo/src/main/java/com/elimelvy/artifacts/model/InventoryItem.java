@@ -1,8 +1,8 @@
 package com.elimelvy.artifacts.model;
 
 public class InventoryItem {
-    private int slot;
-    private String code;
+    private final int slot;
+    private final String code;
     private int quantity;
 
     public InventoryItem(int slot, String code, int quantity) {

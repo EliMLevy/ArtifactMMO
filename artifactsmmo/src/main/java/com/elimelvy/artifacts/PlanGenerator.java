@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.elimelvy.artifacts.model.InventoryItem;
+import com.elimelvy.artifacts.model.Character;
 import com.elimelvy.artifacts.model.item.GameItem;
 import com.elimelvy.artifacts.model.item.GameItemManager;
 import com.elimelvy.artifacts.model.item.RecipeIngredient;
@@ -81,7 +82,7 @@ public class PlanGenerator {
                         this.splitStep();
                     }
                 } else {
-                    logger.error("Did not have enough {} in bank and it is not craftable...", this.code);
+                    logger.error("Did not have enough {} in bank and it is not craftable. Needed {} but only had {}", this.code, this.quantityNeeded, getBankQuantity(this.code));
                 }
             }
         }
@@ -137,9 +138,9 @@ public class PlanGenerator {
                 dependency.getExecutable(executable);
                 executable.add(new PlanStep("deposit", "", 0, "Deposit all"));
             }
-            if (!this.finalAction.equals("noop")) {
+            if (this.finalAction != null && !this.finalAction.equals("noop")) {
                 for (Plan dependency : this.dependencies) {
-                    executable.add(new PlanStep("withdraw", dependency.finalActionCode, dependency.finalActionQuantity, dependency.description));
+                    executable.add(new PlanStep("withdraw", dependency.finalActionCode, dependency.quantity, dependency.description));
                 }
                 executable.add(new PlanStep(this.finalAction, this.finalActionCode, this.finalActionQuantity, this.description));
             }
@@ -148,7 +149,7 @@ public class PlanGenerator {
 
         @Override
         public String toString() {
-            StringBuilder result = new StringBuilder("====PLAN FOR: " + this.code + "====\n");
+            StringBuilder result = new StringBuilder("====PLAN FOR: " + this.code + " x" + this.quantity + "====\n");
             result.append("dependencies:\n");
             for (Plan dependency : this.dependencies) {
                 result.append(dependency);
@@ -165,6 +166,7 @@ public class PlanGenerator {
             int maxInventorySpace) {
         List<InventoryItem> bank = Bank.getInstance().getBankItems().stream().map(item -> new InventoryItem(item.getSlot(), item.getCode(), item.getQuantity())).collect(Collectors.toList());
         Plan plan = new Plan(itemCode, quantity, maxInventorySpace, bank, false);
+        System.out.println(plan);
         List<PlanStep> result = plan.getExecutable(new ArrayList<>());
 
         List<PlanStep> postProcessed = new ArrayList<>();

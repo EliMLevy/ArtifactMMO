@@ -2,6 +2,7 @@ package com.elimelvy.artifacts;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -28,6 +29,7 @@ public class Bank {
 
     // Caching variables
     private volatile List<InventoryItem> bankItems;
+    private volatile AtomicLong lastUpdated = new AtomicLong();
 
     // Private constructor to prevent instantiation
     private Bank() {
@@ -101,20 +103,22 @@ public class Bank {
         }
     }
 
-    public synchronized void updateBankContents(JsonElement data) {
+    public synchronized void updateBankContents(JsonElement data, long dataTimestamp) {
         lock.lock();
         try {
-            if (data != null && data.isJsonArray()) {
-                logger.debug("Updating bank contents!");
-                List<InventoryItem> allResults = new ArrayList<>();
-                JsonArray dataArray = data.getAsJsonArray();
-                // Convert JsonArray to List<JsonObject>
-                for (int i = 0; i < dataArray.size(); i++) {
-                    allResults.add(gson.fromJson(dataArray.get(i), InventoryItem.class));
+            if(this.lastUpdated.get() < dataTimestamp) {
+                if (data != null && data.isJsonArray()) {
+                    logger.debug("Updating bank contents!");
+                    List<InventoryItem> allResults = new ArrayList<>();
+                    JsonArray dataArray = data.getAsJsonArray();
+                    // Convert JsonArray to List<JsonObject>
+                    for (int i = 0; i < dataArray.size(); i++) {
+                        allResults.add(gson.fromJson(dataArray.get(i), InventoryItem.class));
+                    }
+                    this.bankItems = allResults;
+                } else {
+                    logger.warn("Tried passing a non-json array to updateBankContents: {}", "");
                 }
-                this.bankItems = allResults;
-            } else {
-                logger.warn("Tried passing a non-json array to updateBankContents: {}", "");
             }
 
         } finally {

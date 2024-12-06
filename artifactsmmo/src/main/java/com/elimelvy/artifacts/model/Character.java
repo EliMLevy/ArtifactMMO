@@ -2,7 +2,9 @@ package com.elimelvy.artifacts.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
@@ -11,7 +13,10 @@ import org.slf4j.LoggerFactory;
 import com.elimelvy.artifacts.AtomicActions;
 import com.elimelvy.artifacts.Bank;
 import com.elimelvy.artifacts.GearManager;
+import com.elimelvy.artifacts.PlanGenerator.PlanStep;
+import com.elimelvy.artifacts.model.item.GameItem;
 import com.elimelvy.artifacts.model.item.GameItemManager;
+import com.elimelvy.artifacts.model.item.RecipeIngredient;
 import com.elimelvy.artifacts.model.map.MapManager;
 import com.elimelvy.artifacts.model.map.MapTile;
 import com.elimelvy.artifacts.model.map.Monster;
@@ -25,10 +30,10 @@ public class Character implements Runnable {
 
     private final Logger logger;
     private CharacterData data;
-    private String currentTask = "idle";
-    private String currentTaskParam1 = "";
-    private int currentTaskParam2= 0;
+    private volatile PlanStep currentTask = new PlanStep("idle", "", 0, "Idle around");
     private final double INVENTORY_FULL_THRESHOLD = 0.9;
+
+    private final BlockingQueue<PlanStep> pendingTasks = new LinkedBlockingQueue<>();
 
     private final ReentrantLock lock = new ReentrantLock();
     private volatile CountDownLatch depositLatch;
@@ -56,6 +61,10 @@ public class Character implements Runnable {
         return this.data.name;
     }
 
+    public int getInventoryMaxItems() {
+        return this.data.inventoryMaxItems;
+    }
+
     // Method to parse JSON directly
     public static Character fromJson(JsonObject jsonObject) {
         Gson gson = InstantTypeAdapter.createGsonWithInstant();
@@ -63,7 +72,7 @@ public class Character implements Runnable {
     }
 
     public void updateData(JsonObject jsonObject) {
-        if(jsonObject == null) {
+        if (jsonObject == null) {
             this.logger.error("DATA IS NULL!!!");
             return;
         }
@@ -92,8 +101,8 @@ public class Character implements Runnable {
         Resource target = this.getClosestMap(maps);
         // Equip the correct tool if we havent already
         switch (target.getSkill()) {
-            case "mining" -> this.equipGear("weapon", "pickaxe");
-            case "woodcutting" -> this.equipGear("weapon", "axe");
+            case "mining" -> this.equipGear("weapon_slot", "iron_pickaxe");
+            case "woodcutting" -> this.equipGear("weapon_slot", "iron_axe");
         }
         // Move to the right spot if we arent there already
         this.moveToMap(target.getMapCode());
@@ -141,7 +150,6 @@ public class Character implements Runnable {
         // Deposit inventory if we need to deposit
         this.depositInventoryIfNecessary();
 
-
         // Attack
         this.logger.info("Attacking {}!", code);
         JsonObject result = AtomicActions.attack(this.data.name);
@@ -158,7 +166,7 @@ public class Character implements Runnable {
 
     private void depositInventoryIfNecessary() {
         double currentHolding = this.data.inventory.stream().mapToInt(item -> item.getQuantity()).sum();
-        if(currentHolding / (double)this.data.inventoryMaxItems > this.INVENTORY_FULL_THRESHOLD) {
+        if (currentHolding / (double) this.data.inventoryMaxItems > this.INVENTORY_FULL_THRESHOLD) {
             this.depositInventory();
         }
     }
@@ -167,15 +175,15 @@ public class Character implements Runnable {
         // Move to bank if necessary
         this.moveToClosestBank();
         // For each item in inv, deposit
-        for(InventoryItem item : new ArrayList<>(this.data.inventory)) {
-            if(item.getQuantity() > 0) {
+        for (InventoryItem item : new ArrayList<>(this.data.inventory)) {
+            if (item.getQuantity() > 0) {
                 JsonObject result = AtomicActions.depositItem(this.data.name, item.getCode(), item.getQuantity());
                 handleActionResult(result);
             }
         }
         // This is useful for synchronizing actions after all characters have deposited.
         // The latch is a one shot use so we can null it out afterwards
-        if(this.depositLatch != null) {
+        if (this.depositLatch != null) {
             this.depositLatch.countDown();
             this.depositLatch = null;
         }
@@ -187,15 +195,45 @@ public class Character implements Runnable {
 
     private void handleActionResult(JsonObject result) {
         if (result.has("data")) {
-            if(result.get("data").getAsJsonObject().has("character")) {
+            if (result.get("data").getAsJsonObject().has("character")) {
                 this.updateData(result.get("data").getAsJsonObject().get("character").getAsJsonObject());
             }
-            if ( result.get("data").getAsJsonObject().has("bank")) {
-                Bank.getInstance().updateBankContents(result.get("data").getAsJsonObject().get("bank"));
+            if (result.get("data").getAsJsonObject().has("bank") && result.has("timestamp")) {
+                Bank.getInstance().updateBankContents(result.get("data").getAsJsonObject().get("bank"), result.get("timestamp").getAsLong());
             }
         }
 
         HTTPRequester.handleResultCooldown(result);
+    }
+
+    public void craft(String code, int quantity) {
+        this.logger.info("Attempting to craft {} x{}", code, quantity);
+
+        // Get the GameItem
+        GameItem item = GameItemManager.getInstance().getItem(code);
+        if(item == null) {
+            logger.error("Request item not found {}", code);
+            return;
+        }
+        // Ensure that I have all ingredients in my bank
+        if (item.recipe() != null) {
+            for (RecipeIngredient ingredient : item.recipe().items()) {
+                if (ingredient.quantity() > this.getInventoryQuantity(ingredient.code())) {
+                    logger.error("I am missing the necessary x{} of {}. I only have x{}", ingredient.quantity(),
+                            ingredient.code(), this.getInventoryQuantity(ingredient.code()));
+                    return;
+                }
+            }
+        } else {
+            logger.error("The requested item is not craftable: {}", code);
+            return;
+        }
+        // Move to the correct workshop
+        String skill = item.recipe().skill();
+        this.moveToMap(skill);
+        // Call atomicactions.craft
+        JsonObject result = AtomicActions.craft(this.data.name, code, quantity);
+        this.handleActionResult(result);
     }
 
     public void train(String type) {
@@ -208,6 +246,12 @@ public class Character implements Runnable {
         // TODO
     }
 
+    /**
+     * Equip gear in the specified slot.
+     * Unequips and deposits other gear if necessary. Withdraws the specified gear if necessary.
+     * @param slot the name of the slot ex. weapon_slot
+     * @param code item code
+     */
     public void equipGear(String slot, String code) {
         // Check if it is already equipped
         if (this.getGearInSlot(slot) != null && this.getGearInSlot(slot).equals(code)) {
@@ -254,7 +298,7 @@ public class Character implements Runnable {
     private void moveToClosestBank() {
         List<MapTile> banks = MapManager.getInstance().getMap("bank");
         MapTile closestBank = getClosestMap(banks);
-        if(this.data.x != closestBank.getX() || this.data.y != closestBank.getY()) {
+        if (this.data.x != closestBank.getX() || this.data.y != closestBank.getY()) {
             JsonObject result = AtomicActions.move(this.data.name, closestBank.getX(), closestBank.getY());
             this.handleActionResult(result);
         }
@@ -304,66 +348,67 @@ public class Character implements Runnable {
     @Override
     public void run() {
         while (true) {
-            String task;
-            String param1;
+            PlanStep task;
             this.lock.lock();
             try {
                 task = this.currentTask;
-                param1 = this.currentTaskParam1;
             } finally {
                 this.lock.unlock();
             }
-            this.logger.info("Doing task: {} {}", task, param1);
-
             // TODO if we have an active cooldown, sleep
-            switch (task) {
-                case "idle" -> {
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        logger.warn("I have been interupted while doing an idle sleep!");
-                    }
-                }
-                case "attack" -> this.attackMonster(param1);
-                case "craft" -> {
-                    this.logger.info("Attempting to craft {} x{}", this.currentTaskParam1, this.currentTaskParam2);
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        logger.warn("I have been interupted while doing an idle sleep!");
-                    }
-                }
-                case "collect" -> this.collectResource(param1);
-                case "train" -> this.train(param1);
-                case "tasks" -> this.tasks(param1);
-                case "deposit" -> {
-                    this.depositInventory();
-                    this.setTask("idle");
-                }
-                default -> {
-                }
+
+            if(!task.action().equals("idle")) {
+                this.logger.info("Doing task: {}. {}", task.action(), task.description());
             }
+
+            if (this.pendingTasks.peek() != null) {
+                this.doTask(this.pendingTasks.poll());
+            } else {
+                this.doTask(this.currentTask);
+            }
+
 
         }
     }
 
-    public void setTask(String task) {
-        this.setTask(task, "", 0);
+    public void doTask(PlanStep task) {
+        switch (task.action()) {
+            case "idle" -> {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    logger.warn("I have been interupted while doing an idle sleep!");
+                }
+            }
+            case "attack" -> this.attackMonster(task.code());
+            case "craft" -> this.craft(task.code(), task.quantity());
+            case "collect" -> this.collectResource(task.code());
+            case "train" -> this.train(task.code());
+            case "tasks" -> this.tasks(task.code());
+            case "deposit" -> this.depositInventory();
+            case "withdraw" -> this.withdrawFromBank(task.code(), task.quantity());
+            default -> {
+                logger.error("Unknown task step: {}. Description: {}", task.action(), task.description());
+            }
+        }
     }
 
-    public void setTask(String task, String param1) {
-        this.setTask(task, param1, 0);
-    }
 
-    public void setTask(String task, String param1, int param2) {
+    public void setTask(PlanStep task) {
         this.lock.lock();
         try {
-            this.logger.info("Setting task to {} {}", task, param1);
+            this.logger.info("Setting task to {}", task);
             this.currentTask = task;
-            this.currentTaskParam1 = param1;
-            this.currentTaskParam2 = param2;
         } finally {
             this.lock.unlock();
         }
+    }
+
+    public void addTaskToQueue(PlanStep task) {
+        this.pendingTasks.add(task);
+    }
+
+    public void addTasksToQueue(List<PlanStep> tasks) {
+        this.pendingTasks.addAll(tasks);
     }
 }

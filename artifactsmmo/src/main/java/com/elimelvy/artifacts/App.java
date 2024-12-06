@@ -21,13 +21,19 @@ public class App
         // joeThread.join();
 
         CharacterManager mgr = new CharacterManager();
+        Bank.getInstance().refreshBankItems();
         mgr.loadCharacters();
         mgr.runCharacters();
 
-        for(int i = 0; i < 100; i++) {
-            mgr.manageCraftingNewGear();
-            Thread.sleep(3000);
+        mgr.pickItemToCraft();
+        mgr.launchCraftingManager();
+        boolean finished = false;
+        while(!finished) {
+            finished = mgr.runCraftingManager();
+            Thread.sleep(5000);
         }
+
+        mgr.standbyMode();
 
     }
 }

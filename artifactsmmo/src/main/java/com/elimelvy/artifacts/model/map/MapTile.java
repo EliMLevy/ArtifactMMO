@@ -2,10 +2,10 @@ package com.elimelvy.artifacts.model.map;
 
 public class MapTile {
 
-    private int x;
-    private String contentType;
-    private String contentCode;
-    private int y;
+    private final int x;
+    private final String contentType;
+    private final String contentCode;
+    private final int y;
 
     public MapTile(
             int x,

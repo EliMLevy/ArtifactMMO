@@ -78,6 +78,7 @@ public class HTTPRequester {
             }
 
             // Send request
+            Long timestampOfRequest = System.currentTimeMillis();
             HttpResponse<String> response = httpClient.send(
                 requestBuilder.build(), 
                 HttpResponse.BodyHandlers.ofString()
@@ -93,7 +94,7 @@ public class HTTPRequester {
             if (response.statusCode() != 200) {
                 logger.error("Unexpected status: " + response.statusCode() + " - " + result);
             }
-
+            result.addProperty("timestamp", timestampOfRequest);
             return result;
 
         } catch (JsonSyntaxException | IOException | InterruptedException e) {
