@@ -1,6 +1,7 @@
 package com.elimelvy.artifacts;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -9,15 +10,21 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.elimelvy.artifacts.PlanGenerator.PlanStep;
+import com.elimelvy.artifacts.crafting.CraftingManager;
+import com.elimelvy.artifacts.crafting.GearCraftingFilter;
+import com.elimelvy.artifacts.crafting.GearCraftingSorter;
 import com.elimelvy.artifacts.model.Character;
 import com.elimelvy.artifacts.model.OwnershipQuantity;
 import com.elimelvy.artifacts.model.item.GameItem;
+import com.elimelvy.artifacts.model.item.GameItemManager;
+import com.elimelvy.artifacts.model.item.RecipeIngredient;
 import com.elimelvy.artifacts.model.map.MapManager;
 import com.elimelvy.artifacts.model.map.Monster;
 import com.google.gson.JsonArray;
@@ -81,49 +88,19 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
                 unlockedGear.add(g);
             }
         }
-        Set<String> itemsToIgnore = Set.of("wooden_stick", "wooden_staff", "spruce_fishing_rod",
-                "multislimes_sword", "mushstaff",
-                "mushmush_bow");
+
         List<GameItem> sortedItems = new ArrayList<>(unlockedGear).stream()
                 // filter out items that we cant get
-                .filter(item -> {
-                    if (itemsToIgnore.contains(item.code())) {
-                        return false;
-                    }
-                    // Get the ingredients of this item.
-                    Map<String, Integer> ingredients = GearManager.getInredientsForGear(item.code(), 5);
-                    // For each ingredient determine if we can get it
-                    boolean canCraft = true;
-                    for (Map.Entry<String, Integer> ingredient : ingredients.entrySet()) {
-                        // If the ingredient is a drop, simulate a fight with best gear agains the
-                        // mosnter
-                        List<Monster> m = MapManager.getInstance().getMonster(ingredient.getKey());
-                        if (m != null && !m.isEmpty()) {
-                            // Make sure we have the level
-                            if (m.get(0).getLevel() <= this.getHighestLevel()) {
-                                // TODO simulate the fight
-                                boolean canWeDefeatMonster = true;
-                                if (!canWeDefeatMonster) {
-                                    canCraft = false;
-                                }
-                            } else {
-                                canCraft = false;
-                            }
-                        }
-                    }
-                    return canCraft;
-                })
+                .filter(new GearCraftingFilter(this.getHighestLevel()))
                 // Sort by easiest to get
-                .sorted((a, b) -> {
-                    if (a.level() != b.level()) {
-                        return a.level() - b.level();
-                    }
-                    return 0;
-                })
+                .sorted(new GearCraftingSorter())
                 // Convert set to list
                 .collect(Collectors.toList());
         logger.info("Gear that needs crafting: {}",
-                sortedItems.stream().map(item -> item.code()).collect(Collectors.toList()));
+                sortedItems.stream()
+                        .map(item -> String.format("Item: %s. Level: %d. Monster: %d", item.code(), item.level(),
+                                GearCraftingSorter.getHighestLevelMonsterIngredient(item.recipe().items())))
+                        .collect(Collectors.toList()));
         if (!sortedItems.isEmpty()) {
             this.currentlyCrafting = sortedItems.get(0).code();
             this.logger.info("New crafting goal: {}", this.currentlyCrafting);
@@ -152,7 +129,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
         this.craftingMgr.updateProgress(this);
         if (!this.craftingMgr.isFinished()) {
             List<String> charactersForReassignment = this.craftingMgr.getCharactersForReassignment();
-            this.logger.info("Progress update: {}", this.craftingMgr.getIngredientProgress());
+            this.logger.info("Progress update: {}", this.craftingMgr.toString());
             this.logger.info("Characters for reassginment: {}", charactersForReassignment);
             // Turn the list of strngs into a list of characters and pass to assign
             // characters
@@ -225,7 +202,8 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
         while (true) {
             // switch on the current goal
             switch (this.currentGoal) {
-                case CRAFTING_NEW_GEAR -> {}
+                case CRAFTING_NEW_GEAR -> {
+                }
                 case UPGRADING_COMBAT_LEVEL -> {
                 }
                 case UPGRADING_CRAFTING_LEVEL -> {

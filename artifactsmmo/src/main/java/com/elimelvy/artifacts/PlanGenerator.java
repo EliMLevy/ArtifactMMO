@@ -26,7 +26,6 @@ public class PlanGenerator {
         private List<Plan> dependencies;
         private String finalAction;
         private int finalActionQuantity;
-        private String finalActionCode;
         private String description;
         private final List<InventoryItem> bank;
 
@@ -51,7 +50,6 @@ public class PlanGenerator {
                 if (quantityInBank >= this.quantityNeeded) {
                     setBankQuantity(this.code, quantityInBank - this.quantityNeeded);
                     this.finalAction = "noop";
-                    this.finalActionCode = this.code;
                     this.finalActionQuantity = this.quantity;
                     this.description = "we had enough " + this.code + " in the bank. Remaining "
                                     + (quantityInBank - this.quantityNeeded);
@@ -76,7 +74,6 @@ public class PlanGenerator {
                         this.dependencies.add(newPlan);
                     }
                     this.finalAction = "craft";
-                    this.finalActionCode = this.code;
                     this.finalActionQuantity = this.quantityNeeded;
                     if (sumOfIngredients > this.maxInventorySpace) {
                         this.splitStep();
@@ -128,7 +125,6 @@ public class PlanGenerator {
                 quantityRemaining -= maxBatchSize;
             }
             this.finalAction = "noop";
-            this.finalActionCode = this.code;
             this.finalActionQuantity = this.quantity;
             this.description = "split " + this.code + " x" + this.quantity + " into " + batchesNeeded + " batches";
         }
@@ -140,9 +136,9 @@ public class PlanGenerator {
             }
             if (this.finalAction != null && !this.finalAction.equals("noop")) {
                 for (Plan dependency : this.dependencies) {
-                    executable.add(new PlanStep("withdraw", dependency.finalActionCode, dependency.quantity, dependency.description));
+                    executable.add(new PlanStep("withdraw", dependency.code, dependency.quantity, dependency.description));
                 }
-                executable.add(new PlanStep(this.finalAction, this.finalActionCode, this.finalActionQuantity, this.description));
+                executable.add(new PlanStep(this.finalAction, this.code, this.finalActionQuantity, this.description));
             }
             return executable;
         }
@@ -166,7 +162,6 @@ public class PlanGenerator {
             int maxInventorySpace) {
         List<InventoryItem> bank = Bank.getInstance().getBankItems().stream().map(item -> new InventoryItem(item.getSlot(), item.getCode(), item.getQuantity())).collect(Collectors.toList());
         Plan plan = new Plan(itemCode, quantity, maxInventorySpace, bank, false);
-        System.out.println(plan);
         List<PlanStep> result = plan.getExecutable(new ArrayList<>());
 
         List<PlanStep> postProcessed = new ArrayList<>();

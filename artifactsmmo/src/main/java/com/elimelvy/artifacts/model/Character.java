@@ -82,12 +82,31 @@ public class Character implements Runnable {
     }
 
     public int getInventoryQuantity(String code) {
-        for (InventoryItem i : this.data.inventory) {
-            if (code.equals(i.getCode())) {
-                return i.getQuantity();
+        GameItem item = GameItemManager.getInstance().getItem(code);
+        int equippedQuantity = 0;
+        if(GearManager.allGearTypes.contains(item.type())) {
+            // TODO make this work for utilities too
+            if(!item.type().equals("ring")) {
+                if(code.equals(this.getGearInSlot(item.type() + "_slot"))) {
+                    equippedQuantity += 1;
+                }
+            } else {
+                if (code.equals(this.getGearInSlot("ring1_slot"))) {
+                    equippedQuantity += 1;
+                }
+                if (code.equals(this.getGearInSlot("ring2_slot"))) {
+                    equippedQuantity += 1;
+                }
             }
         }
-        return 0;
+
+
+        for (InventoryItem i : this.data.inventory) {
+            if (code.equals(i.getCode())) {
+                return equippedQuantity + i.getQuantity();
+            }
+        }
+        return equippedQuantity;
     }
 
     public void collectResource(String code) {

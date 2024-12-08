@@ -1,4 +1,4 @@
-package com.elimelvy.artifacts;
+package com.elimelvy.artifacts.crafting;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.elimelvy.artifacts.PlanGenerator;
 import com.elimelvy.artifacts.PlanGenerator.PlanStep;
 import com.elimelvy.artifacts.model.Character;
 import com.elimelvy.artifacts.model.OwnershipQuantity;
@@ -149,9 +150,9 @@ public class CraftingManager {
     @Override
     public String toString() {
         return ingredientProgress.entrySet().stream()
-                .map(entry -> String.format("%s => %d/%d", entry.getKey(), entry.getValue(),
+                .map(entry -> String.format("[%s => %d/%d] ", entry.getKey(), entry.getValue(),
                         itemsNeeded.get(entry.getKey())))
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.joining(""));
     }
 
     public Logger getLogger() {
