@@ -89,7 +89,7 @@ public class HTTPRequester {
 
             // Check for errors
             if (result.has("error")) {
-                logger.error("Failed: " + url + path + " - " + result);
+                logger.error("Failed: " + url + path + " - " + result + " - " + body);
             }
             if (response.statusCode() != 200) {
                 logger.error("Unexpected status: " + response.statusCode() + " - " + result);
