@@ -3,6 +3,7 @@ package com.elimelvy.artifacts.model;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import com.elimelvy.artifacts.model.map.Monster;
 public class CharacterStatSimulator {
 
     public Map<String, GameItem> equippedGear = new HashMap<>(); // Map slot name to game item instance of gear
+    public Map<String, Double> gearHealth = new HashMap<>(); // Map slot name to the health it provides
 
     private final Character character;
 
@@ -59,7 +61,10 @@ public class CharacterStatSimulator {
 
     public void setGear(String slot, String selection) {
         this.logger.debug("Setting {} to {}", slot, selection);
-        this.equippedGear.put(slot, GameItemManager.getInstance().getItem(selection));
+        GameItem gear = GameItemManager.getInstance().getItem(selection);
+        this.equippedGear.put(slot, gear);
+        this.gearHealth.put(slot, GearManager.getEffectValue(gear, "hp"));
+
     }
 
     public boolean getPlayerWinsAgainstMonster(String monster) {
@@ -76,26 +81,27 @@ public class CharacterStatSimulator {
         double monsterAttack = this.computeMonsterAttack(target);
 
         // Simulate the fight
-        double playerHealth = this.character.getMaxHp();
+        double gearHeathVal =  gearHealth.values().stream().collect(Collectors.summingDouble(e -> e));
+        double playerHealth = 115 + 5 * this.character.getLevel() + gearHeathVal;
         double monsterHealth = target.getHp();
 
         boolean monsterWon = true;
         for (int i = 0; i < 100; i++) {
             monsterHealth -= playerAttack;
             logger.debug("Player did {} damage", playerAttack);
-            if (monsterHealth <= 0) {
+            if (Math.floor(monsterHealth) <= 0) {
                 monsterWon = false;
                 break;
             }
             playerHealth -= monsterAttack;
             logger.debug("Monster did {} damage", monsterAttack);
-            if (playerHealth <= 0) {
+            if (Math.floor(playerHealth) <= 0) {
                 monsterWon = true;
                 break;
             }
         }
-        logger.debug("{} won! with {} health remaining", monsterWon ? "Monster" : "Player",
-                monsterWon ? monsterHealth : playerHealth);
+        logger.debug("{} won! with {} (out of {}) health remaining", monsterWon ? "Monster" : "Player",
+                monsterWon ? target.getHp() : this.character.getMaxHp(), monsterWon ? monsterHealth : playerHealth);
         return !monsterWon;
     }
 
@@ -153,6 +159,18 @@ public class CharacterStatSimulator {
         double waterAttack = monster.getAttackWater() * (1 - getPlayerResistance("water") / 100);
         double airAttack = monster.getAttackAir() * (1 - getPlayerResistance("air") / 100);
         return fireAttack + earthAttack + waterAttack + airAttack;
+    }
+
+    public String getLoadout() {
+        StringBuilder buff = new StringBuilder();
+        for(String slot : List.of("weapon_slot", "shield_slot", "helmet_slot", "body_armor_slot", "leg_armor_slot", "boots_slot", "amulet_slot", "ring1_slot", "ring2_slot")) {
+            if(this.equippedGear.containsKey(slot)) {
+                buff.append(this.equippedGear.get(slot).code());
+                buff.append(",");
+            }
+        }
+        // Trim off the dangling comma
+        return buff.substring(0, buff.length() - 1);
     }
 
 }
