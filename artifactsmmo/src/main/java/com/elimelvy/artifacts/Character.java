@@ -1,5 +1,7 @@
 package com.elimelvy.artifacts;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -583,6 +585,16 @@ public class Character implements Runnable {
                 this.lock.unlock();
             }
             // TODO if we have an active cooldown, sleep
+            if(this.data.cooldown > 0 && Instant.now().isBefore(this.data.cooldownExpiration)) {
+                try {
+                    Duration d = Duration.between(this.data.cooldownExpiration, Instant.now()).abs();
+                    this.logger.info("Sleeping off cooldown {} sec", d.toSeconds());
+                    Thread.sleep(d.toMillis());
+                } catch (InterruptedException e) {
+                    logger.error("Interuppted from sleep!");
+                    continue;
+                }
+            }
 
             if (task.action() != PlanAction.IDLE) {
                 this.logger.info("Doing task: {}. {}", task.action(), task.description());
