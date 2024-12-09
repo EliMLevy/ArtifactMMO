@@ -164,8 +164,17 @@ public class Character implements Runnable {
             this.logger.warn("Invalid monster code: {}", code);
             return;
         }
-        // TODO choose the correct one
         Monster target = this.getClosestMap(maps);
+        // Make sure I can defeat this monster, otherwise train combat
+        CharacterStatSimulator simulator = new CharacterStatSimulator(this);
+        simulator.optimizeForMonster(target.getMapCode(), MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
+        if(!simulator.getPlayerWinsAgainstMonster(target.getMapCode())) {
+            this.logger.info("Can't defeat {} so Im going to train combat", target.getMapCode());
+            this.trainCombat();
+            return;
+        } else {
+            this.logger.info("I can defeat {} with this loadout {}", target.getMapCode(), simulator.getLoadout());
+        }
         // Equip the correct gear if we havent already
         String selection = GearManager.getBestWeaponAgainstMonster(this, code,
                 MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
@@ -189,16 +198,23 @@ public class Character implements Runnable {
             }
         }
 
+        // Deposit inventory if we need to deposit
+        this.depositInventoryIfNecessary();
+
+        // Fill up on consumables if necessary
+        List<String> candidateConsumables = List.of("cooked_wolf_meat", "cooked_chicken");
+        int targetQuantity = 25;
+        for(String food : candidateConsumables) {
+            if(this.getInventoryQuantity(food) == 0 && Bank.getInstance().getBankQuantity(food) >= targetQuantity) {
+                this.withdrawFromBank(food, Math.min(Bank.getInstance().getBankQuantity(food), targetQuantity));
+            } 
+        }
+
         // Move to the right spot if we arent there already
         this.moveToMap(target.getMapCode());
 
         // Rest if we need to rest
         this.healIfNecessary();
-
-        // Deposit inventory if we need to deposit
-        this.depositInventoryIfNecessary();
-
-        // Fill up on consumables if necessary
 
         // Attack
         this.logger.info("Attacking {}!", code);
@@ -223,7 +239,7 @@ public class Character implements Runnable {
         for (GameItem food : consumables) {
             // If the healing abilities is less than the amount we need, eat a bunch of it
             double healAmount = GearManager.getEffectValue(food, "heal");
-            int eatAmount = (int)Math.floor((this.data.maxHp - this.data.hp) / healAmount);
+            int eatAmount = Math.min((int)Math.floor((this.data.maxHp - this.data.hp) / healAmount), this.getInventoryQuantity(food.code()));
             if(eatAmount > 0) {
                 JsonObject result = AtomicActions.useItem(this.data.name, food.code(), eatAmount);
                 this.handleActionResult(result);
@@ -320,6 +336,7 @@ public class Character implements Runnable {
         }
         if (type.equals("combat")) {
             this.trainCombat();
+            return;
         } else if(type.equals("lowest")) {
             type = "mining";
             if(this.data.woodcuttingLevel < this.data.miningLevel && this.data.woodcuttingLevel < this.data.fishingLevel) {
@@ -397,17 +414,20 @@ public class Character implements Runnable {
         // If we are done with our tasks, move to task spot and complete tasks
         if (this.data.taskProgress >= this.data.taskTotal) {
             this.logger.info("Done with task {}", this.data.task);
-            this.moveToMap(this.data.taskType);
+            String completedTaskType = this.data.taskType;
+            this.moveToMap(completedTaskType);
             JsonObject result = AtomicActions.completeTask(this.data.name);
             this.handleActionResult(result);
             // If there is a bunch of task coins, withdraw them and exchange them
             int taskCoins = Bank.getInstance().getBankQuantity("tasks_coin") + this.getInventoryQuantity("tasks_coin");
             if(taskCoins > 30) {
                 withdrawFromBank("tasks_coin", Bank.getInstance().getBankQuantity("tasks_coin"));
+                this.moveToMap(completedTaskType); // The task type we just completed is the closest task master
                 while(this.getInventoryQuantity("tasks_coin") >= 6) {
                     result = AtomicActions.exchangeCoinsWithTaskMaster(this.data.name);
                     this.handleActionResult(result);
                 }
+                this.depositInventory();
             }
             return;
         }
@@ -492,6 +512,7 @@ public class Character implements Runnable {
         // Unequip if necessary
         if (this.getGearInSlot(slot) != null && !this.getGearInSlot(slot).isEmpty()) {
             this.logger.info("To equip {} we need to unequip {}", code, this.getGearInSlot(slot));
+            this.healIfNecessary();
             JsonObject result = AtomicActions.unequip(this.data.name, slot.replace("_slot", ""));
             handleActionResult(result);
         }
