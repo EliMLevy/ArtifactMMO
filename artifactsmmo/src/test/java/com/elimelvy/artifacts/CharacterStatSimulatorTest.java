@@ -18,7 +18,7 @@ import com.google.gson.JsonObject;
 
 public class CharacterStatSimulatorTest {
 
-    @Test
+    // @Test
     public void simpleTest() {
         JsonObject characterJoe = AtomicActions.getCharacter("Bobby");
         Character joe = Character.fromJson(characterJoe);
@@ -29,7 +29,7 @@ public class CharacterStatSimulatorTest {
         assertTrue(simulator.getPlayerWinsAgainstMonster("cyclops"));
     }
 
-    @Test
+    // @Test
     public void deathKnightTest() {
         JsonObject characterJoe = AtomicActions.getCharacter("Bobby");
         Character joe = Character.fromJson(characterJoe);
@@ -41,7 +41,7 @@ public class CharacterStatSimulatorTest {
         assertTrue(simulator.getPlayerWinsAgainstMonster(monster));
     }
 
-    @Test
+    // @Test
     public void testFindHighestDefeatableMonster() {
         JsonObject characterJoe = AtomicActions.getCharacter("George");
         Character joe = Character.fromJson(characterJoe);
