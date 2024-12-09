@@ -128,7 +128,7 @@ def combine_maps_and_monsters():
     monster_file = open("./monsters/monsters_1.json")
     monsters = json.loads(monster_file.read())
 
-    monster_df = pd.DataFrame(columns=["level","resource_code", "x", "y", "drop_chance", "map_code", "attack_fire","attack_earth","attack_water","attack_air","res_fire","res_earth","res_water","res_air"])
+    monster_df = pd.DataFrame(columns=["level","resource_code", "x", "y", "drop_chance", "map_code", "hp", "attack_fire","attack_earth","attack_water","attack_air","res_fire","res_earth","res_water","res_air"])
     maps_file = open("./maps/all_maps.json")
     maps = json.loads(maps_file.read())
     skipped = []
@@ -141,7 +141,7 @@ def combine_maps_and_monsters():
             for drop in monster["drops"]:
                 for location in locations:
                     monster_df.loc[len(monster_df)] = [monster["level"], drop["code"], location["x"], location["y"], drop["rate"], location["content"]["code"],
-                                                      monster["attack_fire"],monster["attack_earth"],monster["attack_water"],monster["attack_air"],monster["res_fire"],monster["res_earth"],monster["res_water"],monster["res_air"] ]
+                                                      monster["hp"], monster["attack_fire"],monster["attack_earth"],monster["attack_water"],monster["attack_air"],monster["res_fire"],monster["res_earth"],monster["res_water"],monster["res_air"] ]
         else:
             skipped.append(monster["code"])
 
@@ -208,6 +208,6 @@ def fetch_all_pages_and_save(url, output):
 
 
 if __name__ == "__main__":
-    fetch_all_pages_and_save("https://api.artifactsmmo.com/maps?size=100", './maps/all_maps_TEST.json')
-    map_combination()
+    # fetch_all_pages_and_save("https://api.artifactsmmo.com/maps?size=100", './maps/all_maps_TEST.json')
+    # map_combination()
     combine_maps_and_monsters()
