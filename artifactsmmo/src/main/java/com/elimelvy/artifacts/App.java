@@ -1,74 +1,58 @@
 package com.elimelvy.artifacts;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import com.elimelvy.artifacts.PlanGenerator.PlanAction;
 import com.elimelvy.artifacts.PlanGenerator.PlanStep;
 import com.google.gson.JsonObject;
 
-public class App 
-{
-    public static void main( String[] args ) throws Exception
-    {
+public class App {
+    public static void main(String[] args) throws Exception {
+        // runAllCharactersManually();
+        runCraftingManager();
 
-        JsonObject characterJoe = AtomicActions.getCharacter("Joe");
-        Character joe = Character.fromJson(characterJoe);
-        
+    }
+    
+    public static void runCraftingManager() throws Exception {
+        CharacterManager mgr = new CharacterManager();
+        Bank.getInstance().refreshBankItems();
+        mgr.loadCharacters();
+        mgr.runCharacters();
+    
+        mgr.pickItemToCraft();
+        mgr.launchCraftingManager();
+        boolean finished = false;
+        while(!finished) {
+            finished = mgr.runCraftingManager();
+            Thread.sleep(5000);
+        }
+    
+        mgr.standbyMode();
 
-        Thread joeThread = new Thread(joe);
-        joe.setTask(new PlanStep(PlanAction.COLLECT, "dead_wood", 10, "Testing training"));
-        // joe.setTask(new PlanStep(PlanAction.TASKS, "items", 0, "Doing items tasks"));
-        joeThread.start();
+    }
 
-        // JsonObject characterBobby = AtomicActions.getCharacter("Bobby");
-        // Character bobby = Character.fromJson(characterBobby);
+    public static void runAllCharactersManually() throws Exception {
+        Map<String, PlanStep> assignments = new HashMap<>();
+        // assignments.put("Bobby", new PlanStep(PlanAction.COLLECT, "dead_wood", 10, "Testing training"));
+        assignments.put("Stuart", new PlanStep(PlanAction.ATTACK, "cyclops", 0, "Testing training"));
+        // assignments.put("George", new PlanStep(PlanAction.COLLECT, "dead_wood", 10, "Testing training"));
+        // assignments.put("Tim", new PlanStep(PlanAction.COLLECT, "dead_wood", 10, "Testing training"));
+        // assignments.put("Joe", new PlanStep(PlanAction.COLLECT, "dead_wood", 10, "Testing training"));
 
-        // Thread bobbyThread = new Thread(bobby);
-        // bobby.setTask(new PlanStep(PlanAction.TASKS, "items", 0, "Doing items tasks"));
-        // bobbyThread.start();
-
-        // JsonObject characterStuart = AtomicActions.getCharacter("Stuart");
-        // Character stuart = Character.fromJson(characterStuart);
-
-        // Thread stuartThread = new Thread(stuart);
-        // stuart.setTask(new PlanStep(PlanAction.TASKS, "items", 0, "Doing items tasks"));
-        // stuartThread.start();
-
-        // JsonObject characterGeorge = AtomicActions.getCharacter("George");
-        // Character george = Character.fromJson(characterGeorge);
-
-        // Thread georgeThread = new Thread(george);
-        // george.setTask(new PlanStep(PlanAction.TASKS, "items", 0, "Doing items tasks"));
-        // georgeThread.start();
-
-        // JsonObject characterTim = AtomicActions.getCharacter("Tim");
-        // Character tim = Character.fromJson(characterTim);
-
-        // Thread timThread = new Thread(tim);
-        // tim.setTask(new PlanStep(PlanAction.TASKS, "items", 0, "Doing items tasks"));
-        // timThread.start();
-
-
-        joeThread.join();
-
-
-        
-
-        // CharacterManager mgr = new CharacterManager();
-        // Bank.getInstance().refreshBankItems();
-        // mgr.loadCharacters();
-        // mgr.runCharacters();
-
-
-
-        // // mgr.pickItemToCraft();
-        // mgr.setCraftingItem("skull_ring", 4);
-        // mgr.launchCraftingManager();
-        // boolean finished = false;
-        // while(!finished) {
-        //     finished = mgr.runCraftingManager();
-        //     Thread.sleep(5000);
-        // }
-
-        // mgr.standbyMode();
-
+        List<Thread> threads = new LinkedList<>();
+        for (Map.Entry<String, PlanStep> entry : assignments.entrySet()) {
+            JsonObject characterData = AtomicActions.getCharacter(entry.getKey());
+            Character character = Character.fromJson(characterData);
+    
+            Thread thread = new Thread(character);
+            character.setTask(entry.getValue());
+            thread.start();
+            
+            threads.add(thread);
+        }
+        threads.get(0).join();
     }
 }
