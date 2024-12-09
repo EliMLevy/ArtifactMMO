@@ -145,12 +145,12 @@ public class Bank {
         for (InventoryItem item : this.bankItems) {
             if (item.getCode() != null && item.getCode().equals(itemCode)) {
                 int quantity = item.getQuantity();
-                logger.debug("Item {} quantity: {}", itemCode, quantity );
+                // logger.debug("Item {} quantity: {}", itemCode, quantity );
                 return quantity;
             }
         }
 
-        logger.debug("Item {} not found in bank", itemCode);
+        // logger.debug("Item {} not found in bank", itemCode);
         return 0;
     }
 }
