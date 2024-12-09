@@ -7,15 +7,13 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
-
 import com.elimelvy.artifacts.model.item.GameItem;
 import com.elimelvy.artifacts.model.item.GameItemManager;
-import com.elimelvy.artifacts.model.Character;
 import com.elimelvy.artifacts.model.map.MapManager;
 public class GearManagerTest {
 
@@ -77,7 +75,7 @@ public class GearManagerTest {
         Bank bank = mock(Bank.class);
         when(bank.getBankQuantity(anyString())).thenReturn(5);
 
-        String result = GearManager.getBestAvailableGearAgainstMonster(joe, "helmet", monster, mapMgr, itemMgr, bank);
+        String result = GearManager.getBestAvailableGearAgainstMonster(joe, joe.getGearInSlot("weapon_slot"), "helmet", monster, mapMgr, itemMgr, bank);
         assertEquals("adventurer_helmet", result);
     }
 
@@ -92,9 +90,10 @@ public class GearManagerTest {
         Bank bank = mock(Bank.class);
         when(bank.getBankQuantity(anyString())).thenReturn(5);
 
-        String result = GearManager.getBestAvailableGearAgainstMonster(joe, "body_armor", monster, mapMgr, itemMgr, bank);
+        String result = GearManager.getBestAvailableGearAgainstMonster(joe, joe.getGearInSlot("weapon_slot"), "body_armor", monster, mapMgr, itemMgr, bank);
         assertEquals("copper_armor", result);
     }
+
 
     
 }

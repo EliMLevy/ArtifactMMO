@@ -1,7 +1,6 @@
 package com.elimelvy.artifacts;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -10,30 +9,25 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.elimelvy.artifacts.PlanGenerator.PlanAction;
 import com.elimelvy.artifacts.PlanGenerator.PlanStep;
 import com.elimelvy.artifacts.crafting.CraftingManager;
 import com.elimelvy.artifacts.crafting.GearCraftingFilter;
 import com.elimelvy.artifacts.crafting.GearCraftingSorter;
-import com.elimelvy.artifacts.model.Character;
 import com.elimelvy.artifacts.model.OwnershipQuantity;
 import com.elimelvy.artifacts.model.item.GameItem;
-import com.elimelvy.artifacts.model.item.GameItemManager;
-import com.elimelvy.artifacts.model.item.RecipeIngredient;
-import com.elimelvy.artifacts.model.map.MapManager;
-import com.elimelvy.artifacts.model.map.Monster;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class CharacterManager implements OwnershipQuantity, Runnable {
 
-    private Map<String, Character> characters = new HashMap<>();
+    private final Map<String, Character> characters = new HashMap<>();
     private final List<Thread> threads = new ArrayList<>(5);
     private final String weaponCrafter = "Joe";
     private final String armorCrafter = "Joe";
@@ -50,6 +44,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
     private final Set<GameItem> unlockedGear = new HashSet<>();
     private final Queue<String> gearToCraft = new LinkedList<>();
     private String currentlyCrafting;
+    private int currentCraftingQuantity;
     private Goal currentGoal = Goal.CRAFTING_NEW_GEAR;
     private CraftingManager craftingMgr = null;
 
@@ -74,6 +69,11 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
             t.start();
             threads.add(t);
         }
+    }
+
+    public void setCraftingItem(String item, int quantity) {
+        this.currentlyCrafting = item;
+        this.currentCraftingQuantity = quantity;
     }
 
     public String pickItemToCraft() {
@@ -103,6 +103,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
                         .collect(Collectors.toList()));
         if (!sortedItems.isEmpty()) {
             this.currentlyCrafting = sortedItems.get(0).code();
+            this.currentCraftingQuantity = 5; // TODO make this correct. Rings are 10. Dont over craft
             this.logger.info("New crafting goal: {}", this.currentlyCrafting);
             return this.currentlyCrafting;
         } else {
@@ -112,7 +113,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
     }
 
     public void launchCraftingManager() {
-        Map<String, Integer> itemsNeeded = GearManager.getInredientsForGear(this.currentlyCrafting, 5);
+        Map<String, Integer> itemsNeeded = GearManager.getInredientsForGear(this.currentlyCrafting, this.currentCraftingQuantity);
         this.craftingMgr = new CraftingManager(itemsNeeded);
         this.craftingMgr.updateProgress(this);
         if (!this.craftingMgr.isFinished()) {
@@ -142,8 +143,8 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
             // Instruct all characters to deposit
             CountDownLatch latch = new CountDownLatch(5);
             for (Character c : this.characters.values()) {
-                c.seDepositLatch(latch);
-                c.addTaskToQueue(new PlanStep("deposit", "", 0, "Deposit all items"));
+                c.setDepositLatch(latch);
+                c.addTaskToQueue(new PlanStep(PlanAction.DEPOSIT, "", 0, "Deposit all items"));
             }
 
             // Wait until everyone has deposited
@@ -155,9 +156,9 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
             }
             // Instruct our crafter to craft the item
             this.logger.info("All characters deposited! Assigniing {} to craft {} x{}", this.armorCrafter,
-                    this.currentlyCrafting, 5);
+                    this.currentlyCrafting, this.currentCraftingQuantity);
             Character crafter = this.characters.get(this.armorCrafter);
-            List<PlanStep> planToCraft = PlanGenerator.generatePlan(crafter, this.currentlyCrafting, 5,
+            List<PlanStep> planToCraft = PlanGenerator.generatePlan(this.currentlyCrafting, this.currentCraftingQuantity,
                     (int) Math.floor((double) crafter.getInventoryMaxItems() * 0.8));
             this.logger.info("Add this plan to {}'s queue {}", crafter.getName(), planToCraft);
             crafter.addTasksToQueue(planToCraft);

@@ -9,13 +9,12 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.elimelvy.artifacts.model.item.Effect;
 import com.elimelvy.artifacts.model.item.GameItem;
 import com.elimelvy.artifacts.model.item.GameItemManager;
 import com.elimelvy.artifacts.model.item.RecipeIngredient;
 import com.elimelvy.artifacts.model.map.MapManager;
 import com.elimelvy.artifacts.model.map.Monster;
-import com.elimelvy.artifacts.model.Character;
-import com.elimelvy.artifacts.model.item.Effect;
 
 /**
  * This class will be a singleton that offers utilities for all things relating
@@ -31,7 +30,10 @@ public class GearManager {
 
     public static List<String> allGearTypes = List.of("weapon", "shield", "helmet", "body_armor", "leg_armor", "boots",
             "amulet", "ring");
-    public static List<String> allNonWeaponTypes = List.of("shield", "helmet", "body_armor", "leg_armor", "boots","amulet", "ring");
+    public static List<String> allNonWeaponTypes = List.of("shield", "helmet", "body_armor", "leg_armor", "boots",
+            "amulet", "ring");
+    public static List<String> allNonWeaponSlots = List.of("shield_slot", "helmet_slot", "body_armor_slot",
+            "leg_armor_slot", "boots_slot", "amulet_slot", "ring1_slot", "ring2_slot");
 
     public static Set<GameItem> getGearUpToLevel(int level, List<String> gearTypes) {
         GameItemManager giMgr = GameItemManager.getInstance();
@@ -81,7 +83,8 @@ public class GearManager {
         return ingredients;
     }
 
-    public static String getBestAvailableGearAgainstMonster(Character character, String gearType, String monster,
+    public static String getBestAvailableGearAgainstMonster(Character character, String weaponToUse, String gearType,
+            String monster,
             MapManager mapMgr,
             GameItemManager gameItemMgr, Bank bank) {
         // Get the monster
@@ -110,14 +113,14 @@ public class GearManager {
             logger.warn("Failed to retrive any {}s for {}", gearType, character.toString());
             return null;
         }
-        GameItem currentWeapon = gameItemMgr.getItem(character.getGearInSlot("weapon_slot"));
+        GameItem currentWeapon = gameItemMgr.getItem(weaponToUse);
         // For each piece, calculate the extra damage it does and the resistance it adds
         double bestBoost = 0;
         GameItem bestArmor = candidateArmors.get(0);
         for (GameItem armor : candidateArmors) {
             double total_dmg = getArmorDamage(armor, currentWeapon);
             double total_res = getArmorResistance(target, armor);
-            logger.debug("Total damage of {} against {} is {} and total resistance is {}", 
+            logger.debug("Total damage of {} against {} is {} and total resistance is {}",
                     armor.code(), monster, total_dmg, total_res);
             if (total_dmg + total_res > bestBoost) {
                 bestBoost = total_dmg + total_res;
@@ -147,11 +150,13 @@ public class GearManager {
         List<GameItem> candidateWeapons = gameItemMgr.getItems(item -> {
             int bankQuantity = bank.getBankQuantity(item.code());
             int invQuantity = character.getInventoryQuantity(item.code());
-            return item.type().equals("weapon") &&
+            boolean result = item.type().equals("weapon") &&
                     (bankQuantity > 0 || invQuantity > 0
                             || (currentWeapon != null && currentWeapon.equals(item.code())))
                     &&
                     item.level() <= character.getLevel();
+
+            return result;
         });
 
         if (candidateWeapons == null || candidateWeapons.isEmpty()) {
@@ -181,7 +186,7 @@ public class GearManager {
 
     }
 
-    private static double getWeaponDamage(Monster target, GameItem weapon) {
+    public static double getWeaponDamage(Monster target, GameItem weapon) {
         double damage_fire = getEffectValue(weapon, "attack_fire") * (1 - target.getResFire() / 100);
         double damage_earth = getEffectValue(weapon, "attack_earth") * (1 - target.getResEarth() / 100);
         double damage_water = getEffectValue(weapon, "attack_water") * (1 - target.getResWater() / 100);
@@ -190,12 +195,12 @@ public class GearManager {
         return total_dmg;
     }
 
-    private static double getArmorDamage(GameItem armor, GameItem weapon) {
-        double damage_fire = getEffectValue(armor, "dmg_fire");
-        double damage_earth = getEffectValue(armor, "dmg_earth");
-        double damage_water = getEffectValue(armor, "dmg_water");
-        double damage_air = getEffectValue(armor, "dmg_air");
-        if(weapon != null) {
+    public static double getArmorDamage(GameItem armor, GameItem weapon) {
+        double damage_fire = (1 + getEffectValue(armor, "dmg_fire") / 100);
+        double damage_earth = (1 + getEffectValue(armor, "dmg_earth") / 100);
+        double damage_water = (1 + getEffectValue(armor, "dmg_water") / 100);
+        double damage_air = (1 + getEffectValue(armor, "dmg_air") / 100);
+        if (weapon != null) {
             damage_fire *= getEffectValue(weapon, "attack_fire");
             damage_earth *= getEffectValue(weapon, "attack_earth");
             damage_water *= getEffectValue(weapon, "attack_water");
@@ -205,7 +210,7 @@ public class GearManager {
         return total_dmg;
     }
 
-    private static double getArmorResistance(Monster target, GameItem armor) {
+    public static double getArmorResistance(Monster target, GameItem armor) {
         double res_fire = (getEffectValue(armor, "res_fire") / 100) * target.getAttackFire();
         double res_earth = (getEffectValue(armor, "res_earth") / 100) * target.getAttackEarth();
         double res_water = (getEffectValue(armor, "res_water") / 100) * target.getAttackWater();
@@ -214,7 +219,10 @@ public class GearManager {
         return total_res;
     }
 
-    private static double getEffectValue(GameItem item, String effect) {
+    public static double getEffectValue(GameItem item, String effect) {
+        if (item == null || item.effects() == null) {
+            return 0;
+        }
         for (Effect e : item.effects()) {
             if (e.name().equals(effect)) {
                 return e.value();

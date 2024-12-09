@@ -16,10 +16,11 @@ public class Monster extends MapTile {
     private final int resEarth;
     private final int resWater;
     private final int resAir;
+    private final int hp;
 
     // Constructor
     public Monster(int level, String resourceCode, int x, int y, int dropChance,
-            String mapCode, int attackFire, int attackEarth,
+            String mapCode, int hp, int attackFire, int attackEarth,
             int attackWater, int attackAir, int resFire,
             int resEarth, int resWater, int resAir) {
         super(x, y, "monster", mapCode);
@@ -29,6 +30,7 @@ public class Monster extends MapTile {
         this.y = y;
         this.dropChance = dropChance;
         this.mapCode = mapCode;
+        this.hp = hp;
         this.attackFire = attackFire;
         this.attackEarth = attackEarth;
         this.attackWater = attackWater;
@@ -66,6 +68,10 @@ public class Monster extends MapTile {
 
     public String getMapCode() {
         return mapCode;
+    }
+
+    public int getHp() {
+        return hp;
     }
 
     public double getAttackFire() {

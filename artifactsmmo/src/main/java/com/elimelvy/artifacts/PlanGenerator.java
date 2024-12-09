@@ -1,13 +1,14 @@
 package com.elimelvy.artifacts;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.elimelvy.artifacts.PlanGenerator.PlanAction;
 import com.elimelvy.artifacts.model.InventoryItem;
-import com.elimelvy.artifacts.model.Character;
 import com.elimelvy.artifacts.model.item.GameItem;
 import com.elimelvy.artifacts.model.item.GameItemManager;
 import com.elimelvy.artifacts.model.item.RecipeIngredient;
@@ -15,7 +16,20 @@ import com.elimelvy.artifacts.model.item.RecipeIngredient;
 public class PlanGenerator {
     private final static Logger logger = LoggerFactory.getLogger(PlanGenerator.class);
 
-    public record PlanStep(String action, String code, int quantity, String description) {};
+    public enum PlanAction {
+        ATTACK,
+        CRAFT,
+        TRAIN,
+        COLLECT,
+        TASKS,
+        DEPOSIT,
+        WITHDRAW,
+        IDLE,
+        NOOP
+    }
+
+    public record PlanStep(PlanAction action, String code, int quantity, String description) {
+    };
 
     private static class Plan {
         private final String code;
@@ -24,11 +38,11 @@ public class PlanGenerator {
         private final int maxInventorySpace;
         private int quantityNeeded;
         private List<Plan> dependencies;
-        private String finalAction;
+        private PlanAction finalAction;
         private int finalActionQuantity;
         private String description;
         private final List<InventoryItem> bank;
-
+        private int quantityFromBankUsed = 0;
 
         public Plan(String code, int quantity, int maxInventorySpace, List<InventoryItem> bank, boolean useBank) {
             logger.debug("Creating plan for {} x{} (useBank={})", code, quantity, useBank);
@@ -48,19 +62,24 @@ public class PlanGenerator {
                 int quantityInBank = getBankQuantity(this.code);
                 logger.debug("We have x{} of {} in bank", quantityInBank, code);
                 if (quantityInBank >= this.quantityNeeded) {
+                    this.quantityFromBankUsed = this.quantityNeeded;
                     setBankQuantity(this.code, quantityInBank - this.quantityNeeded);
-                    this.finalAction = "noop";
+                    this.finalAction = PlanAction.NOOP;
                     this.finalActionQuantity = this.quantity;
                     this.description = "we had enough " + this.code + " in the bank. Remaining "
-                                    + (quantityInBank - this.quantityNeeded);
+                            + (quantityInBank - this.quantityNeeded);
                     this.quantityNeeded = 0;
                 } else {
                     this.quantityNeeded -= quantityInBank;
+                    this.quantityFromBankUsed = quantityInBank;
+                    setBankQuantity(this.code, 0);
+
                 }
             }
 
             if (this.quantityNeeded > 0) {
                 if (this.item.recipe() != null) {
+                    logger.debug("Creating dependcies for {}", this.item.code());
                     int sumOfIngredients = 0;
                     List<RecipeIngredient> ingredients = this.item.recipe().items();
                     for (RecipeIngredient ingredient : ingredients) {
@@ -73,13 +92,17 @@ public class PlanGenerator {
                         sumOfIngredients += newPlan.finalActionQuantity;
                         this.dependencies.add(newPlan);
                     }
-                    this.finalAction = "craft";
+                    this.finalAction = PlanAction.CRAFT;
                     this.finalActionQuantity = this.quantityNeeded;
                     if (sumOfIngredients > this.maxInventorySpace) {
                         this.splitStep();
                     }
                 } else {
-                    logger.error("Did not have enough {} in bank and it is not craftable. Needed {} but only had {}", this.code, this.quantityNeeded, getBankQuantity(this.code));
+
+                    logger.debug("Doing {} in one batch of {}", this.code, this.quantityNeeded);
+                    this.finalAction = PlanAction.COLLECT;
+                    this.finalActionQuantity = this.quantityNeeded;
+
                 }
             }
         }
@@ -99,12 +122,22 @@ public class PlanGenerator {
                     .ifPresent(itemElem -> itemElem.setQuantity(quantity));
         }
 
+        public void returnIngredientsToBank() {
+            for (Plan dependency : this.dependencies) {
+                dependency.returnIngredientsToBank();
+            }
+            this.setBankQuantity(code, this.getBankQuantity(this.code) + this.quantityFromBankUsed);
+        }
+
         private void splitStep() {
             if (this.item.recipe() == null) {
                 return;
             }
 
+            logger.debug("Splitting {}", this.item.code());
+
             List<RecipeIngredient> ingredients = this.item.recipe().items();
+
             int totalItemsPerCraft = ingredients.stream()
                     .mapToInt(ingredient -> ingredient.quantity())
                     .sum();
@@ -112,19 +145,23 @@ public class PlanGenerator {
             int maxCraftable = this.maxInventorySpace / totalItemsPerCraft;
             int maxBatchSize = Math.min(this.quantity, maxCraftable);
 
+            // Before we trash our list of dependencies we need to return all the items that
+            // were used from the bank.
+            this.returnIngredientsToBank();
             this.dependencies = new ArrayList<>();
             int quantityRemaining = this.quantity;
             int batchesNeeded = (int) Math.ceil((double) this.quantity / maxBatchSize);
             for (int i = 0; i < batchesNeeded; i++) {
                 if (quantityRemaining < 0) {
-                    throw new IllegalStateException("Logic error for " + this.code + " " + this.quantity + " " + maxBatchSize);
+                    throw new IllegalStateException(
+                            "Logic error for " + this.code + " " + this.quantity + " " + maxBatchSize);
                 }
                 this.dependencies.add(
                         new Plan(this.code, Math.min(maxBatchSize, quantityRemaining), this.maxInventorySpace,
                                 this.bank, true));
                 quantityRemaining -= maxBatchSize;
             }
-            this.finalAction = "noop";
+            this.finalAction = PlanAction.NOOP;
             this.finalActionQuantity = this.quantity;
             this.description = "split " + this.code + " x" + this.quantity + " into " + batchesNeeded + " batches";
         }
@@ -132,11 +169,12 @@ public class PlanGenerator {
         public List<PlanStep> getExecutable(List<PlanStep> executable) {
             for (Plan dependency : this.dependencies) {
                 dependency.getExecutable(executable);
-                executable.add(new PlanStep("deposit", "", 0, "Deposit all"));
+                executable.add(new PlanStep(PlanAction.DEPOSIT, "", 0, "Deposit all"));
             }
-            if (this.finalAction != null && !this.finalAction.equals("noop")) {
+            if (this.finalAction != null && this.finalAction != PlanAction.NOOP) {
                 for (Plan dependency : this.dependencies) {
-                    executable.add(new PlanStep("withdraw", dependency.code, dependency.quantity, dependency.description));
+                    executable.add(new PlanStep(PlanAction.WITHDRAW, dependency.code, dependency.quantity,
+                            dependency.description));
                 }
                 executable.add(new PlanStep(this.finalAction, this.code, this.finalActionQuantity, this.description));
             }
@@ -158,16 +196,30 @@ public class PlanGenerator {
             return result.toString();
         }
     }
-    public static List<PlanStep> generatePlan(Character character, String itemCode, int quantity,
+
+    /**
+     * The plan generator wont look inside inventories becuase those may be
+     * unavailable to the crafter. Make sure that everyone with important
+     * ingredients deposits their inventory BEFORE generating a plan.
+     * 
+     * @param character
+     * @param itemCode
+     * @param quantity
+     * @param maxInventorySpace
+     * @return
+     */
+    public static List<PlanStep> generatePlan(String itemCode, int quantity,
             int maxInventorySpace) {
-        List<InventoryItem> bank = Bank.getInstance().getBankItems().stream().map(item -> new InventoryItem(item.getSlot(), item.getCode(), item.getQuantity())).collect(Collectors.toList());
+        List<InventoryItem> bank = Bank.getInstance().getBankItems().stream()
+                .map(item -> new InventoryItem(item.getSlot(), item.getCode(), item.getQuantity()))
+                .collect(Collectors.toList());
         Plan plan = new Plan(itemCode, quantity, maxInventorySpace, bank, false);
         List<PlanStep> result = plan.getExecutable(new ArrayList<>());
 
         List<PlanStep> postProcessed = new ArrayList<>();
-        String lastAction = "";
+        PlanAction lastAction = null;
         for (PlanStep action : result) {
-            if (action.action().equals("deposit") && "deposit".equals(lastAction)) {
+            if (action.action() == PlanAction.DEPOSIT && lastAction == PlanAction.DEPOSIT) {
                 continue;
             }
             lastAction = action.action();
@@ -175,14 +227,16 @@ public class PlanGenerator {
         }
 
         if (result.isEmpty()) {
-            return List.of(new PlanStep("withdraw", itemCode, quantity, "It was all in the bank so we can just withdraw"));
+            return List.of(new PlanStep(PlanAction.WITHDRAW, itemCode, quantity,
+                    "It was all in the bank so we can just withdraw"));
         } else {
             return postProcessed;
         }
     }
+
     public static void main(String[] args) {
         Bank.getInstance().refreshBankItems();
-        List<PlanStep> executable = generatePlan(null, "fire_staff", 5, 120);
+        List<PlanStep> executable = generatePlan("copper", 18, 120);
         executable.forEach(System.out::println);
     }
 

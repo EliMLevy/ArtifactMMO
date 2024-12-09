@@ -1,0 +1,7 @@
+1. implement the fight simulator
+2. Filter out items in the GearCraftingFilter that we cants beat yet
+
+1. Keep making the crafting manager more robust
+- Characters should train a skill if they cant harvest a resource yet
+- Characters should complete tasks to get jasper crystals
+- 

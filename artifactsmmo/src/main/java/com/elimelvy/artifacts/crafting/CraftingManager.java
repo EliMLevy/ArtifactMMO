@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.elimelvy.artifacts.PlanGenerator;
+import com.elimelvy.artifacts.Character;
+import com.elimelvy.artifacts.PlanGenerator.PlanAction;
 import com.elimelvy.artifacts.PlanGenerator.PlanStep;
-import com.elimelvy.artifacts.model.Character;
 import com.elimelvy.artifacts.model.OwnershipQuantity;
 import com.elimelvy.artifacts.model.map.MapManager;
 import com.elimelvy.artifacts.model.map.Monster;
@@ -123,12 +123,17 @@ public class CraftingManager {
             if(MapManager.getInstance().isMonsterDrop(resourceWithFewestCollectors)) {
                 List<Monster> monsters = MapManager.getInstance().getMonster(resourceWithFewestCollectors);
                 if(!monsters.isEmpty()) {
-                    character.setTask(new PlanStep("attack", monsters.get(0).getContentCode(), 0, "Crafting manager assignment"));
+                    character.setTask(new PlanStep(PlanAction.ATTACK, monsters.get(0).getContentCode(), 0, "Crafting manager assignment"));
                 } else {
                     logger.warn("Map manager returned no instances for {}", resourceWithFewestCollectors);
                 }
             } else {
-                character.setTask(new PlanStep("collect", resourceWithFewestCollectors, 0, "Crafting manager assignment"));
+                // If this resource is jasper, assign character to complete tasks
+                if(resourceWithFewestCollectors.equals("jasper_crystal")) {
+                    character.setTask(new PlanStep(PlanAction.TASKS, "items", 0, "Crafting manager assignment"));
+                } else {
+                    character.setTask(new PlanStep(PlanAction.COLLECT, resourceWithFewestCollectors, this.itemsNeeded.get(resourceWithFewestCollectors), "Crafting manager assignment"));
+                }
             }
         } else {
             logger.error("Expected there to be unfinished resources but found none!\n{}\n{}", ingredientProgress, workAssignments);

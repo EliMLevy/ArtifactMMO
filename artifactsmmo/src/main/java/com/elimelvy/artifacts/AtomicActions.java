@@ -214,4 +214,8 @@ public class AtomicActions {
         body.addProperty("quantity", quantity);
         return HTTPRequester.sendCharacterRequest(character, "/action/task/trade", "POST", body);
     }
+
+    public static JsonObject exchangeCoinsWithTaskMaster(String character) {
+        return HTTPRequester.sendCharacterRequest(character, "/action/task/exchange", "POST", null);
+    }
 }

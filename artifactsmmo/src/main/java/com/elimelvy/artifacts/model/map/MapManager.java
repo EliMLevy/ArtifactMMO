@@ -81,14 +81,15 @@ public class MapManager {
                         Integer.parseInt(values[3]), // y
                         Integer.parseInt(values[4]), // drop_chance
                         values[5], // map_code
-                        Integer.parseInt(values[6]), // attack_fire
-                        Integer.parseInt(values[7]), // attack_earth
-                        Integer.parseInt(values[8]), // attack_water
-                        Integer.parseInt(values[9]), // attack_air
-                        Integer.parseInt(values[10]), // res_fire
-                        Integer.parseInt(values[11]), // res_earth
-                        Integer.parseInt(values[12]), // res_water
-                        Integer.parseInt(values[13]) // res_air
+                        Integer.parseInt(values[6]), // hp
+                        Integer.parseInt(values[7]), // attack_fire
+                        Integer.parseInt(values[8]), // attack_earth
+                        Integer.parseInt(values[9]), // attack_water
+                        Integer.parseInt(values[10]), // attack_air
+                        Integer.parseInt(values[11]), // res_fire
+                        Integer.parseInt(values[12]), // res_earth
+                        Integer.parseInt(values[13]), // res_water
+                        Integer.parseInt(values[14]) // res_air
                 );
 
                 monsters.add(monster);
@@ -148,5 +149,13 @@ public class MapManager {
 
     public List<Monster> getByMonsterCode(String monsterCode) {
         return this.monsters.stream().filter(elem -> elem.getContentCode().equals(monsterCode)).toList();
+    }
+
+    public List<Resource> getMapsBySkill(String skill) {
+        return this.resources.stream().filter(elem -> elem.getSkill().equals(skill)).toList();
+    }
+
+    public List<Monster> getMonstersByLevel(int min, int max) {
+        return this.monsters.stream().filter(elem -> elem.getLevel() >= min && elem.getLevel() <= max).toList();
     }
 }

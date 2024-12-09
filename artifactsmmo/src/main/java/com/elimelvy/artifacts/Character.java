@@ -1,19 +1,22 @@
-package com.elimelvy.artifacts.model;
+package com.elimelvy.artifacts;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.elimelvy.artifacts.AtomicActions;
-import com.elimelvy.artifacts.Bank;
-import com.elimelvy.artifacts.GearManager;
+import com.elimelvy.artifacts.PlanGenerator.PlanAction;
 import com.elimelvy.artifacts.PlanGenerator.PlanStep;
+import com.elimelvy.artifacts.model.CharacterData;
+import com.elimelvy.artifacts.model.CharacterStatSimulator;
+import com.elimelvy.artifacts.model.InventoryItem;
 import com.elimelvy.artifacts.model.item.GameItem;
 import com.elimelvy.artifacts.model.item.GameItemManager;
 import com.elimelvy.artifacts.model.item.RecipeIngredient;
@@ -30,13 +33,15 @@ public class Character implements Runnable {
 
     private final Logger logger;
     private CharacterData data;
-    private volatile PlanStep currentTask = new PlanStep("idle", "", 0, "Idle around");
+    private volatile PlanStep currentTask = new PlanStep(PlanAction.IDLE, "", 0, "Initial Idling");
     private final double INVENTORY_FULL_THRESHOLD = 0.9;
 
     private final BlockingQueue<PlanStep> pendingTasks = new LinkedBlockingQueue<>();
 
     private final ReentrantLock lock = new ReentrantLock();
     private volatile CountDownLatch depositLatch;
+
+    private final AtomicBoolean interuptLongAction = new AtomicBoolean(false);
 
     public Character(CharacterData data) {
         this.data = data;
@@ -65,6 +70,10 @@ public class Character implements Runnable {
         return this.data.inventoryMaxItems;
     }
 
+    public int getMaxHp() {
+        return this.data.maxHp;
+    }
+
     // Method to parse JSON directly
     public static Character fromJson(JsonObject jsonObject) {
         Gson gson = InstantTypeAdapter.createGsonWithInstant();
@@ -84,10 +93,10 @@ public class Character implements Runnable {
     public int getInventoryQuantity(String code) {
         GameItem item = GameItemManager.getInstance().getItem(code);
         int equippedQuantity = 0;
-        if(GearManager.allGearTypes.contains(item.type())) {
+        if (GearManager.allGearTypes.contains(item.type())) {
             // TODO make this work for utilities too
-            if(!item.type().equals("ring")) {
-                if(code.equals(this.getGearInSlot(item.type() + "_slot"))) {
+            if (!item.type().equals("ring")) {
+                if (code.equals(this.getGearInSlot(item.type() + "_slot"))) {
                     equippedQuantity += 1;
                 }
             } else {
@@ -100,29 +109,44 @@ public class Character implements Runnable {
             }
         }
 
+        return equippedQuantity + this.getInventoryQuantityWithoutEquipped(code);
+    }
 
+    public int getInventoryQuantityWithoutEquipped(String code) {
         for (InventoryItem i : this.data.inventory) {
             if (code.equals(i.getCode())) {
-                return equippedQuantity + i.getQuantity();
+                return i.getQuantity();
             }
         }
-        return equippedQuantity;
+        return 0;
+
     }
 
     public void collectResource(String code) {
         // Get resource map
         List<Resource> maps = MapManager.getInstance().getResouce(code);
         if (maps == null || maps.isEmpty()) {
-            this.logger.info("Invalid resource code: {}", code);
+            this.logger.warn("Invalid resource code: {}", code);
             return;
         }
-        // TODO choose the correct one
         Resource target = this.getClosestMap(maps);
         // Equip the correct tool if we havent already
         switch (target.getSkill()) {
             case "mining" -> this.equipGear("weapon_slot", "iron_pickaxe");
             case "woodcutting" -> this.equipGear("weapon_slot", "iron_axe");
         }
+        // If we dont have the required level, train this skill
+        if(target.getSkill().equals("woodcutting") && target.getLevel() > this.data.woodcuttingLevel) {
+            this.train("woodcutting");
+            return;
+        } else if(target.getSkill().equals("mining") && target.getLevel() > this.data.miningLevel) {
+            this.train("mining");
+            return;
+        } else if (target.getSkill().equals("fishing") && target.getLevel() > this.data.fishingLevel) {
+            this.train("fishing");
+            return;
+        }
+
         // Move to the right spot if we arent there already
         this.moveToMap(target.getMapCode());
 
@@ -135,7 +159,7 @@ public class Character implements Runnable {
         // Get resource map
         List<Monster> maps = MapManager.getInstance().getByMonsterCode(code);
         if (maps == null || maps.isEmpty()) {
-            this.logger.info("Invalid monster code: {}", code);
+            this.logger.warn("Invalid monster code: {}", code);
             return;
         }
         // TODO choose the correct one
@@ -146,15 +170,18 @@ public class Character implements Runnable {
         this.equipGear("weapon_slot", selection);
         for (String gearType : GearManager.allNonWeaponTypes) {
             if (!gearType.equals("ring")) {
-                selection = GearManager.getBestAvailableGearAgainstMonster(this, gearType, code,
+                selection = GearManager.getBestAvailableGearAgainstMonster(this, this.getGearInSlot("weapon_slot"),
+                        gearType, code,
                         MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
                 this.equipGear(gearType + "_slot", selection);
             } else {
                 // There are two ring slots
-                selection = GearManager.getBestAvailableGearAgainstMonster(this, gearType + "1", code,
+                selection = GearManager.getBestAvailableGearAgainstMonster(this, this.getGearInSlot("weapon_slot"),
+                        gearType + "1", code,
                         MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
                 this.equipGear(gearType + "1_slot", selection);
-                selection = GearManager.getBestAvailableGearAgainstMonster(this, gearType + "2", code,
+                selection = GearManager.getBestAvailableGearAgainstMonster(this, this.getGearInSlot("weapon_slot"),
+                        gearType + "2", code,
                         MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
                 this.equipGear(gearType + "2_slot", selection);
             }
@@ -169,6 +196,8 @@ public class Character implements Runnable {
         // Deposit inventory if we need to deposit
         this.depositInventoryIfNecessary();
 
+        // Fill up on consumables if necessary
+
         // Attack
         this.logger.info("Attacking {}!", code);
         JsonObject result = AtomicActions.attack(this.data.name);
@@ -176,7 +205,29 @@ public class Character implements Runnable {
     }
 
     private void healIfNecessary() {
-        this.logger.info("HP: {}. Max: {}.", this.data.hp, this.data.maxHp);
+        // Attempt to use consumables first
+        // Find consumables in our inventory
+        List<GameItem> consumables = new LinkedList<>();
+        for (InventoryItem i : this.data.inventory) {
+            GameItem item = GameItemManager.getInstance().getItem(i.getCode());
+            if (item != null && item.type().equals("consumable")) {
+                consumables.add(item);
+            }
+        }
+        // Find the largest gain that doesnt go over our max hp
+        consumables.sort((a, b) -> {
+            return (int) (GearManager.getEffectValue(b, "heal") - GearManager.getEffectValue(a, "heal"));
+        });
+        for (GameItem food : consumables) {
+            // If the healing abilities is less than the amount we need, eat a bunch of it
+            double healAmount = GearManager.getEffectValue(food, "heal");
+            int eatAmount = (int)Math.floor((this.data.maxHp - this.data.hp) / healAmount);
+            if(eatAmount > 0) {
+                JsonObject result = AtomicActions.useItem(this.data.name, food.code(), eatAmount);
+                this.handleActionResult(result);
+            }
+        }
+
         if (this.data.hp / this.data.maxHp < 0.5) {
             JsonObject result = AtomicActions.rest(this.data.name);
             handleActionResult(result);
@@ -208,17 +259,22 @@ public class Character implements Runnable {
         }
     }
 
-    public void seDepositLatch(CountDownLatch latch) {
+    public void setDepositLatch(CountDownLatch latch) {
         this.depositLatch = latch;
     }
 
     private void handleActionResult(JsonObject result) {
+        if(result == null) {
+            logger.warn("Result that got passed in was null");
+            return;
+        }
         if (result.has("data")) {
             if (result.get("data").getAsJsonObject().has("character")) {
                 this.updateData(result.get("data").getAsJsonObject().get("character").getAsJsonObject());
             }
             if (result.get("data").getAsJsonObject().has("bank") && result.has("timestamp")) {
-                Bank.getInstance().updateBankContents(result.get("data").getAsJsonObject().get("bank"), result.get("timestamp").getAsLong());
+                Bank.getInstance().updateBankContents(result.get("data").getAsJsonObject().get("bank"),
+                        result.get("timestamp").getAsLong());
             }
         }
 
@@ -230,7 +286,7 @@ public class Character implements Runnable {
 
         // Get the GameItem
         GameItem item = GameItemManager.getInstance().getItem(code);
-        if(item == null) {
+        if (item == null) {
             logger.error("Request item not found {}", code);
             return;
         }
@@ -256,18 +312,170 @@ public class Character implements Runnable {
     }
 
     public void train(String type) {
-        // Type could be: mining, woodcutting, fishing, combat, or lowest
-        // TODO
+        if(type == null) {
+            this.logger.error("Cant train a null skill");
+            return;
+        }
+        if (type.equals("combat")) {
+            this.trainCombat();
+        } else if(type.equals("lowest")) {
+            type = "mining";
+            if(this.data.woodcuttingLevel < this.data.miningLevel && this.data.woodcuttingLevel < this.data.fishingLevel) {
+                type = "woodcutting";
+            } else if(this.data.fishingLevel < this.data.miningLevel && this.data.fishingLevel < this.data.woodcuttingLevel) {
+                type = "fishing";
+            }
+        }
+
+        List<Resource> maps = MapManager.getInstance().getMapsBySkill(type);
+        if(maps == null || maps.isEmpty()) {
+            this.logger.warn("Tried training a skill that doesnt have maps. {}", type);
+            return;
+        }
+
+        int level = switch (type) {
+            case "mining" -> this.data.miningLevel;
+            case "woodcutting" -> this.data.woodcuttingLevel;
+            case "fishing" -> this.data.fishingLevel;
+            default -> 0;
+        };
+
+        Resource highestUnlocked = null;
+        for (Resource r : maps) {
+            if(r.getLevel() <= level && (highestUnlocked == null || r.getLevel() > highestUnlocked.getLevel())) {
+                highestUnlocked = r;
+            }
+        }
+        if(highestUnlocked != null) {
+            this.logger.info("Training {} by collecting {}", type, highestUnlocked.getResourceCode());
+            this.collectResource(highestUnlocked.getResourceCode());
+        } else {
+            this.logger.error("Cant train {} becuase there are no places to train", type);
+        }
+    }
+
+    private void trainCombat() {
+        // Get all monsters up the current level (no more than 10 less than current)
+        // Sort in descending ordre of level
+        // Find the first one we can defeat and battle him
+        Monster target = this.getHighestMonsterDefeatable();
+        this.attackMonster(target.getMapCode());
+    }
+
+    public Monster getHighestMonsterDefeatable() {
+        List<Monster> monsters = MapManager.getInstance().getMonstersByLevel(this.getLevel() - 10, this.getLevel());
+        if(monsters == null || monsters.isEmpty()) {
+            logger.warn("Cant find any monsters on my level. level: {}", this.getLevel());
+            return null;
+        }
+        // Sort in descending ordre of level
+        monsters = new ArrayList<>(monsters); // Copy over list so that we can sort it. Otherwise unsupported operation
+        monsters.sort((a, b) -> b.getLevel() - a.getLevel());
+        // Find the first one we can defeat and battle him
+        for (Monster m : monsters) {
+            CharacterStatSimulator simulator = new CharacterStatSimulator(this);
+            simulator.optimizeForMonster(m.getContentCode(), MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
+            if(simulator.getPlayerWinsAgainstMonster(m.getContentCode())) {
+                return m;
+            } 
+        }
+        return null;
     }
 
     public void tasks(String type) {
         // Type could be: monsters or items
-        // TODO
+        // If we have no task, move to task spot and get new task
+        if (this.data.task == null || this.data.task.isEmpty()) {
+            this.logger.info("Getting new {} task", type);
+            this.moveToMap(type);
+            JsonObject result = AtomicActions.acceptNewTask(this.data.name);
+            this.handleActionResult(result);
+            return;
+        }
+        // If we are done with our tasks, move to task spot and complete tasks
+        if (this.data.taskProgress >= this.data.taskTotal) {
+            this.logger.info("Done with task {}", this.data.task);
+            this.moveToMap(this.data.taskType);
+            JsonObject result = AtomicActions.completeTask(this.data.name);
+            this.handleActionResult(result);
+            // If there is a bunch of task coins, withdraw them and exchange them
+            int taskCoins = Bank.getInstance().getBankQuantity("tasks_coin") + this.getInventoryQuantity("tasks_coin");
+            if(taskCoins > 30) {
+                withdrawFromBank("tasks_coin", Bank.getInstance().getBankQuantity("tasks_coin"));
+                while(this.getInventoryQuantity("tasks_coin") >= 6) {
+                    result = AtomicActions.exchangeCoinsWithTaskMaster(this.data.name);
+                    this.handleActionResult(result);
+                }
+            }
+            return;
+        }
+
+        // If inv full, deposit
+        this.depositInventoryIfNecessary();
+
+        // Do task
+        if (this.data.taskType.equals("items")) {
+            this.doItemTask();
+        } else {
+            this.attackMonster(this.data.task);
+        }
+    }
+
+    private void doItemTask() {
+
+        // Withdraw as much from the bank as I can and trade it
+        int withdrawAmount = Math.min(this.data.inventoryMaxItems, Bank.getInstance().getBankQuantity(this.data.task));
+        withdrawAmount = Math.min(withdrawAmount, this.data.taskTotal - this.data.taskProgress);
+        if (withdrawAmount > 0) {
+            this.logger.info("Trading {} {} for a task", withdrawAmount, this.data.task);
+            this.depositInventory();
+            this.withdrawFromBank(this.data.task, withdrawAmount);
+            this.moveToMap("items");
+            JsonObject result = AtomicActions.tradeWithTaskMaster(this.data.name, this.data.task, withdrawAmount);
+            this.handleActionResult(result);
+            return;
+        }
+
+        // If we have enough in my inventory to complete the task, complete it
+        if (this.getInventoryQuantity(this.data.task) >= this.data.taskTotal - this.data.taskProgress) {
+            this.moveToMap("items");
+            JsonObject result = AtomicActions.tradeWithTaskMaster(this.data.name, this.data.task,
+                    this.data.taskTotal - this.data.taskProgress);
+            this.handleActionResult(result);
+            return;
+        }
+
+        // Get gameItem
+        GameItem target = GameItemManager.getInstance().getItem(this.data.task);
+        if (target.recipe() != null && target.recipe().items() != null && !target.recipe().items().isEmpty()) {
+            // If it has a recipe, generate plan to get it
+            this.depositInventory();
+            List<PlanStep> plan = PlanGenerator.generatePlan(this.data.task,
+                    this.data.taskTotal - this.data.taskProgress, (int) (this.data.inventoryMaxItems * 0.9));
+            this.logger.info("Plan to gather {} {}: {}", this.data.taskTotal - this.data.taskProgress, target.code(),
+                    plan);
+            this.addTasksToQueue(plan);
+        } else {
+            // Otherwise, find where to collect it
+            List<Resource> resources = MapManager.getInstance().getResouce(this.data.task);
+            if (resources != null && !resources.isEmpty()) {
+                moveToMap(resources.get(0).getMapCode());
+                this.collectResource(this.data.task);
+            } else {
+                // Otherwise, log an error, go into idle
+                this.logger.error("Unable to collect {}", this.data.task);
+                this.setTask(new PlanStep(PlanAction.IDLE, "", 0, "Failed to complete task so moving into idle"));
+            }
+
+        }
+
     }
 
     /**
      * Equip gear in the specified slot.
-     * Unequips and deposits other gear if necessary. Withdraws the specified gear if necessary.
+     * Unequips and deposits other gear if necessary. Withdraws the specified gear
+     * if necessary.
+     * 
      * @param slot the name of the slot ex. weapon_slot
      * @param code item code
      */
@@ -287,7 +495,7 @@ public class Character implements Runnable {
         }
 
         // Withdraw item if necessary
-        if (this.getInventoryQuantity(code) == 0) {
+        if (this.getInventoryQuantityWithoutEquipped(code) == 0) {
             // Withdraw it from the bank
             this.logger.info("{} not found in inventory so I need to withdraw it", code);
             if (Bank.getInstance().getBankQuantity(code) > 0) {
@@ -298,7 +506,7 @@ public class Character implements Runnable {
             }
         }
         // If the withdrawal was successful or if we already had it, equip
-        if (this.getInventoryQuantity(code) > 0) {
+        if (this.getInventoryQuantityWithoutEquipped(code) > 0) {
             this.logger.info("Equipping {} into {}", code, slot);
             JsonObject result = AtomicActions.equip(this.data.name, code, slot.replace("_slot", ""));
             handleActionResult(result);
@@ -376,7 +584,7 @@ public class Character implements Runnable {
             }
             // TODO if we have an active cooldown, sleep
 
-            if(!task.action().equals("idle")) {
+            if (task.action() != PlanAction.IDLE) {
                 this.logger.info("Doing task: {}. {}", task.action(), task.description());
             }
 
@@ -386,32 +594,36 @@ public class Character implements Runnable {
                 this.doTask(this.currentTask);
             }
 
-
         }
     }
 
     public void doTask(PlanStep task) {
         switch (task.action()) {
-            case "idle" -> {
+            case IDLE -> {
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     logger.warn("I have been interupted while doing an idle sleep!");
                 }
             }
-            case "attack" -> this.attackMonster(task.code());
-            case "craft" -> this.craft(task.code(), task.quantity());
-            case "collect" -> this.collectResource(task.code());
-            case "train" -> this.train(task.code());
-            case "tasks" -> this.tasks(task.code());
-            case "deposit" -> this.depositInventory();
-            case "withdraw" -> this.withdrawFromBank(task.code(), task.quantity());
+            case ATTACK -> this.attackMonster(task.code());
+            case CRAFT -> this.craft(task.code(), task.quantity());
+            case COLLECT -> {
+                for (int i = 0; i < task.quantity() && !interuptLongAction.get(); i++) {
+                    this.collectResource(task.code());
+                }
+            }
+            case TRAIN -> this.train(task.code());
+            case TASKS -> this.tasks(task.code());
+            case DEPOSIT -> this.depositInventory();
+            case WITHDRAW -> {
+                this.withdrawFromBank(task.code(), task.quantity());
+            }
             default -> {
                 logger.error("Unknown task step: {}. Description: {}", task.action(), task.description());
             }
         }
     }
-
 
     public void setTask(PlanStep task) {
         this.lock.lock();
