@@ -1,4 +1,5 @@
 import json
+import time
 import pandas as pd
 import requests
 
@@ -59,7 +60,7 @@ def map_combination():
 
     # Combine maps
     all_maps = {}
-    unfiltered_maps = open(f"./maps/all_maps_TEST.json")
+    unfiltered_maps = open(f"./maps/all_maps.json")
     parsed = json.loads(unfiltered_maps.read())
     interesting_maps = [m for m in parsed if m["content"] != None]
     cleaned_maps = map(extract_map, interesting_maps)
@@ -101,38 +102,15 @@ def combine_maps_and_resources():
     print(skipped)
 
 
-def combine_items():
-    all_items = {}
-    for i in range(1, 8):
-        item_file = open(f"./items/Items_{i}.json")
-        items = json.loads(item_file.read())
-
-        for item in items["data"]:
-            all_items[item["code"]] = {
-                "code": item["code"],
-                "level": item["level"],
-                "type": item["type"],
-                "effects": item["effects"],
-            }
-            if item["craft"] != None:
-                all_items[item["code"]]["recipe"] = {
-                    "skill": item["craft"]["skill"],
-                    "level": item["craft"]["level"],
-                    "items": item["craft"]["items"],
-                }
-
-    output_file = open("./items/all_items.json", "w+")
-    output_file.write(json.dumps(all_items))
-
 def combine_maps_and_monsters():
-    monster_file = open("./monsters/monsters_1.json")
+    monster_file = open("./monsters/all_monsters.json")
     monsters = json.loads(monster_file.read())
 
     monster_df = pd.DataFrame(columns=["level","resource_code", "x", "y", "drop_chance", "map_code", "hp", "attack_fire","attack_earth","attack_water","attack_air","res_fire","res_earth","res_water","res_air"])
     maps_file = open("./maps/all_maps.json")
     maps = json.loads(maps_file.read())
     skipped = []
-    for monster in monsters["data"]:
+    for monster in monsters:
         # Find the locations of this resource in the maps
         if monster["code"] in maps:
             locations = maps[monster["code"]]
@@ -151,9 +129,9 @@ def combine_maps_and_monsters():
     print(skipped)
 
 
-def convert_json_to_csv(input_file, output_file):
+def convert_maps_from_json_to_csv():
     # Load the JSON data
-    with open(input_file, 'r') as f:
+    with open("./maps/all_maps.json", 'r') as f:
         data = json.load(f)
     
     # Prepare a list to store rows for the DataFrame
@@ -174,25 +152,21 @@ def convert_json_to_csv(input_file, output_file):
     df = pd.DataFrame(rows)
     
     # Write to CSV
-    df.to_csv(output_file, index=False)
+    df.to_csv("./all_maps.csv", index=False)
 
 
 def fetch_all_pages_and_save(url, output):
-
-    # url = "https://api.artifactsmmo.com/maps?size=100"
-
     payload = {}
     headers = {
         'Accept': 'application/json'
     }
-
     page = 1
     pages = 2
     all_results = []
     iters = 0
     while page <= pages and iters < 10:
+        print(url + "&page=" + str(page))
         print(f"page: {page}. Results so far: {len(all_results)}")
-        print( url + "&page=" + str(page))
         response = requests.request("GET", url + "&page=" + str(page), headers=headers, data=payload)
         data = response.json()
         page = data["page"] + 1
@@ -201,13 +175,21 @@ def fetch_all_pages_and_save(url, output):
         data_payload = data["data"]
         all_results.extend(data_payload)
         iters += 1
+        time.sleep(3)
 
     output_file = open(output, "w+")
     output_file.write(json.dumps(all_results))
 
 
+def load_maps_items_monsters():
+    fetch_all_pages_and_save("https://api.artifactsmmo.com/maps?size=100", './maps/all_maps.json')
+    fetch_all_pages_and_save("https://api.artifactsmmo.com/items?size=100", './items/all_items.json')
+    fetch_all_pages_and_save("https://api.artifactsmmo.com/monsters?size=100", './monsters/all_monsters.json')
+
 
 if __name__ == "__main__":
-    # fetch_all_pages_and_save("https://api.artifactsmmo.com/maps?size=100", './maps/all_maps_TEST.json')
-    # map_combination()
+    # load_maps_items_monsters()
+    convert_maps_from_json_to_csv()
+    map_combination()
     combine_maps_and_monsters()
+    combine_maps_and_resources()
