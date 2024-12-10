@@ -25,6 +25,10 @@ level,resource_code,x,y,drop_chance,map_code,hp,attack_fire,attack_earth,attack_
 10,mushroom,6,4,12,mushmush,350,16,0,16,0,20,20,0,-30
 10,forest_ring,5,3,100,mushmush,350,16,0,16,0,20,20,0,-30
 10,forest_ring,6,4,100,mushmush,350,16,0,16,0,20,20,0,-30
+10,frost_slimeball,-3,18,10,frost_slime,300,0,0,15,0,50,50,50,50
+10,frost_slimeball,-4,19,10,frost_slime,300,0,0,15,0,50,50,50,50
+10,gift,-3,18,300,frost_slime,300,0,0,15,0,50,50,50,50
+10,gift,-4,19,300,frost_slime,300,0,0,15,0,50,50,50,50
 12,flying_wing,5,4,12,flying_serpent,360,0,0,0,34,-20,0,-20,40
 12,flying_wing,7,4,12,flying_serpent,360,0,0,0,34,-20,0,-20,40
 12,serpent_skin,5,4,12,flying_serpent,360,0,0,0,34,-20,0,-20,40
@@ -37,6 +41,12 @@ level,resource_code,x,y,drop_chance,map_code,hp,attack_fire,attack_earth,attack_
 15,wolf_bone,-2,1,12,wolf,400,0,0,18,18,-10,-10,10,10
 15,wolf_hair,-3,0,12,wolf,400,0,0,18,18,-10,-10,10,10
 15,wolf_hair,-2,1,12,wolf,400,0,0,18,18,-10,-10,10,10
+15,gingerbread,9,17,5,gingerbread,400,0,0,0,40,20,20,-10,-20
+15,gingerbread,5,19,5,gingerbread,400,0,0,0,40,20,20,-10,-20
+15,gingerbread,7,19,5,gingerbread,400,0,0,0,40,20,20,-10,-20
+15,gift,9,17,150,gingerbread,400,0,0,0,40,20,20,-10,-20
+15,gift,5,19,150,gingerbread,400,0,0,0,40,20,20,-10,-20
+15,gift,7,19,150,gingerbread,400,0,0,0,40,20,20,-10,-20
 18,skeleton_bone,8,6,12,skeleton,480,26,18,0,0,30,0,-10,-10
 18,skeleton_bone,8,8,12,skeleton,480,26,18,0,0,30,0,-10,-10
 18,skeleton_skull,8,6,12,skeleton,480,26,18,0,0,30,0,-10,-10
@@ -62,6 +72,8 @@ level,resource_code,x,y,drop_chance,map_code,hp,attack_fire,attack_earth,attack_
 28,piece_of_obsidian,0,14,70,imp,1750,0,50,0,0,10,60,10,10
 30,owlbear_hair,10,1,12,owlbear,1100,0,0,80,0,0,-20,45,0
 30,owlbear_hair,10,2,12,owlbear,1100,0,0,80,0,0,-20,45,0
+30,demon_horn,-1,5,10,demon,999,90,0,0,0,20,0,-10,0
+30,piece_of_obsidian,-1,5,12,demon,999,90,0,0,0,20,0,-10,0
 30,life_crystal,9,7,2000,lich,1450,60,60,0,0,24,24,18,18
 30,lich_crown,9,7,600,lich,1450,60,60,0,0,24,24,18,18
 33,magic_stone,1,13,12,cultist_acolyte,1500,0,65,0,65,-10,10,-10,40
@@ -86,3 +98,5 @@ level,resource_code,x,y,drop_chance,map_code,hp,attack_fire,attack_earth,attack_
 40,raw_hellhound_meat,1,14,5,hellhound,3750,90,50,0,0,-20,10,-20,10
 40,hellhound_bone,-1,13,12,hellhound,3750,90,50,0,0,-20,10,-20,10
 40,hellhound_bone,1,14,12,hellhound,3750,90,50,0,0,-20,10,-20,10
+40,krampus_horn,6,18,10,krampus,2000,0,75,75,0,0,-20,-30,0
+40,gift,6,18,70,krampus,2000,0,75,75,0,0,-20,-30,0

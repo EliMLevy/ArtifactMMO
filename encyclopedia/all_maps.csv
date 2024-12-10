@@ -47,6 +47,7 @@ x,y,content_type,content_code
 6,4,monster,mushmush
 5,4,monster,flying_serpent
 7,4,monster,flying_serpent
+-1,5,monster,demon
 1,5,workshop,mining
 3,5,resource,birch_tree
 -1,6,resource,birch_tree
@@ -79,3 +80,10 @@ x,y,content_type,content_code
 -1,14,monster,cultist_acolyte
 4,13,tasks_master,items
 7,14,resource,nettle
+9,17,monster,gingerbread
+5,19,monster,gingerbread
+7,19,monster,gingerbread
+-3,18,monster,frost_slime
+-4,19,monster,frost_slime
+6,18,monster,krampus
+1,19,santa_claus,santa_claus
