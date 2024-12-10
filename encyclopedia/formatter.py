@@ -3,52 +3,6 @@ import time
 import pandas as pd
 import requests
 
-
-# Resources table
-# resource code, x, y, drop, drop_chance, map_name
-
-'''
-# Items dictionary
-{
-    item code: {
-        level: number,
-        craft: {
-            skill: string,
-            level: number,
-            items: [
-                {
-                    code: string,
-                    quantity: number
-                }
-            ]
-        }
-    }
-}
-
-# Workshop table
-code, x, y
-
-'''
-
-
-'''
-Scenario:
-Make an iron sword
-- Look up iron sword in items dictionary
-- Check the character level required.
-- TODO - figure out what to do if we arent leveled up enough
-- Check the crafting skill needed. 
-- TODO - WIP: If we arent leveled up enough in weaponcrafting, find an item that ...
-- For each item in the crafting recipe
-    - Look up that item in the items dictionary
-    - If it needs to be crafted -> recursion
-    - If it isnt crafted, look it up in the resources table
-        - Sort the results by drop chance and then by closest distance
-        - Collect that many of that item
-- If all ingrediants are satisfied, go to workshop based on skill
-
-'''
-
 # Convert all_maps.json -> all_interesting_maps.json
 def map_combination():
     def extract_map(input):
@@ -62,6 +16,7 @@ def map_combination():
     all_maps = {}
     unfiltered_maps = open(f"./maps/all_maps.json")
     parsed = json.loads(unfiltered_maps.read())
+    unfiltered_maps.close()
     interesting_maps = [m for m in parsed if m["content"] != None]
     cleaned_maps = map(extract_map, interesting_maps)
     for m in cleaned_maps:
@@ -73,6 +28,7 @@ def map_combination():
 
     output = open(f"./maps/all_interesting_maps.json", "w+")
     output.write(json.dumps(all_maps))
+    output.close()
 
 
 # all_resources.json + all_interesting_maps.json -> resources.csv
@@ -80,10 +36,12 @@ def combine_maps_and_resources():
     resource_df = pd.DataFrame(columns=["resource_code", "x", "y", "drop_chance", "map_code", "level", "skill"])
     resources_file = open("./resources/all_resources.json", "r")
     resources = json.loads(resources_file.read()) 
+    resources_file.close()
 
 
     maps_file = open("./maps/all_interesting_maps.json")
     maps = json.loads(maps_file.read())
+    maps_file.close()
 
     skipped = []
     for resource in resources:
@@ -105,10 +63,12 @@ def combine_maps_and_resources():
 def combine_maps_and_monsters():
     monster_file = open("./monsters/all_monsters.json")
     monsters = json.loads(monster_file.read())
+    monster_file.close()
 
     monster_df = pd.DataFrame(columns=["level","resource_code", "x", "y", "drop_chance", "map_code", "hp", "attack_fire","attack_earth","attack_water","attack_air","res_fire","res_earth","res_water","res_air"])
     maps_file = open("./maps/all_interesting_maps.json")
     maps = json.loads(maps_file.read())
+    maps_file.close()
     skipped = []
     for monster in monsters:
         # Find the locations of this resource in the maps
@@ -180,6 +140,8 @@ def fetch_all_pages_and_save(url, output):
 
     output_file = open(output, "w+")
     output_file.write(json.dumps(all_results))
+    output_file.close()
+
 
 
 def load_maps_items_monsters_resources():
@@ -189,9 +151,23 @@ def load_maps_items_monsters_resources():
     fetch_all_pages_and_save("https://api.artifactsmmo.com/resources?size=100", './resources/all_resources.json')
 
 
+def convert_items_to_dict():
+    data_file = open("./items/all_items.json")
+    data = json.loads(data_file.read())
+    data_file.close()
+
+    output = {}
+    for item in data:
+        output[item["code"]] = item
+
+    output_file = open("./all_items.json", "w+")
+    output_file.write(json.dumps(output))
+    output_file.close()
+
 if __name__ == "__main__":
-    load_maps_items_monsters_resources()
-    map_combination()
-    convert_maps_from_json_to_csv()
-    combine_maps_and_monsters()
-    combine_maps_and_resources()
+    # load_maps_items_monsters_resources()
+    # map_combination()
+    # convert_maps_from_json_to_csv()
+    # combine_maps_and_monsters()
+    # combine_maps_and_resources()
+    convert_items_to_dict()
