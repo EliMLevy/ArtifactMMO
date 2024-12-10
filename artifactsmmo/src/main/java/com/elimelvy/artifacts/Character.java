@@ -309,8 +309,8 @@ public class Character implements Runnable {
             return;
         }
         // Ensure that I have all ingredients in my bank
-        if (item.recipe() != null) {
-            for (RecipeIngredient ingredient : item.recipe().items()) {
+        if (item.craft() != null) {
+            for (RecipeIngredient ingredient : item.craft().items()) {
                 if (ingredient.quantity() > this.getInventoryQuantity(ingredient.code())) {
                     logger.error("I am missing the necessary x{} of {}. I only have x{}", ingredient.quantity(),
                             ingredient.code(), this.getInventoryQuantity(ingredient.code()));
@@ -322,7 +322,7 @@ public class Character implements Runnable {
             return;
         }
         // Move to the correct workshop
-        String skill = item.recipe().skill();
+        String skill = item.craft().skill();
         this.moveToMap(skill);
         // Call atomicactions.craft
         JsonObject result = AtomicActions.craft(this.data.name, code, quantity);
@@ -469,7 +469,7 @@ public class Character implements Runnable {
 
         // Get gameItem
         GameItem target = GameItemManager.getInstance().getItem(this.data.task);
-        if (target.recipe() != null && target.recipe().items() != null && !target.recipe().items().isEmpty()) {
+        if (target.craft() != null && target.craft().items() != null && !target.craft().items().isEmpty()) {
             // If it has a recipe, generate plan to get it
             this.depositInventory();
             List<PlanStep> plan = PlanGenerator.generatePlan(this.data.task,
@@ -605,7 +605,6 @@ public class Character implements Runnable {
             } finally {
                 this.lock.unlock();
             }
-            // TODO if we have an active cooldown, sleep
             if(this.data.cooldown > 0 && Instant.now().isBefore(this.data.cooldownExpiration)) {
                 try {
                     Duration d = Duration.between(this.data.cooldownExpiration, Instant.now()).abs();
@@ -642,8 +641,12 @@ public class Character implements Runnable {
             case ATTACK -> this.attackMonster(task.code());
             case CRAFT -> this.craft(task.code(), task.quantity());
             case COLLECT -> {
-                for (int i = 0; i < task.quantity() && !interuptLongAction.get(); i++) {
+                for (int i = 0; i < task.quantity(); i++) {
                     this.collectResource(task.code());
+                    if(interuptLongAction.get()) {
+                        this.interuptLongAction.set(false);
+                        break;
+                    }
                 }
             }
             case TRAIN -> this.train(task.code());
@@ -674,5 +677,9 @@ public class Character implements Runnable {
 
     public void addTasksToQueue(List<PlanStep> tasks) {
         this.pendingTasks.addAll(tasks);
+    }
+
+    public void setInteruptLongAction() {
+        this.interuptLongAction.set(true);
     }
 }

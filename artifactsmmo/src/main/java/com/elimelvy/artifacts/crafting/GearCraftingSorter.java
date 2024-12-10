@@ -13,8 +13,8 @@ public class GearCraftingSorter implements Comparator<GameItem> {
     @Override
     public int compare(GameItem a, GameItem b) {
         // Check the recipes for the highest level monster drop
-        int aMonsterLevel = getHighestLevelMonsterIngredient(a.recipe().items());
-        int bMonsterLevel = getHighestLevelMonsterIngredient(b.recipe().items());
+        int aMonsterLevel = getHighestLevelMonsterIngredient(a.craft().items());
+        int bMonsterLevel = getHighestLevelMonsterIngredient(b.craft().items());
         if (aMonsterLevel != bMonsterLevel) {
             return aMonsterLevel - bMonsterLevel;
         } else if (a.level() != b.level()) {

@@ -80,7 +80,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
         // Update the unlocked Gear set
         // 1. get a list of all unlocked gear.
         Set<GameItem> newGear = GearManager.getGearUpToLevel(characters.get(weaponCrafter).getLevel(),
-                List.of("weapon"));
+                GearManager.allGearTypes);
         // 2. for each item check it if is in the set and not crafted
         // 3. if not, add it
         for (GameItem g : newGear) {
@@ -99,7 +99,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
         logger.info("Gear that needs crafting: {}",
                 sortedItems.stream()
                         .map(item -> String.format("Item: %s. Level: %d. Monster: %d", item.code(), item.level(),
-                                GearCraftingSorter.getHighestLevelMonsterIngredient(item.recipe().items())))
+                                GearCraftingSorter.getHighestLevelMonsterIngredient(item.craft().items())))
                         .collect(Collectors.toList()));
         if (!sortedItems.isEmpty()) {
             this.currentlyCrafting = sortedItems.get(0).code();
@@ -145,6 +145,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
             for (Character c : this.characters.values()) {
                 c.setDepositLatch(latch);
                 c.addTaskToQueue(new PlanStep(PlanAction.DEPOSIT, "", 0, "Deposit all items"));
+                c.setInteruptLongAction();
             }
 
             // Wait until everyone has deposited
@@ -196,6 +197,22 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
     public void standbyMode() throws InterruptedException {
         this.logger.info("Entering standby mode");
         this.threads.get(0).join();
+    }
+
+
+    public void trainCrafting() {
+        // TODO implement this
+        // We need a way to determine the cheapest Item and then craft all of that
+        // The cheapest item:
+        // - Doesnt use jasper crystals
+        // - has monster drops from the easiest monsters
+        // - Is at the highest level possible
+        // - uses the fewest ingredients
+
+        // Filter out ineligible items:
+        // - items with jasper crystals
+        // - items with monster drops of monsters we cant defeat
+        // - 
     }
 
     @Override

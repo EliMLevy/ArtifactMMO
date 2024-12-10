@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.elimelvy.artifacts.PlanGenerator.PlanAction;
 import com.elimelvy.artifacts.model.InventoryItem;
 import com.elimelvy.artifacts.model.item.GameItem;
 import com.elimelvy.artifacts.model.item.GameItemManager;
@@ -78,10 +77,10 @@ public class PlanGenerator {
             }
 
             if (this.quantityNeeded > 0) {
-                if (this.item.recipe() != null) {
+                if (this.item.craft() != null) {
                     logger.debug("Creating dependcies for {}", this.item.code());
                     int sumOfIngredients = 0;
-                    List<RecipeIngredient> ingredients = this.item.recipe().items();
+                    List<RecipeIngredient> ingredients = this.item.craft().items();
                     for (RecipeIngredient ingredient : ingredients) {
                         Plan newPlan = new Plan(
                                 ingredient.code(),
@@ -130,13 +129,13 @@ public class PlanGenerator {
         }
 
         private void splitStep() {
-            if (this.item.recipe() == null) {
+            if (this.item.craft() == null) {
                 return;
             }
 
             logger.debug("Splitting {}", this.item.code());
 
-            List<RecipeIngredient> ingredients = this.item.recipe().items();
+            List<RecipeIngredient> ingredients = this.item.craft().items();
 
             int totalItemsPerCraft = ingredients.stream()
                     .mapToInt(ingredient -> ingredient.quantity())

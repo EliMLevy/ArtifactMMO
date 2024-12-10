@@ -42,7 +42,7 @@ public class GearManager {
 
     public static Map<String, Integer> getInredientsForGear(String code, int quantity) {
         GameItem target = GameItemManager.getInstance().getItem(code);
-        if (target.recipe() != null) {
+        if (target.craft() != null) {
             return ingredientCollector(target, new HashMap<>(), quantity);
         } else {
             return Map.of(code, quantity);
@@ -57,14 +57,14 @@ public class GearManager {
         }
 
         // Check if the item has a recipe
-        if (item.recipe() != null) {
-            List<RecipeIngredient> recipeIngredients = item.recipe().items();
+        if (item.craft() != null) {
+            List<RecipeIngredient> recipeIngredients = item.craft().items();
 
             for (RecipeIngredient ingredient : recipeIngredients) {
                 // Find the ingredient info
                 GameItem ingredientInfo = GameItemManager.getInstance().getItem(ingredient.code());
 
-                if (ingredientInfo != null && ingredientInfo.recipe() != null) {
+                if (ingredientInfo != null && ingredientInfo.craft() != null) {
                     // Recursive call if the ingredient has a recipe
                     ingredientCollector(ingredientInfo, ingredients, multiplier * ingredient.quantity());
                 } else {

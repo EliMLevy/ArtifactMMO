@@ -27,7 +27,7 @@ public class App {
         boolean finished = false;
         while(!finished) {
             finished = mgr.runCraftingManager();
-            Thread.sleep(5000);
+            Thread.sleep(60 * 1000); // Check in every minute
         }
     
         mgr.standbyMode();

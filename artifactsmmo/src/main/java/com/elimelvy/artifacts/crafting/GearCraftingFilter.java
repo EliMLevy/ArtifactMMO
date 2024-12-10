@@ -27,7 +27,7 @@ public class GearCraftingFilter implements Predicate<GameItem> {
         if (itemsToIgnore.contains(item.code())) {
             return false;
         }
-        if (item.recipe() == null) {
+        if (item.craft() == null) {
             return false;
         }
         // Get the ingredients of this item.
