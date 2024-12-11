@@ -46,7 +46,7 @@ public class CharacterCombatService {
             this.logger.info("I can defeat {} with this loadout {}", target.getMapCode(), simulator.getLoadout());
         }
         // Equip the correct gear if we havent already
-        gearService.equipGearForBattle(code, inventoryService, movementService);
+        gearService.equipGearForBattle(code, inventoryService, movementService, this);
 
         // Deposit inventory if we need to deposit
         inventoryService.depositAllItemsIfNecessary(movementService);
@@ -58,7 +58,7 @@ public class CharacterCombatService {
         movementService.moveToMap(target.getMapCode());
 
         // Rest if we need to rest
-        character.healIfNecessary();
+        healIfNecessary(inventoryService, gearService);
 
         // Attack
         this.logger.info("Attacking {}!", code);
@@ -93,6 +93,17 @@ public class CharacterCombatService {
             } 
         }
         return null;
+    }
+
+    public void healIfNecessary(CharacterInventoryService inventoryService, CharacterGearService gearService) {
+        // Attempt to use consumables first
+        // Find consumables in our inventory
+        inventoryService.useConsumablesForHealing(gearService);
+
+        if (character.getData().hp / character.getData().maxHp < 0.5) {
+            JsonObject result = AtomicActions.rest(character.getName());
+            character.handleActionResult(result);
+        }
     }
 
 }

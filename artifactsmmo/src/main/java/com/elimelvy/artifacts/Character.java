@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
@@ -38,14 +37,11 @@ public class Character implements Runnable {
 
     private final ReentrantLock lock = new ReentrantLock();
 
-    private final AtomicBoolean interuptLongAction = new AtomicBoolean(false);
-
     public final CharacterInventoryService inventoryService;
     public final CharacterMovementService movementService;
     public final CharacterGearService gearService;
     public final CharacterCombatService combatService;
     public final CharacterTaskService taskService;
-
 
     public Character(CharacterData data) {
         this.data = data;
@@ -113,14 +109,14 @@ public class Character implements Runnable {
         Resource target = movementService.getClosestMap(maps);
         // Equip the correct tool if we havent already
         switch (target.getSkill()) {
-            case "mining" -> gearService.equipGear("weapon_slot", "iron_pickaxe", inventoryService, movementService);
-            case "woodcutting" -> gearService.equipGear("weapon_slot", "iron_axe", inventoryService, movementService);
+            case "mining" -> gearService.equipGear("weapon_slot", "iron_pickaxe", inventoryService, movementService, combatService);
+            case "woodcutting" -> gearService.equipGear("weapon_slot", "iron_axe", inventoryService, movementService, combatService);
         }
         // If we dont have the required level, train this skill
-        if(target.getSkill().equals("woodcutting") && target.getLevel() > this.data.woodcuttingLevel) {
+        if (target.getSkill().equals("woodcutting") && target.getLevel() > this.data.woodcuttingLevel) {
             this.train("woodcutting");
             return;
-        } else if(target.getSkill().equals("mining") && target.getLevel() > this.data.miningLevel) {
+        } else if (target.getSkill().equals("mining") && target.getLevel() > this.data.miningLevel) {
             this.train("mining");
             return;
         } else if (target.getSkill().equals("fishing") && target.getLevel() > this.data.fishingLevel) {
@@ -152,7 +148,7 @@ public class Character implements Runnable {
         JsonObject result = AtomicActions.craft(this.data.name, code, quantity);
         this.handleActionResult(result);
     }
-    
+
     public void train(String type) {
         if (type == null) {
             this.logger.error("Cant train a null skill");
@@ -199,19 +195,8 @@ public class Character implements Runnable {
         }
     }
 
-    public void healIfNecessary() {
-        // Attempt to use consumables first
-        // Find consumables in our inventory
-        inventoryService.useConsumablesForHealing(gearService);
-
-        if (this.data.hp / this.data.maxHp < 0.5) {
-            JsonObject result = AtomicActions.rest(this.data.name);
-            handleActionResult(result);
-        }
-    }
-
     public void handleActionResult(JsonObject result) {
-        if(result == null) {
+        if (result == null) {
             logger.warn("Result that got passed in was null");
             return;
         }
@@ -228,12 +213,10 @@ public class Character implements Runnable {
         HTTPRequester.handleResultCooldown(result);
     }
 
-    
-    
     @Override
     public void run() {
         while (true) {
-            if(this.data.cooldown > 0 && Instant.now().isBefore(this.data.cooldownExpiration)) {
+            if (this.data.cooldown > 0 && Instant.now().isBefore(this.data.cooldownExpiration)) {
                 try {
                     Duration d = Duration.between(this.data.cooldownExpiration, Instant.now()).abs();
                     this.logger.info("Sleeping off cooldown {} sec", d.toSeconds());
@@ -244,7 +227,6 @@ public class Character implements Runnable {
                 }
             }
 
-            
             if (this.pendingTasks.peek() != null) {
                 PlanStep step = this.pendingTasks.poll();
                 this.logger.info("Removing task from queue: {} {}. {}", step.action, step.code, step.description);
@@ -272,15 +254,7 @@ public class Character implements Runnable {
             }
             case ATTACK -> combatService.attackMonster(task.code, movementService, gearService, inventoryService);
             case CRAFT -> this.craft(task.code, task.quantity);
-            case COLLECT -> {
-                for (int i = 0; i < task.quantity; i++) {
-                    this.collectResource(task.code);
-                    if(interuptLongAction.get()) {
-                        this.interuptLongAction.set(false);
-                        break;
-                    }
-                }
-            }
+            case COLLECT -> this.collectResource(task.code);
             case TRAIN -> this.train(task.code);
             case TASKS -> taskService.tasks(task.code, movementService, inventoryService, gearService, combatService);
             case DEPOSIT -> inventoryService.depositAllItems(movementService);
@@ -309,9 +283,5 @@ public class Character implements Runnable {
 
     public void addTasksToQueue(List<PlanStep> tasks) {
         this.pendingTasks.addAll(tasks);
-    }
-
-    public void setInteruptLongAction() {
-        this.interuptLongAction.set(true);
     }
 }

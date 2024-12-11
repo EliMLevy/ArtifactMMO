@@ -148,7 +148,6 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
         PlanStep depositStep = new PlanStep(PlanAction.DEPOSIT, "", 0, "Deposit all items");
         for (Character c : this.characters.values()) {
             c.addTaskToQueue(depositStep);
-            c.setInteruptLongAction();
         }
         this.logger.info("Everyone has been asked to deposit. Waiting for synchronization...");
         try {
@@ -224,5 +223,13 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
                 }
             }
         }
+    }
+
+    public Character getJewelryCrafter() {
+        return this.characters.get(this.jewelryCrafter);
+    }
+
+    public Character getGearCrafter() {
+        return this.characters.get(this.armorCrafter);
     }
 }

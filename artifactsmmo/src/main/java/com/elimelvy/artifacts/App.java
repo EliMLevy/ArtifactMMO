@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import com.elimelvy.artifacts.PlanGenerator.PlanAction;
 import com.elimelvy.artifacts.model.PlanStep;
@@ -18,7 +19,8 @@ public class App {
         Bank.getInstance().refreshBankItems();
         mgr.loadCharacters();
         mgr.runCharacters();
-        runCraftingManagerInLoop(mgr);
+        runCraftingManagerInLoop(mgr, "skeleton_armor", (innerMgr) -> innerMgr.getGearCrafter().getData().gearcraftingLevel <= 25);
+        runCraftingManagerInLoop(mgr, "dreadful_amulet", (innerMgr) -> innerMgr.getJewelryCrafter().getData().jewelrycraftingLevel <= 25);
 
     }
 
@@ -31,9 +33,9 @@ public class App {
         mgr.finishCraftingManager();
     }
     
-    public static void runCraftingManagerInLoop(CharacterManager mgr) throws Exception {
-        while (true) { 
-            doCompleteCrafting("dreadful_amulet",5, mgr);
+    public static void runCraftingManagerInLoop(CharacterManager mgr, String item, Predicate<CharacterManager> until) throws Exception {
+        while (until.test(mgr)) { 
+            doCompleteCrafting(item ,5, mgr);
         }
     }
 

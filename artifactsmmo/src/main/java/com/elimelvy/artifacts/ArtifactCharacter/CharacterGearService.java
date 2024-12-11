@@ -46,7 +46,7 @@ public class CharacterGearService {
      * @param code item code
      */
     public void equipGear(String slot, String code, CharacterInventoryService inventoryService,
-            CharacterMovementService movementService) {
+            CharacterMovementService movementService, CharacterCombatService combatService) {
         // Check if it is already equipped
         if (getGearInSlot(slot) != null && getGearInSlot(slot).equals(code)) {
             return;
@@ -57,7 +57,7 @@ public class CharacterGearService {
         // Unequip if necessary
         if (getGearInSlot(slot) != null && !getGearInSlot(slot).isEmpty()) {
             this.logger.info("To equip {} we need to unequip {}", code, this.getGearInSlot(slot));
-            character.healIfNecessary();
+            combatService.healIfNecessary(inventoryService, this);
             JsonObject result = AtomicActions.unequip(this.character.getName(), slot.replace("_slot", ""));
             character.handleActionResult(result);
         }
@@ -84,26 +84,26 @@ public class CharacterGearService {
     }
 
     public void equipGearForBattle(String monster, CharacterInventoryService inventoryService,
-            CharacterMovementService movementService) {
+            CharacterMovementService movementService, CharacterCombatService combatService) {
         String selection = GearManager.getBestWeaponAgainstMonster(character,
                 monster, MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
-        equipGear("weapon_slot", selection, inventoryService, movementService);
+        equipGear("weapon_slot", selection, inventoryService, movementService, combatService);
         for (String gearType : GearManager.allNonWeaponTypes) {
             if (!gearType.equals("ring")) {
                 selection = GearManager.getBestAvailableGearAgainstMonster(character,
                         getGearInSlot("weapon_slot"), gearType, monster, MapManager.getInstance(),
                         GameItemManager.getInstance(), Bank.getInstance());
-                equipGear(gearType + "_slot", selection, inventoryService, movementService);
+                equipGear(gearType + "_slot", selection, inventoryService, movementService, combatService);
             } else {
                 // There are two ring slots
                 selection = GearManager.getBestAvailableGearAgainstMonster(character,
                         getGearInSlot("weapon_slot"), gearType + "1", monster, MapManager.getInstance(),
                         GameItemManager.getInstance(), Bank.getInstance());
-                equipGear(gearType + "1_slot", selection, inventoryService, movementService);
+                equipGear(gearType + "1_slot", selection, inventoryService, movementService, combatService);
                 selection = GearManager.getBestAvailableGearAgainstMonster(character,
                         getGearInSlot("weapon_slot"), gearType + "2", monster, MapManager.getInstance(),
                         GameItemManager.getInstance(), Bank.getInstance());
-                equipGear(gearType + "2_slot", selection, inventoryService, movementService);
+                equipGear(gearType + "2_slot", selection, inventoryService, movementService, combatService);
             }
         }
     }
