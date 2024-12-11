@@ -19,8 +19,7 @@ public class App {
         Bank.getInstance().refreshBankItems();
         mgr.loadCharacters();
         mgr.runCharacters();
-        runCraftingManagerInLoop(mgr, "steel_boots", (innerMgr) -> innerMgr.getGearCrafter().getData().gearcraftingLevel <= 25);
-        runCraftingManagerInLoop(mgr, "dreadful_amulet", (innerMgr) -> innerMgr.getJewelryCrafter().getData().jewelrycraftingLevel <= 25);
+        runCraftingManagerInLoop(mgr, "steel_ring", (innerMgr) -> innerMgr.getJewelryCrafter().getData().jewelrycraftingLevel <= 25);
 
     }
 
@@ -36,6 +35,8 @@ public class App {
     public static void runCraftingManagerInLoop(CharacterManager mgr, String item, Predicate<CharacterManager> until) throws Exception {
         while (until.test(mgr)) { 
             doCompleteCrafting(item ,5, mgr);
+            System.out.println("MAIN OPERATOR: jewelry crafting level - " + mgr.getJewelryCrafter().getData().jewelrycraftingLevel);
+            System.out.println("MAIN OPERATOR: gear crafting level - " + mgr.getGearCrafter().getData().gearcraftingLevel);
         }
     }
 
