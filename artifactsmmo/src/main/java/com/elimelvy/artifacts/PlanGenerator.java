@@ -2,12 +2,14 @@ package com.elimelvy.artifacts;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.elimelvy.artifacts.model.InventoryItem;
+import com.elimelvy.artifacts.model.PlanStep;
 import com.elimelvy.artifacts.model.item.GameItem;
 import com.elimelvy.artifacts.model.item.GameItemManager;
 import com.elimelvy.artifacts.model.item.RecipeIngredient;
@@ -26,9 +28,6 @@ public class PlanGenerator {
         IDLE,
         NOOP
     }
-
-    public record PlanStep(PlanAction action, String code, int quantity, String description) {
-    };
 
     private static class Plan {
         private final String code;
@@ -218,10 +217,10 @@ public class PlanGenerator {
         List<PlanStep> postProcessed = new ArrayList<>();
         PlanAction lastAction = null;
         for (PlanStep action : result) {
-            if (action.action() == PlanAction.DEPOSIT && lastAction == PlanAction.DEPOSIT) {
+            if (action.action == PlanAction.DEPOSIT && lastAction == PlanAction.DEPOSIT) {
                 continue;
             }
-            lastAction = action.action();
+            lastAction = action.action;
             postProcessed.add(action);
         }
 

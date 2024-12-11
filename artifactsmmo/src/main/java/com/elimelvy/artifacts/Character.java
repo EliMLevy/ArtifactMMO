@@ -15,10 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.elimelvy.artifacts.PlanGenerator.PlanAction;
-import com.elimelvy.artifacts.PlanGenerator.PlanStep;
 import com.elimelvy.artifacts.model.CharacterData;
 import com.elimelvy.artifacts.model.CharacterStatSimulator;
 import com.elimelvy.artifacts.model.InventoryItem;
+import com.elimelvy.artifacts.model.PlanStep;
 import com.elimelvy.artifacts.model.item.GameItem;
 import com.elimelvy.artifacts.model.item.GameItemManager;
 import com.elimelvy.artifacts.model.item.RecipeIngredient;
@@ -598,13 +598,6 @@ public class Character implements Runnable {
     @Override
     public void run() {
         while (true) {
-            PlanStep task;
-            this.lock.lock();
-            try {
-                task = this.currentTask;
-            } finally {
-                this.lock.unlock();
-            }
             if(this.data.cooldown > 0 && Instant.now().isBefore(this.data.cooldownExpiration)) {
                 try {
                     Duration d = Duration.between(this.data.cooldownExpiration, Instant.now()).abs();
@@ -616,21 +609,25 @@ public class Character implements Runnable {
                 }
             }
 
-            if (task.action() != PlanAction.IDLE) {
-                this.logger.info("Doing task: {}. {}", task.action(), task.description());
-            }
-
+            
             if (this.pendingTasks.peek() != null) {
-                this.doTask(this.pendingTasks.poll());
+                PlanStep step = this.pendingTasks.poll();
+                this.logger.info("Removing task from queue: {} {}. {}", step.action, step.code, step.description);
+                this.doTask(step);
+                step.completeStep();
             } else {
+                if (this.currentTask.action != PlanAction.IDLE) {
+                    this.logger.info("Doing task: {}. {}", this.currentTask.action, this.currentTask.description);
+                }
                 this.doTask(this.currentTask);
+                this.currentTask.completeStep();
             }
 
         }
     }
 
     public void doTask(PlanStep task) {
-        switch (task.action()) {
+        switch (task.action) {
             case IDLE -> {
                 try {
                     Thread.sleep(3000);
@@ -638,25 +635,25 @@ public class Character implements Runnable {
                     logger.warn("I have been interupted while doing an idle sleep!");
                 }
             }
-            case ATTACK -> this.attackMonster(task.code());
-            case CRAFT -> this.craft(task.code(), task.quantity());
+            case ATTACK -> this.attackMonster(task.code);
+            case CRAFT -> this.craft(task.code, task.quantity);
             case COLLECT -> {
-                for (int i = 0; i < task.quantity(); i++) {
-                    this.collectResource(task.code());
+                for (int i = 0; i < task.quantity; i++) {
+                    this.collectResource(task.code);
                     if(interuptLongAction.get()) {
                         this.interuptLongAction.set(false);
                         break;
                     }
                 }
             }
-            case TRAIN -> this.train(task.code());
-            case TASKS -> this.tasks(task.code());
+            case TRAIN -> this.train(task.code);
+            case TASKS -> this.tasks(task.code);
             case DEPOSIT -> this.depositInventory();
             case WITHDRAW -> {
-                this.withdrawFromBank(task.code(), task.quantity());
+                this.withdrawFromBank(task.code, task.quantity);
             }
             default -> {
-                logger.error("Unknown task step: {}. Description: {}", task.action(), task.description());
+                logger.error("Unknown task step: {}. Description: {}", task.action, task.description);
             }
         }
     }

@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import com.elimelvy.artifacts.Character;
 import com.elimelvy.artifacts.PlanGenerator.PlanAction;
-import com.elimelvy.artifacts.PlanGenerator.PlanStep;
 import com.elimelvy.artifacts.model.OwnershipQuantity;
+import com.elimelvy.artifacts.model.PlanStep;
 import com.elimelvy.artifacts.model.map.MapManager;
 import com.elimelvy.artifacts.model.map.Monster;
 
@@ -132,7 +132,7 @@ public class CraftingManager {
                 if(resourceWithFewestCollectors.equals("jasper_crystal")) {
                     character.setTask(new PlanStep(PlanAction.TASKS, "items", 0, "Crafting manager assignment"));
                 } else {
-                    character.setTask(new PlanStep(PlanAction.COLLECT, resourceWithFewestCollectors, this.itemsNeeded.get(resourceWithFewestCollectors), "Crafting manager assignment"));
+                    character.setTask(new PlanStep(PlanAction.COLLECT, resourceWithFewestCollectors, 1, "Crafting manager assignment"));
                 }
             }
         } else {

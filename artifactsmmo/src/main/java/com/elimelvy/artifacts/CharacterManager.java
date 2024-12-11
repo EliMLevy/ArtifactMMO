@@ -15,12 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.elimelvy.artifacts.PlanGenerator.PlanAction;
-import com.elimelvy.artifacts.PlanGenerator.PlanStep;
 import com.elimelvy.artifacts.crafting.CraftingManager;
 import com.elimelvy.artifacts.crafting.GearCraftingFilter;
 import com.elimelvy.artifacts.crafting.GearCraftingSorter;
 import com.elimelvy.artifacts.model.OwnershipQuantity;
+import com.elimelvy.artifacts.model.PlanStep;
 import com.elimelvy.artifacts.model.item.GameItem;
+import com.elimelvy.artifacts.model.item.GameItemManager;
+import com.elimelvy.artifacts.model.item.RecipeIngredient;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -113,7 +115,8 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
     }
 
     public void launchCraftingManager() {
-        Map<String, Integer> itemsNeeded = GearManager.getInredientsForGear(this.currentlyCrafting, this.currentCraftingQuantity);
+        Map<String, Integer> itemsNeeded = GearManager.getInredientsForGear(this.currentlyCrafting,
+                this.currentCraftingQuantity);
         this.craftingMgr = new CraftingManager(itemsNeeded);
         this.craftingMgr.updateProgress(this);
         if (!this.craftingMgr.isFinished()) {
@@ -139,31 +142,41 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
                     .collect(Collectors.toList()));
             return false;
         } else {
-            this.logger.info("We have the necessary ingredients to craft {}", this.currentlyCrafting);
-            // Instruct all characters to deposit
-            CountDownLatch latch = new CountDownLatch(5);
-            for (Character c : this.characters.values()) {
-                c.setDepositLatch(latch);
-                c.addTaskToQueue(new PlanStep(PlanAction.DEPOSIT, "", 0, "Deposit all items"));
-                c.setInteruptLongAction();
-            }
-
-            // Wait until everyone has deposited
-            this.logger.info("Everyone has been asked to deposit. Waiting for synchronization...");
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-                this.logger.error("Interupted waiitinf for deposits");
-            }
-            // Instruct our crafter to craft the item
-            this.logger.info("All characters deposited! Assigniing {} to craft {} x{}", this.armorCrafter,
-                    this.currentlyCrafting, this.currentCraftingQuantity);
-            Character crafter = this.characters.get(this.armorCrafter);
-            List<PlanStep> planToCraft = PlanGenerator.generatePlan(this.currentlyCrafting, this.currentCraftingQuantity,
-                    (int) Math.floor((double) crafter.getInventoryMaxItems() * 0.8));
-            this.logger.info("Add this plan to {}'s queue {}", crafter.getName(), planToCraft);
-            crafter.addTasksToQueue(planToCraft);
             return true;
+        }
+    }
+    public void finishCraftingManager() {
+        this.logger.info("We have the necessary ingredients to craft {}", this.currentlyCrafting);
+        // Instruct all characters to deposit
+        CountDownLatch latch = new CountDownLatch(5);
+        for (Character c : this.characters.values()) {
+            c.setDepositLatch(latch);
+            c.addTaskToQueue(new PlanStep(PlanAction.DEPOSIT, "", 0, "Deposit all items"));
+            c.setInteruptLongAction();
+        }
+
+        // Wait until everyone has deposited
+        this.logger.info("Everyone has been asked to deposit. Waiting for synchronization...");
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            this.logger.error("Interupted waiting for deposits");
+        }
+        // Instruct our crafter to craft the item
+        this.logger.info("All characters deposited! Assigniing {} to craft {} x{}", this.armorCrafter,
+                this.currentlyCrafting, this.currentCraftingQuantity);
+        Character crafter = this.characters.get(this.armorCrafter);
+        List<PlanStep> planToCraft = PlanGenerator.generatePlan(this.currentlyCrafting,
+                this.currentCraftingQuantity,
+                (int) Math.floor((double) crafter.getInventoryMaxItems() * 0.8));
+        this.logger.info("Add this plan to {}'s queue {}", crafter.getName(), planToCraft);
+        crafter.addTasksToQueue(planToCraft);
+        try {
+            this.logger.info("Plan submitted! Waiting for crafting to complete");
+            planToCraft.get(planToCraft.size() - 1).waitForCompletion();
+            this.logger.info("Crafting is completed!");
+        } catch (InterruptedException e) {
+            this.logger.warn("Interupted from waiting for completion of crafting!");
         }
     }
 
@@ -197,22 +210,6 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
     public void standbyMode() throws InterruptedException {
         this.logger.info("Entering standby mode");
         this.threads.get(0).join();
-    }
-
-
-    public void trainCrafting() {
-        // TODO implement this
-        // We need a way to determine the cheapest Item and then craft all of that
-        // The cheapest item:
-        // - Doesnt use jasper crystals
-        // - has monster drops from the easiest monsters
-        // - Is at the highest level possible
-        // - uses the fewest ingredients
-
-        // Filter out ineligible items:
-        // - items with jasper crystals
-        // - items with monster drops of monsters we cant defeat
-        // - 
     }
 
     @Override
