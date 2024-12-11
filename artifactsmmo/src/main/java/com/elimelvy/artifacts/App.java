@@ -19,7 +19,7 @@ public class App {
         Bank.getInstance().refreshBankItems();
         mgr.loadCharacters();
         mgr.runCharacters();
-        runCraftingManagerInLoop(mgr, "skeleton_armor", (innerMgr) -> innerMgr.getGearCrafter().getData().gearcraftingLevel <= 25);
+        runCraftingManagerInLoop(mgr, "steel_boots", (innerMgr) -> innerMgr.getGearCrafter().getData().gearcraftingLevel <= 25);
         runCraftingManagerInLoop(mgr, "dreadful_amulet", (innerMgr) -> innerMgr.getJewelryCrafter().getData().jewelrycraftingLevel <= 25);
 
     }
