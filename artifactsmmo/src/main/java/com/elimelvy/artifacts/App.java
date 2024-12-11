@@ -6,32 +6,35 @@ import java.util.List;
 import java.util.Map;
 
 import com.elimelvy.artifacts.PlanGenerator.PlanAction;
-import com.elimelvy.artifacts.PlanGenerator.PlanStep;
+import com.elimelvy.artifacts.model.PlanStep;
 import com.google.gson.JsonObject;
 
 public class App {
     public static void main(String[] args) throws Exception {
         // runAllCharactersManually();
-        runCraftingManager();
+        // runCraftingManager();
 
-    }
-    
-    public static void runCraftingManager() throws Exception {
         CharacterManager mgr = new CharacterManager();
         Bank.getInstance().refreshBankItems();
         mgr.loadCharacters();
         mgr.runCharacters();
-    
-        mgr.pickItemToCraft();
-        mgr.launchCraftingManager();
-        boolean finished = false;
-        while(!finished) {
-            finished = mgr.runCraftingManager();
-            Thread.sleep(60 * 1000); // Check in every minute
-        }
-    
-        mgr.standbyMode();
+        runCraftingManagerInLoop(mgr);
 
+    }
+
+    public static void doCompleteCrafting(String item, int quantity, CharacterManager mgr) throws Exception {
+        mgr.setCraftingItem(item, quantity);
+        mgr.launchCraftingManager();
+        while (!mgr.runCraftingManager()) {
+            Thread.sleep(10 * 1000);
+        }
+        mgr.finishCraftingManager();
+    }
+    
+    public static void runCraftingManagerInLoop(CharacterManager mgr) throws Exception {
+        while (true) { 
+            doCompleteCrafting("dreadful_amulet",5, mgr);
+        }
     }
 
     public static void runAllCharactersManually() throws Exception {

@@ -97,10 +97,10 @@ public class GearManager {
         logger.debug("Monster: {}. ", target);
 
         // Get all candidate armor pieces
-        String currentArmor = character.getGearInSlot(gearType + "_slot");
+        String currentArmor = character.gearService.getGearInSlot(gearType + "_slot");
         List<GameItem> candidateArmors = gameItemMgr.getItems(item -> {
             int bankQuantity = bank.getBankQuantity(item.code());
-            int invQuantity = character.getInventoryQuantity(item.code());
+            int invQuantity = character.inventoryService.getInventoryQuantity(item.code(), character.gearService);
             String type = gearType.startsWith("ring") ? "ring" : gearType;
             return item.type().equals(type) &&
                     (bankQuantity > 0 || invQuantity > 0
@@ -146,10 +146,10 @@ public class GearManager {
         // - in bank or inv or equipped
         // - type is weapon
         // - level <= character level
-        String currentWeapon = character.getGearInSlot("weapon_slot");
+        String currentWeapon = character.gearService.getGearInSlot("weapon_slot");
         List<GameItem> candidateWeapons = gameItemMgr.getItems(item -> {
             int bankQuantity = bank.getBankQuantity(item.code());
-            int invQuantity = character.getInventoryQuantity(item.code());
+            int invQuantity = character.inventoryService.getInventoryQuantity(item.code(), character.gearService);
             boolean result = item.type().equals("weapon") &&
                     (bankQuantity > 0 || invQuantity > 0
                             || (currentWeapon != null && currentWeapon.equals(item.code())))

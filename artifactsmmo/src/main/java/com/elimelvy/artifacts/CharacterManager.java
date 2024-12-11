@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -21,8 +20,6 @@ import com.elimelvy.artifacts.crafting.GearCraftingSorter;
 import com.elimelvy.artifacts.model.OwnershipQuantity;
 import com.elimelvy.artifacts.model.PlanStep;
 import com.elimelvy.artifacts.model.item.GameItem;
-import com.elimelvy.artifacts.model.item.GameItemManager;
-import com.elimelvy.artifacts.model.item.RecipeIngredient;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -148,19 +145,21 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
     public void finishCraftingManager() {
         this.logger.info("We have the necessary ingredients to craft {}", this.currentlyCrafting);
         // Instruct all characters to deposit
-        CountDownLatch latch = new CountDownLatch(5);
+        PlanStep depositStep = new PlanStep(PlanAction.DEPOSIT, "", 0, "Deposit all items");
         for (Character c : this.characters.values()) {
-            c.setDepositLatch(latch);
-            c.addTaskToQueue(new PlanStep(PlanAction.DEPOSIT, "", 0, "Deposit all items"));
+            c.addTaskToQueue(depositStep);
             c.setInteruptLongAction();
         }
-
-        // Wait until everyone has deposited
         this.logger.info("Everyone has been asked to deposit. Waiting for synchronization...");
         try {
-            latch.await();
+            // Wait for all five characters to deposit
+            depositStep.waitForCompletion();
+            depositStep.waitForCompletion();
+            depositStep.waitForCompletion();
+            depositStep.waitForCompletion();
+            depositStep.waitForCompletion();
         } catch (InterruptedException e) {
-            this.logger.error("Interupted waiting for deposits");
+            this.logger.warn("Interupted while waiting for deposits");
         }
         // Instruct our crafter to craft the item
         this.logger.info("All characters deposited! Assigniing {} to craft {} x{}", this.armorCrafter,
@@ -193,7 +192,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
         int result = Bank.getInstance().getBankQuantity(code);
         // Sum up quantity in every characters inventory
         for (Character c : this.characters.values()) {
-            result += c.getInventoryQuantity(code);
+            result += c.inventoryService.getInventoryQuantity(code, c.gearService);
         }
         return result;
     }
