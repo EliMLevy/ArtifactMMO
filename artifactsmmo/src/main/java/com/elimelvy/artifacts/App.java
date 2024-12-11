@@ -28,7 +28,7 @@ public class App {
         mgr.setCraftingItem(item, quantity);
         mgr.launchCraftingManager();
         while (!mgr.runCraftingManager()) {
-            Thread.sleep(10 * 1000);
+            Thread.sleep(60 * 1000);
         }
         mgr.finishCraftingManager();
     }
