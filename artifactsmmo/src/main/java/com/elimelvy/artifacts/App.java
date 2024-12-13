@@ -12,20 +12,20 @@ import com.google.gson.JsonObject;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        // runAllCharactersManually();
+        runAllCharactersManually();
         // runCraftingManager();
 
-        CharacterManager mgr = new CharacterManager();
-        Bank.getInstance().refreshBankItems();
-        mgr.loadCharacters();
-        mgr.runCharacters();
+        // CharacterManager mgr = new CharacterManager();
+        // Bank.getInstance().refreshBankItems();
+        // mgr.loadCharacters();
+        // mgr.runCharacters();
         // "ruby_amulet", "topaz_amulet", "emerald_amulet", "sapphire_amulet", "ring_of_chance", "piggy_pants", 
         // piggy_armor, serpent_skin_legs_armor. serpent_skin_armor
-        List<String> armorToCraft = List.of("topaz_amulet", "emerald_amulet", "sapphire_amulet", "piggy_pants", "piggy_armor", "serpent_skin_legs_armor", "serpent_skin_armor");
-        for(String armor : armorToCraft) {
-            doCompleteCrafting(armor, 5, mgr);
-        }
-        doCompleteCrafting("ring_of_chance", 10, mgr);
+        // List<String> armorToCraft = List.of("topaz_amulet", "emerald_amulet", "sapphire_amulet", "piggy_pants", "piggy_armor", "serpent_skin_legs_armor", "serpent_skin_armor");
+        // for(String armor : armorToCraft) {
+        //     doCompleteCrafting(armor, 5, mgr);
+        // }
+        // doCompleteCrafting("ring_of_chance", 10, mgr);
 
         // runCraftingManagerInLoop(mgr, "steel_ring", (innerMgr) -> innerMgr.getJewelryCrafter().getData().jewelrycraftingLevel <= 25);
 
@@ -54,11 +54,11 @@ public class App {
 
     public static void runAllCharactersManually() throws Exception {
         Map<String, PlanStep> assignments = new HashMap<>();
-        assignments.put("Bobby", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 10, "Testing training"));
-        assignments.put("Stuart", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 0, "Testing training"));
-        assignments.put("George", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 10, "Testing training"));
-        assignments.put("Tim", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 10, "Testing training"));
-        assignments.put("Joe", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 10, "Testing training"));
+        assignments.put("Bobby", new PlanStep(PlanAction.TASKS, "items", 1, "Manual task complettion"));
+        assignments.put("Stuart", new PlanStep(PlanAction.TASKS, "items",1, "Manual task complettion"));
+        assignments.put("George", new PlanStep(PlanAction.TASKS, "items", 1, "Manual task complettion"));
+        assignments.put("Tim", new PlanStep(PlanAction.TASKS, "items", 1, "Manual task complettion"));
+        assignments.put("Joe", new PlanStep(PlanAction.TASKS, "items", 1, "Manual task complettion"));
 
         List<Thread> threads = new LinkedList<>();
         for (Map.Entry<String, PlanStep> entry : assignments.entrySet()) {
