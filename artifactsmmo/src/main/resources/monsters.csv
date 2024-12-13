@@ -60,6 +60,8 @@ level,resource_code,x,y,drop_chance,map_code,hp,attack_fire,attack_earth,attack_
 20,wooden_club,8,-2,100,ogre,650,0,80,0,0,-20,30,0,0
 24,vampire_blood,10,6,12,vampire,680,24,0,0,60,0,-15,-15,30
 24,vampire_blood,10,8,12,vampire,680,24,0,0,60,0,-15,-15,30
+25,bandit_armor,10,0,600,bandit_lizard,800,44,0,44,0,-5,25,-5,25
+25,lizard_skin,10,0,10,bandit_lizard,800,44,0,44,0,-5,25,-5,25
 25,cyclops_eye,7,-3,12,cyclops,630,0,90,0,20,-20,20,10,0
 25,cyclops_eye,8,-3,12,cyclops,630,0,90,0,20,-20,20,10,0
 28,death_knight_sword,8,7,600,death_knight,820,28,28,28,28,-5,-5,-5,-5
@@ -72,8 +74,6 @@ level,resource_code,x,y,drop_chance,map_code,hp,attack_fire,attack_earth,attack_
 28,piece_of_obsidian,0,14,70,imp,1750,0,50,0,0,10,60,10,10
 30,owlbear_hair,10,1,12,owlbear,1100,0,0,80,0,0,-20,45,0
 30,owlbear_hair,10,2,12,owlbear,1100,0,0,80,0,0,-20,45,0
-30,demon_horn,-1,5,10,demon,999,90,0,0,0,20,0,-10,0
-30,piece_of_obsidian,-1,5,12,demon,999,90,0,0,0,20,0,-10,0
 30,life_crystal,9,7,2000,lich,1450,60,60,0,0,24,24,18,18
 30,lich_crown,9,7,600,lich,1450,60,60,0,0,24,24,18,18
 33,magic_stone,1,13,12,cultist_acolyte,1500,0,65,0,65,-10,10,-10,40

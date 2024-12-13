@@ -27,6 +27,7 @@ x,y,content_type,content_code
 -1,0,resource,ash_tree
 6,1,resource,ash_tree
 2,0,resource,copper_rocks
+10,0,monster,bandit_lizard
 0,1,monster,chicken
 1,1,workshop,cooking
 2,1,workshop,weaponcrafting
@@ -47,7 +48,6 @@ x,y,content_type,content_code
 6,4,monster,mushmush
 5,4,monster,flying_serpent
 7,4,monster,flying_serpent
--1,5,monster,demon
 1,5,workshop,mining
 3,5,resource,birch_tree
 -1,6,resource,birch_tree
