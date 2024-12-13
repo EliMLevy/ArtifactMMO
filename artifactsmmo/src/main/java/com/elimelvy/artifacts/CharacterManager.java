@@ -137,6 +137,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
             this.craftingMgr.assignCharacters(charactersForReassignment.stream()
                     .map(c -> this.characters.get(c))
                     .collect(Collectors.toList()));
+            this.logger.info("Characters reassigned!");
             return false;
         } else {
             return true;

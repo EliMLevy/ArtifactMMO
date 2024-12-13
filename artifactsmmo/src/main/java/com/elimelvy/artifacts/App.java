@@ -21,7 +21,7 @@ public class App {
         mgr.runCharacters();
         // "ruby_amulet", "topaz_amulet", "emerald_amulet", "sapphire_amulet", "ring_of_chance", "piggy_pants", 
         // piggy_armor, serpent_skin_legs_armor. serpent_skin_armor
-        List<String> armorToCraft = List.of("ruby_amulet", "topaz_amulet", "emerald_amulet", "sapphire_amulet", "piggy_pants", "piggy_armor", "serpent_skin_legs_armor", "serpent_skin_armor");
+        List<String> armorToCraft = List.of("topaz_amulet", "emerald_amulet", "sapphire_amulet", "piggy_pants", "piggy_armor", "serpent_skin_legs_armor", "serpent_skin_armor");
         for(String armor : armorToCraft) {
             doCompleteCrafting(armor, 5, mgr);
         }
@@ -30,6 +30,7 @@ public class App {
         // runCraftingManagerInLoop(mgr, "steel_ring", (innerMgr) -> innerMgr.getJewelryCrafter().getData().jewelrycraftingLevel <= 25);
 
         // getListOfCraftableGear();
+        // getHighestMonsterDefeatable();
 
     }
 
@@ -37,6 +38,7 @@ public class App {
         mgr.setCraftingItem(item, quantity);
         mgr.launchCraftingManager();
         while (!mgr.runCraftingManager()) {
+            System.out.println("MAIN OPERATOR: not finished yet!");
             Thread.sleep(60 * 1000);
         }
         mgr.finishCraftingManager();

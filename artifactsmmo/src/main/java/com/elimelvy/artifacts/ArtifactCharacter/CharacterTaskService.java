@@ -113,6 +113,8 @@ public class CharacterTaskService {
                     quantityRemaining);
             character.handleActionResult(result);
             return;
+        } else {
+            quantityRemaining -= inventoryService.getInventoryQuantity(character.getData().task, gearService);
         }
 
         // Get gameItem
@@ -129,17 +131,14 @@ public class CharacterTaskService {
         } else {
             // Otherwise, find where to collect it
             List<Resource> resources = MapManager.getInstance().getResouce(character.getData().task);
-            character.addTaskToQueue(new PlanStep(PlanAction.COLLECT, character.getData().task, quantityRemaining,
-                    "To fullfill my task I need to collect " + quantityRemaining));
             if (resources != null && !resources.isEmpty()) {
-                movementService.moveToMap(resources.get(0).getMapCode());
-                character.collectResource(character.getData().task);
+                this.logger.info("To complete task I need to collect {} x{}", character.getData().task, quantityRemaining);
+                character.addTaskToQueue(new PlanStep(PlanAction.COLLECT, character.getData().task, quantityRemaining, "To fullfill my task I need to collect " + quantityRemaining));
             } else {
                 // Otherwise, log an error, go into idle
                 this.logger.error("Unable to collect {}", character.getData().task);
                 character.setTask(new PlanStep(PlanAction.IDLE, "", 0, "Failed to complete task so moving into idle"));
             }
-
         }
 
     }

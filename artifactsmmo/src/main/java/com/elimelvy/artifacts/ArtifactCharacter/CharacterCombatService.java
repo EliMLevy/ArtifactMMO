@@ -72,6 +72,7 @@ public class CharacterCombatService {
         // Sort in descending ordre of level
         // Find the first one we can defeat and battle him
         Monster target = this.getHighestMonsterDefeatable();
+        this.logger.info("Training combat by fighting {}", target.getMapCode());
         this.attackMonster(target.getMapCode(), movementService, gearService, inventoryService);
     }
 

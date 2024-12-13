@@ -101,14 +101,20 @@ public class Character implements Runnable {
         this.logger.debug("Character data updated!");
     }
 
-    public void collectResource(String code) {
+    /**
+     * 
+     * @param code the resource code to collect ex. ash_wood, coal
+     * @return true if the resource was successfully collected, false if we needed
+     *         to train
+     */
+    private boolean collectResource(String code) {
         this.inventoryService.depositAllItemsIfNecessary(movementService);
 
         // Get resource map
         List<Resource> maps = MapManager.getInstance().getResouce(code);
         if (maps == null || maps.isEmpty()) {
             this.logger.warn("Invalid resource code: {}", code);
-            return;
+            return false;
         }
         Resource target = movementService.getClosestMap(maps);
         // Equip the correct tool if we havent already
@@ -120,15 +126,20 @@ public class Character implements Runnable {
         }
         // If we dont have the required level, train this skill
         if (target.getSkill().equals("woodcutting") && target.getLevel() > this.data.woodcuttingLevel) {
-            this.train("woodcutting");
-            return;
+            while (target.getLevel() > this.data.woodcuttingLevel && !this.isInterupted.get()) {
+                this.train("woodcutting");
+            }
         } else if (target.getSkill().equals("mining") && target.getLevel() > this.data.miningLevel) {
-            this.train("mining");
-            return;
+            while (target.getLevel() > this.data.miningLevel && !this.isInterupted.get()) {
+                this.train("mining");
+            }
         } else if (target.getSkill().equals("fishing") && target.getLevel() > this.data.fishingLevel) {
-            this.train("fishing");
-            return;
+            while (target.getLevel() > this.data.fishingLevel && !this.isInterupted.get()) {
+                this.train("fishing");
+            }
         }
+
+        if(this.isInterupted.get()) return false;
 
         // Move to the right spot if we arent there already
         movementService.moveToMap(target.getMapCode());
@@ -136,17 +147,17 @@ public class Character implements Runnable {
         // Collect
         JsonObject result = AtomicActions.collect(this.data.name);
         this.handleActionResult(result);
+        return true;
     }
 
     public void craft(String code, int quantity) {
-        this.logger.info("Attempting to craft {} x{}", code, quantity);
-
         // Get the GameItem
         GameItem item = GameItemManager.getInstance().getItem(code);
         if (!inventoryService.hasIngredientsForCrafting(item, gearService)) {
             this.logger.warn("I dont have the ingredients to craft {}.", code);
             return;
         }
+        this.logger.info("Attempting to craft {} x{}", code, quantity);
         // Move to the correct workshop
         String skill = item.craft().skill();
         movementService.moveToMap(skill);
@@ -180,12 +191,26 @@ public class Character implements Runnable {
             return;
         }
 
-        int level = switch (type) {
-            case "mining" -> this.data.miningLevel;
-            case "woodcutting" -> this.data.woodcuttingLevel;
-            case "fishing" -> this.data.fishingLevel;
-            default -> 0;
-        };
+        int level = 0;
+        int xp = 0;
+        int maxXp = 0;
+        switch (type) {
+            case "mining" -> {
+                level = this.data.miningLevel;
+                xp = this.data.miningXp;
+                maxXp = this.data.miningMaxXp;
+            }
+            case "woodcutting" -> {
+                level = this.data.woodcuttingLevel;
+                xp = this.data.woodcuttingXp;
+                maxXp = this.data.woodcuttingMaxXp;
+            }
+            case "fishing" -> {
+                level = this.data.fishingLevel;
+                xp = this.data.fishingXp;
+                maxXp = this.data.fishingMaxXp;
+            }
+        }
 
         Resource highestUnlocked = null;
         for (Resource r : maps) {
@@ -194,7 +219,8 @@ public class Character implements Runnable {
             }
         }
         if (highestUnlocked != null) {
-            this.logger.info("Training {} by collecting {}", type, highestUnlocked.getResourceCode());
+            this.logger.info("Training {} by collecting {}. Level: {}. XP: {}/{}.", type,
+                    highestUnlocked.getResourceCode(), level, xp, maxXp);
             this.collectResource(highestUnlocked.getResourceCode());
         } else {
             this.logger.error("Cant train {} becuase there are no places to train", type);
@@ -240,7 +266,8 @@ public class Character implements Runnable {
                 step.completeStep();
             } else {
                 if (this.currentTask.action != PlanAction.IDLE) {
-                    this.logger.info("Doing task: {}. {}", this.currentTask.action, this.currentTask.description);
+                    this.logger.info("Doing task: {} {}. {}", this.currentTask.action, this.currentTask.code,
+                            this.currentTask.description);
                 }
                 this.doTask(this.currentTask);
                 this.currentTask.completeStep();
@@ -261,13 +288,18 @@ public class Character implements Runnable {
             case ATTACK -> combatService.attackMonster(task.code, movementService, gearService, inventoryService);
             case CRAFT -> this.craft(task.code, task.quantity);
             case COLLECT -> {
-                for(int i = 0; i < task.quantity; i++) {
-                    if(this.isInterupted.get()) {
+                // This is necessary because plan generation requires that we respect the
+                // quantity parameter
+                // of the collect action.
+                // This is also being used for task completion.
+                for (int i = 0; i < task.quantity; i++) {
+                    if (this.isInterupted.get()) {
                         this.isInterupted.set(false);
                         break;
                     }
+                    this.logger.info("Collecting: {} ({}/{})", task.code, i, task.quantity);
                     this.collectResource(task.code);
-                } 
+                }
             }
             case TRAIN -> this.train(task.code);
             case TASKS -> taskService.tasks(task.code, movementService, inventoryService, gearService, combatService);
