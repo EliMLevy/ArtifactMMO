@@ -100,7 +100,7 @@ public class CharacterCombatService {
         // Find consumables in our inventory
         inventoryService.useConsumablesForHealing(gearService);
 
-        if (character.getData().hp / character.getData().maxHp < 0.5) {
+        if ((double)character.getData().hp / (double)character.getData().maxHp < 0.5) {
             JsonObject result = AtomicActions.rest(character.getName());
             character.handleActionResult(result);
         }

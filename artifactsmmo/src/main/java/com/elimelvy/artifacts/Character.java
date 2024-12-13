@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
@@ -42,6 +43,7 @@ public class Character implements Runnable {
     public final CharacterGearService gearService;
     public final CharacterCombatService combatService;
     public final CharacterTaskService taskService;
+    private final AtomicBoolean isInterupted = new AtomicBoolean(false);
 
     public Character(CharacterData data) {
         this.data = data;
@@ -260,6 +262,10 @@ public class Character implements Runnable {
             case CRAFT -> this.craft(task.code, task.quantity);
             case COLLECT -> {
                 for(int i = 0; i < task.quantity; i++) {
+                    if(this.isInterupted.get()) {
+                        this.isInterupted.set(false);
+                        break;
+                    }
                     this.collectResource(task.code);
                 } 
             }
@@ -291,5 +297,12 @@ public class Character implements Runnable {
 
     public void addTasksToQueue(List<PlanStep> tasks) {
         this.pendingTasks.addAll(tasks);
+    }
+
+    public void interuptCharacter() {
+        // This will stop the character if he is doing long running task
+        // and to empty his task queue.
+        this.pendingTasks.clear();
+        this.isInterupted.set(true);
     }
 }
