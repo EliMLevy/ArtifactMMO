@@ -5,15 +5,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.elimelvy.artifacts.Bank;
 import com.elimelvy.artifacts.GearManager;
 import com.elimelvy.artifacts.model.item.GameItem;
 import com.elimelvy.artifacts.model.map.MapManager;
 import com.elimelvy.artifacts.model.map.Monster;
+import com.elimelvy.artifacts.model.map.Resource;
 
 public class GearCraftingFilter implements Predicate<GameItem> {
 
+    private final Logger logger = LoggerFactory.getLogger(GearCraftingFilter.class);
+
     private final int highestLevel;
-    private final Set<String> itemsToIgnore = Set.of("gold_pickaxe", "leather_gloves", "wooden_stick", "wooden_staff",
+    private final Set<String> itemsToIgnore = Set.of("gold_shield", "gold_pickaxe", "leather_gloves", "wooden_stick", "wooden_staff",
             "spruce_fishing_rod", "multislimes_sword", "mushstaff", "mushmush_bow");
 
     public GearCraftingFilter(int highestLevel) {
@@ -48,6 +55,16 @@ public class GearCraftingFilter implements Predicate<GameItem> {
                     }
                 } else {
                     canCraft = false;
+                }
+            } else {
+                // Check if it is a resource
+                List<Resource> r = MapManager.getInstance().getResouce(ingredient.getKey());
+                if(r == null || r.isEmpty()) {
+                    // Check in the bank for it
+                    if(Bank.getInstance().getBankQuantity(ingredient.getKey()) < ingredient.getValue() && !ingredient.getKey().equals("jasper_crystal")) {
+                        logger.info("Cant craft {} becuase {} is inaccessible", item.code(), ingredient.getKey());
+                        canCraft = false; 
+                    }
                 }
             }
         }

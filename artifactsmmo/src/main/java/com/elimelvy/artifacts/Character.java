@@ -100,6 +100,8 @@ public class Character implements Runnable {
     }
 
     public void collectResource(String code) {
+        this.inventoryService.depositAllItemsIfNecessary(movementService);
+
         // Get resource map
         List<Resource> maps = MapManager.getInstance().getResouce(code);
         if (maps == null || maps.isEmpty()) {
@@ -109,8 +111,10 @@ public class Character implements Runnable {
         Resource target = movementService.getClosestMap(maps);
         // Equip the correct tool if we havent already
         switch (target.getSkill()) {
-            case "mining" -> gearService.equipGear("weapon_slot", "iron_pickaxe", inventoryService, movementService, combatService);
-            case "woodcutting" -> gearService.equipGear("weapon_slot", "iron_axe", inventoryService, movementService, combatService);
+            case "mining" ->
+                gearService.equipGear("weapon_slot", "iron_pickaxe", inventoryService, movementService, combatService);
+            case "woodcutting" ->
+                gearService.equipGear("weapon_slot", "iron_axe", inventoryService, movementService, combatService);
         }
         // If we dont have the required level, train this skill
         if (target.getSkill().equals("woodcutting") && target.getLevel() > this.data.woodcuttingLevel) {
@@ -254,7 +258,11 @@ public class Character implements Runnable {
             }
             case ATTACK -> combatService.attackMonster(task.code, movementService, gearService, inventoryService);
             case CRAFT -> this.craft(task.code, task.quantity);
-            case COLLECT -> this.collectResource(task.code);
+            case COLLECT -> {
+                for(int i = 0; i < task.quantity; i++) {
+                    this.collectResource(task.code);
+                } 
+            }
             case TRAIN -> this.train(task.code);
             case TASKS -> taskService.tasks(task.code, movementService, inventoryService, gearService, combatService);
             case DEPOSIT -> inventoryService.depositAllItems(movementService);

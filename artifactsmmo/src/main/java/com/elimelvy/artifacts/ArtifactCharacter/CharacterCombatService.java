@@ -45,7 +45,7 @@ public class CharacterCombatService {
         } else {
             this.logger.info("I can defeat {} with this loadout {}", target.getMapCode(), simulator.getLoadout());
         }
-        // Equip the correct gear if we havent already
+        // Equip the correct gear
         gearService.equipGearForBattle(code, inventoryService, movementService, this);
 
         // Deposit inventory if we need to deposit

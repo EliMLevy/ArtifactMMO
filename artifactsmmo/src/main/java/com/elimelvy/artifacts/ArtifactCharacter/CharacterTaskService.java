@@ -58,14 +58,14 @@ public class CharacterTaskService {
             CharacterInventoryService inventoryService, CharacterGearService gearService) {
         if (character.getData().taskProgress >= character.getData().taskTotal) {
             this.logger.info("Done with task {}", character.getData().task);
-            
+
             String completedTaskType = character.getData().taskType;
-            
+
             movementService.moveToMap(completedTaskType);
-            
+
             JsonObject result = AtomicActions.completeTask(character.getName());
             character.handleActionResult(result);
-            
+
             // If there is a bunch of task coins, withdraw them and exchange them
             int taskCoins = Bank.getInstance().getBankQuantity("tasks_coin")
                     + inventoryService.getInventoryQuantity("tasks_coin", gearService);
@@ -90,11 +90,11 @@ public class CharacterTaskService {
 
     private void doItemTask(CharacterInventoryService inventoryService, CharacterMovementService movementService,
             CharacterGearService gearService) {
-
+        int quantityRemaining = character.getData().taskTotal - character.getData().taskProgress;
         // Withdraw as much from the bank as I can and trade it
         int withdrawAmount = Math.min(character.getData().inventoryMaxItems,
                 Bank.getInstance().getBankQuantity(character.getData().task));
-        withdrawAmount = Math.min(withdrawAmount, character.getData().taskTotal - character.getData().taskProgress);
+        withdrawAmount = Math.min(withdrawAmount, quantityRemaining);
         if (withdrawAmount > 0) {
             this.logger.info("Trading {} {} for a task", withdrawAmount, character.getData().task);
             inventoryService.depositAllItems(movementService);
@@ -107,11 +107,10 @@ public class CharacterTaskService {
         }
 
         // If we have enough in my inventory to complete the task, complete it
-        if (inventoryService.getInventoryQuantity(character.getData().task,
-                gearService) >= character.getData().taskTotal - character.getData().taskProgress) {
+        if (inventoryService.getInventoryQuantity(character.getData().task, gearService) >= quantityRemaining) {
             movementService.moveToMap("items");
             JsonObject result = AtomicActions.tradeWithTaskMaster(character.getName(), character.getData().task,
-                    character.getData().taskTotal - character.getData().taskProgress);
+                    quantityRemaining);
             character.handleActionResult(result);
             return;
         }
@@ -121,16 +120,17 @@ public class CharacterTaskService {
         if (target.craft() != null && target.craft().items() != null && !target.craft().items().isEmpty()) {
             // If it has a recipe, generate plan to get it
             inventoryService.depositAllItems(movementService);
-            List<PlanStep> plan = PlanGenerator.generatePlan(character.getData().task,
-                    character.getData().taskTotal - character.getData().taskProgress,
+            List<PlanStep> plan = PlanGenerator.generatePlan(character.getData().task, quantityRemaining,
                     (int) (character.getData().inventoryMaxItems * 0.9));
-            this.logger.info("Plan to gather {} {}: {}",
-                    character.getData().taskTotal - character.getData().taskProgress, target.code(),
-                    plan);
+            this.logger.info("Plan to gather {} {}: {}", quantityRemaining, target.code(), plan);
+
             character.addTasksToQueue(plan);
+
         } else {
             // Otherwise, find where to collect it
             List<Resource> resources = MapManager.getInstance().getResouce(character.getData().task);
+            character.addTaskToQueue(new PlanStep(PlanAction.COLLECT, character.getData().task, quantityRemaining,
+                    "To fullfill my task I need to collect " + quantityRemaining));
             if (resources != null && !resources.isEmpty()) {
                 movementService.moveToMap(resources.get(0).getMapCode());
                 character.collectResource(character.getData().task);

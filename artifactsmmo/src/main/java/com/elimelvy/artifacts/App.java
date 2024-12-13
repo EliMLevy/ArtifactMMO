@@ -19,7 +19,17 @@ public class App {
         Bank.getInstance().refreshBankItems();
         mgr.loadCharacters();
         mgr.runCharacters();
-        runCraftingManagerInLoop(mgr, "steel_ring", (innerMgr) -> innerMgr.getJewelryCrafter().getData().jewelrycraftingLevel <= 25);
+        // "ruby_amulet", "topaz_amulet", "emerald_amulet", "sapphire_amulet", "ring_of_chance", "piggy_pants", 
+        // piggy_armor, serpent_skin_legs_armor. serpent_skin_armor
+        List<String> armorToCraft = List.of("ruby_amulet", "topaz_amulet", "emerald_amulet", "sapphire_amulet", "piggy_pants", "piggy_armor", "serpent_skin_legs_armor", "serpent_skin_armor");
+        for(String armor : armorToCraft) {
+            doCompleteCrafting(armor, 5, mgr);
+        }
+        doCompleteCrafting("ring_of_chance", 10, mgr);
+
+        // runCraftingManagerInLoop(mgr, "steel_ring", (innerMgr) -> innerMgr.getJewelryCrafter().getData().jewelrycraftingLevel <= 25);
+
+        // getListOfCraftableGear();
 
     }
 
@@ -42,11 +52,11 @@ public class App {
 
     public static void runAllCharactersManually() throws Exception {
         Map<String, PlanStep> assignments = new HashMap<>();
-        // assignments.put("Bobby", new PlanStep(PlanAction.COLLECT, "dead_wood", 10, "Testing training"));
-        assignments.put("Stuart", new PlanStep(PlanAction.ATTACK, "cyclops", 0, "Testing training"));
-        // assignments.put("George", new PlanStep(PlanAction.COLLECT, "dead_wood", 10, "Testing training"));
-        // assignments.put("Tim", new PlanStep(PlanAction.COLLECT, "dead_wood", 10, "Testing training"));
-        // assignments.put("Joe", new PlanStep(PlanAction.COLLECT, "dead_wood", 10, "Testing training"));
+        assignments.put("Bobby", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 10, "Testing training"));
+        assignments.put("Stuart", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 0, "Testing training"));
+        assignments.put("George", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 10, "Testing training"));
+        assignments.put("Tim", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 10, "Testing training"));
+        assignments.put("Joe", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 10, "Testing training"));
 
         List<Thread> threads = new LinkedList<>();
         for (Map.Entry<String, PlanStep> entry : assignments.entrySet()) {
@@ -61,4 +71,25 @@ public class App {
         }
         threads.get(0).join();
     }
+
+
+    public static void getListOfCraftableGear() {
+        CharacterManager mgr = new CharacterManager();
+        Bank.getInstance().refreshBankItems();
+        mgr.loadCharacters();
+        mgr.runCharacters();
+        mgr.pickItemToCraft();
+    }
+
+    public static void getHighestMonsterDefeatable() {
+        Bank.getInstance().refreshBankItems();
+        List<String> characters = List.of("Bobby", "Stuart", "George", "Tim", "Joe");
+        for(String characterName : characters) {
+            JsonObject characterData = AtomicActions.getCharacter(characterName);
+            Character character = Character.fromJson(characterData);
+            System.out.println(characterName + " can defeat " + character.combatService.getHighestMonsterDefeatable());
+        }
+
+    }
+
 }
