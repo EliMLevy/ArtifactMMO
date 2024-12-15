@@ -13,15 +13,18 @@ import com.google.gson.JsonObject;
 
 public class App {
     public static void main(String[] args) throws Exception {
+        CharacterManager mgr = new CharacterManager();
         // ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
-        // scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 1, 1, TimeUnit.HOURS);
-        // EventManager eventMgr = new EventManager(Map.of("bandit_camp", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 1, "Bandit event is active!")), mgr);
-        // scheduled.scheduleAtFixedRate(eventMgr, 1, 1, TimeUnit.HOURS);
-        runAllCharactersManually();
+        // int refreshRate = 10;
+        // scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 0, refreshRate, TimeUnit.MINUTES);
+        // Map<String, PlanStep> interestingEvents = Map.of("bandit_camp", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 1, "Bandit event is active!"),
+                                                        // "snowman", new PlanStep(PlanAction.ATTACK, "snowman", 1, "Snowman event is active!"));
+        // EventManager eventMgr = new EventManager(interestingEvents, mgr);
+        // scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the encyclopedia is up to date
+        runAllCharactersManually(mgr);
         // runCraftingManager();
         
         // Bank.getInstance().refreshBankItems();
-        // CharacterManager mgr = new CharacterManager();
         // mgr.loadCharacters();
         // mgr.runCharacters();
         // "emerald_amulet", "sapphire_amulet", serpent_skin_armor, dreadful_ring
@@ -29,10 +32,11 @@ public class App {
         // doCompleteCrafting("dreadful_ring", 10, mgr);
 
         // runCraftingManagerInLoop(mgr, "steel_ring", (innerMgr) -> innerMgr.getJewelryCrafter().getData().jewelrycraftingLevel < 25);
-
+        
+        // new EncyclopediaMaker().run();
         // getListOfCraftableGear();
         // getHighestMonsterDefeatable();
-        // simulateCharacterBattle("Bobby", "imp");
+        // simulateCharacterBattle("Bobby", "gingerbread");
 
     }
 
@@ -54,12 +58,11 @@ public class App {
         }
     }
 
-    public static void runAllCharactersManually() throws Exception {
-        CharacterManager mgr = new CharacterManager();
+    public static void runAllCharactersManually(CharacterManager mgr) throws Exception {
         Bank.getInstance().refreshBankItems();
         mgr.loadCharacters();
         mgr.runCharacters();
-        mgr.assignAllToTask(new PlanStep(PlanAction.TASKS, "monsters", 1, "Manual task complettion"));
+        mgr.assignAllToTask(new PlanStep(PlanAction.ATTACK, "gingerbread", 1, "Manual task complettion"));
         mgr.standbyMode();
     }
 
@@ -94,12 +97,12 @@ public class App {
         simulator.optomizeArmorFor(monster, MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
         
         // Armor overrides here
-        simulator.setGear("body_armor_slot", "serpent_skin_armor");
-        simulator.setGear("leg_armor_slot", "serpent_skin_legs_armor");
+        // simulator.setGear("body_armor_slot", "serpent_skin_armor");
+        // simulator.setGear("leg_armor_slot", "serpent_skin_legs_armor");
         
         // Potion overrides
-        simulator.setElementPotionBoost("fire", 1.1);
-        simulator.setElementPotionBoost("air", 1.1);
+        // simulator.setElementPotionBoost("fire", 1.1);
+        // simulator.setElementPotionBoost("air", 1.1);
 
         System.out.println(simulator.getLoadout());
         System.out.println(simulator.getDamageBreakdownAgainst(MapManager.getInstance().getByMonsterCode(monster).get(0)));
