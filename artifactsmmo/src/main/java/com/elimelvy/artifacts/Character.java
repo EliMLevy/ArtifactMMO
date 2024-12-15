@@ -341,4 +341,8 @@ public class Character implements Runnable {
         this.pendingTasks.add(task);
         this.isInterupted.set(true);
     }
+
+    public PlanStep getCurrentTask() {
+        return this.currentTask;
+    }
 }

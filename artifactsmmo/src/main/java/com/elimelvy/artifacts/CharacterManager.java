@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -31,6 +34,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
     private final String weaponCrafter = "Joe";
     private final String armorCrafter = "Joe";
     private final String jewelryCrafter = "Joe";
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
 
     private final Logger logger = LoggerFactory.getLogger(CharacterManager.class);
 
@@ -215,6 +219,20 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
         for(Character character: this.characters.values()) {
             character.setTask(task);
         }
+    }
+
+    public Map<String, PlanStep> getAllAssignedTasks() {
+        Map<String, PlanStep> result = new HashMap<>();
+        for(Character c : this.characters.values()) {
+            result.put(c.getName(), c.getCurrentTask());
+        }
+        return result;
+    }
+
+    public void scheduleAssignToTask(String character, PlanStep task, Long delay, TimeUnit unit) {
+        scheduler.schedule(() -> {
+            this.assignSpecificCharacterToTask(character, task);
+        }, delay, unit);
     }
 
     public void assignSpecificCharacterToTask(String character, PlanStep task) {

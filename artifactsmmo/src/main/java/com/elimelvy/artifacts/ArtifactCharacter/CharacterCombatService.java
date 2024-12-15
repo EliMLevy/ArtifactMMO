@@ -99,9 +99,9 @@ public class CharacterCombatService {
     public void healIfNecessary(CharacterInventoryService inventoryService, CharacterGearService gearService) {
         // Attempt to use consumables first
         // Find consumables in our inventory
-        inventoryService.useConsumablesForHealing(gearService);
-
+        
         if ((double)character.getData().hp / (double)character.getData().maxHp < 0.5) {
+            inventoryService.useConsumablesForHealing(gearService);
             JsonObject result = AtomicActions.rest(character.getName());
             character.handleActionResult(result);
         }

@@ -5,7 +5,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,22 +51,9 @@ public class EventManager implements Runnable {
             // Check if any are interesting
             if (result.has("data") && result.get("data").isJsonArray()) {
                 for (JsonElement event : result.getAsJsonArray("data")) {
-                    if (event.isJsonObject()) {
-                        JsonObject eventObj = event.getAsJsonObject();
-                        if (eventObj.has("code") && eventObj.get("code").isJsonPrimitive()) {
-                            if (interestingEvents.containsKey(eventObj.get("code").getAsString())) {
-                                // Alert the character manager if they are
-                                logger.info("Event is interesting! Assigning characters to it! {}", eventObj.get("code").getAsString());
-                                mgr.assignAllToTask(interestingEvents.get(eventObj.get("code").getAsString()));
-                                // Assign characters to the first interesting event we see. 
-                                // TODO in the future we can delegate some to each interesting event
-                                break;
-                            }
-                        } else {
-                            logger.warn("Event did not have a code or it was not primitive. {}", eventObj);
-                        }
-                    } else {
-                        logger.warn("Event was not a json object. {}", event);
+                    // TODO in the future we can delegate some to each interesting event
+                    if (handleEvent(event)) {
+                        break;
                     }
                 }
             } else {
@@ -74,6 +64,44 @@ public class EventManager implements Runnable {
         } catch (IOException e) {
             logger.error("Failed to retrieve events! {}. {}", e.getMessage(), e.getStackTrace());
         }
+    }
+
+    private boolean handleEvent(JsonElement event) {
+        if (event.isJsonObject()) {
+            JsonObject eventObj = event.getAsJsonObject();
+            if (eventObj.has("code") && eventObj.get("code").isJsonPrimitive()) {
+                logger.info("Event: {}", eventObj.get("code").getAsString());
+                if (interestingEvents.containsKey(eventObj.get("code").getAsString())) {
+                    // Alert the character manager if they are
+                    Instant expiration = gson.fromJson(eventObj.get("expiration"), Instant.class);
+                    Duration d = Duration.between(expiration, Instant.now()).abs();
+                    logger.info("Event is interesting! Assigning characters to it for {} seconds! {}",
+                        d.toSeconds(),eventObj.get("code").getAsString());
+                    if (mgr != null) {
+                        Map<String, PlanStep> assignedTasks = mgr.getAllAssignedTasks();
+                        mgr.assignAllToTask(interestingEvents.get(eventObj.get("code").getAsString()));
+                        // Schedule the mgr to assign everyone to the tasks they had before when the
+                        // event expires
+
+                        for (String c : assignedTasks.keySet()) {
+                            mgr.scheduleAssignToTask(c, assignedTasks.get(c), d.toSeconds(), TimeUnit.SECONDS);
+                        }
+                    }
+                    // Assign characters to the first interesting event we see.
+                    return true;
+                }
+            } else {
+                logger.warn("Event did not have a code or it was not primitive. {}", eventObj);
+            }
+        } else {
+            logger.warn("Event was not a json object. {}", event);
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        EventManager mgr = new EventManager(Map.of(), null);
+        mgr.run();
     }
 
 }
