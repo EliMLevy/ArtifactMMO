@@ -48,7 +48,7 @@ public class MapManager {
                         values[0], // resource_code
                         Integer.parseInt(values[1]), // x
                         Integer.parseInt(values[2]), // y
-                        Integer.parseInt(values[3]), // drop_chance
+                        Double.parseDouble(values[3]), // drop_chance
                         values[4], // map_code
                         Integer.parseInt(values[5]), // level
                         values[6] // skill
@@ -79,7 +79,7 @@ public class MapManager {
                         values[1], // resource_code
                         Integer.parseInt(values[2]), // x
                         Integer.parseInt(values[3]), // y
-                        Integer.parseInt(values[4]), // drop_chance
+                        Double.parseDouble(values[4]), // drop_chance
                         values[5], // map_code
                         Integer.parseInt(values[6]), // hp
                         Integer.parseInt(values[7]), // attack_fire

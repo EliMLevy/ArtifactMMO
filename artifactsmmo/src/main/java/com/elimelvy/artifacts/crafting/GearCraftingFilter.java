@@ -32,6 +32,7 @@ public class GearCraftingFilter implements Predicate<GameItem> {
     @Override
     public boolean test(GameItem item) {
         if (itemsToIgnore.contains(item.code())) {
+            logger.info("Ignoring {}", item.code());
             return false;
         }
         if (item.craft() == null) {

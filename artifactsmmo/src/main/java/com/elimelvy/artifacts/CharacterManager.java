@@ -78,7 +78,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
     public String pickItemToCraft() {
         // Update the unlocked Gear set
         // 1. get a list of all unlocked gear.
-        Set<GameItem> newGear = GearManager.getGearUpToLevel(characters.get(weaponCrafter).getLevel(),
+        Set<GameItem> newGear = GearManager.getGearUpToLevel(characters.get(weaponCrafter).getData().weaponcraftingLevel,
                 GearManager.allGearTypes);
         // 2. for each item check it if is in the set and not crafted
         // 3. if not, add it
@@ -148,7 +148,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
         // Instruct all characters to deposit
         PlanStep depositStep = new PlanStep(PlanAction.DEPOSIT, "", 0, "Deposit all items");
         for (Character c : this.characters.values()) {
-            c.addTaskToQueue(depositStep);
+            c.interuptCharacter(depositStep); 
         }
         this.logger.info("Everyone has been asked to deposit. Waiting for synchronization...");
         try {
@@ -209,6 +209,16 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
     public void standbyMode() throws InterruptedException {
         this.logger.info("Entering standby mode");
         this.threads.get(0).join();
+    }
+
+    public void assignAllToTask(PlanStep task) {
+        for(Character character: this.characters.values()) {
+            character.setTask(task);
+        }
+    }
+
+    public void assignSpecificCharacterToTask(String character, PlanStep task) {
+        this.characters.get(character).setTask(task);
     }
 
     @Override

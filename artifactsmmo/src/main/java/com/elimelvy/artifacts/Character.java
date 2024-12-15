@@ -311,6 +311,9 @@ public class Character implements Runnable {
                 logger.error("Unknown task step: {}. Description: {}", task.action, task.description);
             }
         }
+        if(this.isInterupted.get()) {
+            this.isInterupted.set(false);
+        }
     }
 
     public void setTask(PlanStep task) {
@@ -331,10 +334,11 @@ public class Character implements Runnable {
         this.pendingTasks.addAll(tasks);
     }
 
-    public void interuptCharacter() {
+    public void interuptCharacter(PlanStep task) {
         // This will stop the character if he is doing long running task
         // and to empty his task queue.
         this.pendingTasks.clear();
+        this.pendingTasks.add(task);
         this.isInterupted.set(true);
     }
 }

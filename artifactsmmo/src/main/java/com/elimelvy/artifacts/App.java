@@ -1,36 +1,38 @@
 package com.elimelvy.artifacts;
 
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 
 import com.elimelvy.artifacts.PlanGenerator.PlanAction;
+import com.elimelvy.artifacts.model.CharacterStatSimulator;
 import com.elimelvy.artifacts.model.PlanStep;
+import com.elimelvy.artifacts.model.item.GameItemManager;
+import com.elimelvy.artifacts.model.map.MapManager;
 import com.google.gson.JsonObject;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        // runAllCharactersManually();
+        // ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
+        // scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 1, 1, TimeUnit.HOURS);
+        // EventManager eventMgr = new EventManager(Map.of("bandit_camp", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 1, "Bandit event is active!")), mgr);
+        // scheduled.scheduleAtFixedRate(eventMgr, 1, 1, TimeUnit.HOURS);
+        runAllCharactersManually();
         // runCraftingManager();
+        
+        // Bank.getInstance().refreshBankItems();
+        // CharacterManager mgr = new CharacterManager();
+        // mgr.loadCharacters();
+        // mgr.runCharacters();
+        // "emerald_amulet", "sapphire_amulet", serpent_skin_armor, dreadful_ring
+        // doCompleteCrafting("serpent_skin_armor", 5, mgr);
+        // doCompleteCrafting("dreadful_ring", 10, mgr);
 
-        CharacterManager mgr = new CharacterManager();
-        Bank.getInstance().refreshBankItems();
-        mgr.loadCharacters();
-        mgr.runCharacters();
-        // "ruby_amulet", "topaz_amulet", "emerald_amulet", "sapphire_amulet", "ring_of_chance", "piggy_pants", 
-        // piggy_armor, serpent_skin_legs_armor. serpent_skin_armor
-        // List<String> armorToCraft = List.of( "piggy_pants", "piggy_armor", "emerald_amulet", "sapphire_amulet", "serpent_skin_legs_armor", "serpent_skin_armor");
-        doCompleteCrafting("piggy_armor", 5, mgr);
-        // for(String armor : armorToCraft) {
-        //     doCompleteCrafting(armor, 5, mgr);
-        // }
-
-        // runCraftingManagerInLoop(mgr, "steel_ring", (innerMgr) -> innerMgr.getJewelryCrafter().getData().jewelrycraftingLevel <= 25);
+        // runCraftingManagerInLoop(mgr, "steel_ring", (innerMgr) -> innerMgr.getJewelryCrafter().getData().jewelrycraftingLevel < 25);
 
         // getListOfCraftableGear();
         // getHighestMonsterDefeatable();
+        // simulateCharacterBattle("Bobby", "imp");
 
     }
 
@@ -53,25 +55,12 @@ public class App {
     }
 
     public static void runAllCharactersManually() throws Exception {
-        Map<String, PlanStep> assignments = new HashMap<>();
-        assignments.put("Bobby", new PlanStep(PlanAction.TASKS, "items", 1, "Manual task complettion"));
-        assignments.put("Stuart", new PlanStep(PlanAction.TASKS, "items",1, "Manual task complettion"));
-        assignments.put("George", new PlanStep(PlanAction.TASKS, "items", 1, "Manual task complettion"));
-        assignments.put("Tim", new PlanStep(PlanAction.TASKS, "items", 1, "Manual task complettion"));
-        assignments.put("Joe", new PlanStep(PlanAction.TASKS, "items", 1, "Manual task complettion"));
-
-        List<Thread> threads = new LinkedList<>();
-        for (Map.Entry<String, PlanStep> entry : assignments.entrySet()) {
-            JsonObject characterData = AtomicActions.getCharacter(entry.getKey());
-            Character character = Character.fromJson(characterData);
-    
-            Thread thread = new Thread(character);
-            character.setTask(entry.getValue());
-            thread.start();
-            
-            threads.add(thread);
-        }
-        threads.get(0).join();
+        CharacterManager mgr = new CharacterManager();
+        Bank.getInstance().refreshBankItems();
+        mgr.loadCharacters();
+        mgr.runCharacters();
+        mgr.assignAllToTask(new PlanStep(PlanAction.TASKS, "monsters", 1, "Manual task complettion"));
+        mgr.standbyMode();
     }
 
 
@@ -92,6 +81,35 @@ public class App {
             System.out.println(characterName + " can defeat " + character.combatService.getHighestMonsterDefeatable());
         }
 
+    }
+
+    public static void simulateCharacterBattle(String characterName, String monster) {
+        Bank.getInstance().refreshBankItems();
+        JsonObject characterData = AtomicActions.getCharacter(characterName);
+        Character character = Character.fromJson(characterData);
+        CharacterStatSimulator simulator = new CharacterStatSimulator(character);
+        simulator.optimizeWeaponFor(monster, MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
+        // Weapon override here
+
+        simulator.optomizeArmorFor(monster, MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
+        
+        // Armor overrides here
+        simulator.setGear("body_armor_slot", "serpent_skin_armor");
+        simulator.setGear("leg_armor_slot", "serpent_skin_legs_armor");
+        
+        // Potion overrides
+        simulator.setElementPotionBoost("fire", 1.1);
+        simulator.setElementPotionBoost("air", 1.1);
+
+        System.out.println(simulator.getLoadout());
+        System.out.println(simulator.getDamageBreakdownAgainst(MapManager.getInstance().getByMonsterCode(monster).get(0)));
+        
+        
+        List<String> logs = new ArrayList<>();
+        simulator.getPlayerWinsAgainstMonster(monster, logs);
+        for(String log : logs) {
+            System.out.println(log);
+        }
     }
 
 }

@@ -6,7 +6,7 @@ public class Monster extends MapTile {
     private final String resourceCode;
     private final int x;
     private final int y;
-    private final int dropChance;
+    private final double dropChance;
     private final String mapCode;
     private final int attackFire;
     private final int attackEarth;
@@ -19,7 +19,7 @@ public class Monster extends MapTile {
     private final int hp;
 
     // Constructor
-    public Monster(int level, String resourceCode, int x, int y, int dropChance,
+    public Monster(int level, String resourceCode, int x, int y, double dropChance,
             String mapCode, int hp, int attackFire, int attackEarth,
             int attackWater, int attackAir, int resFire,
             int resEarth, int resWater, int resAir) {
@@ -62,7 +62,7 @@ public class Monster extends MapTile {
         return y;
     }
 
-    public int getDropChance() {
+    public double getDropChance() {
         return dropChance;
     }
 

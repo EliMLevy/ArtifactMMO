@@ -5,13 +5,13 @@ public class Resource extends MapTile {
     private final String resourceCode;
     private final int x;
     private final int y;
-    private final int dropChance;
+    private final double dropChance;
     private final String mapCode;
     private final int level;
     private final String skill;
 
     // Constructor
-    public Resource(String resourceCode, int x, int y, int dropChance,
+    public Resource(String resourceCode, int x, int y, double dropChance,
             String mapCode, int level, String skill) {
         super(x, y, "resource", mapCode);
         this.resourceCode = resourceCode;
@@ -40,7 +40,7 @@ public class Resource extends MapTile {
         return y;
     }
 
-    public int getDropChance() {
+    public double getDropChance() {
         return dropChance;
     }
 

@@ -175,7 +175,9 @@ public class GearManager {
         for (GameItem weapon : candidateWeapons) {
             double total_dmg = getWeaponDamage(target, weapon);
             logger.debug("Total damage of {} against {} is {}", weapon.code(), monster, total_dmg);
-            if (total_dmg > highestDmg) {
+            if (total_dmg > highestDmg || 
+                // Use this clause to prefer fire weapons over non fire weapons.  
+                (total_dmg == highestDmg && getEffectValue(weapon, "attack_fire") > getEffectValue(bestWeapon, "attack_fire"))) {
                 highestDmg = total_dmg;
                 bestWeapon = weapon;
             }
@@ -215,7 +217,9 @@ public class GearManager {
         double res_earth = (getEffectValue(armor, "res_earth") / 100) * target.getAttackEarth();
         double res_water = (getEffectValue(armor, "res_water") / 100) * target.getAttackWater();
         double res_air = (getEffectValue(armor, "res_air") / 100) * target.getAttackAir();
-        double total_res = res_fire + res_earth + res_water + res_air;
+        // Add to the resistance, health added / 10 because tough fights last ~10 rounds
+        double health = getEffectValue(armor, "hp");
+        double total_res = res_fire + res_earth + res_water + res_air + health/10;
         return total_res;
     }
 
