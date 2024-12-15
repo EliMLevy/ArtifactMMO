@@ -12,20 +12,20 @@ import com.google.gson.JsonObject;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        runAllCharactersManually();
+        // runAllCharactersManually();
         // runCraftingManager();
 
-        // CharacterManager mgr = new CharacterManager();
-        // Bank.getInstance().refreshBankItems();
-        // mgr.loadCharacters();
-        // mgr.runCharacters();
+        CharacterManager mgr = new CharacterManager();
+        Bank.getInstance().refreshBankItems();
+        mgr.loadCharacters();
+        mgr.runCharacters();
         // "ruby_amulet", "topaz_amulet", "emerald_amulet", "sapphire_amulet", "ring_of_chance", "piggy_pants", 
         // piggy_armor, serpent_skin_legs_armor. serpent_skin_armor
-        // List<String> armorToCraft = List.of("topaz_amulet", "emerald_amulet", "sapphire_amulet", "piggy_pants", "piggy_armor", "serpent_skin_legs_armor", "serpent_skin_armor");
+        // List<String> armorToCraft = List.of( "piggy_pants", "piggy_armor", "emerald_amulet", "sapphire_amulet", "serpent_skin_legs_armor", "serpent_skin_armor");
+        doCompleteCrafting("piggy_armor", 5, mgr);
         // for(String armor : armorToCraft) {
         //     doCompleteCrafting(armor, 5, mgr);
         // }
-        // doCompleteCrafting("ring_of_chance", 10, mgr);
 
         // runCraftingManagerInLoop(mgr, "steel_ring", (innerMgr) -> innerMgr.getJewelryCrafter().getData().jewelrycraftingLevel <= 25);
 
