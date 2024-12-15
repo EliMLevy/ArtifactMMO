@@ -30,10 +30,10 @@ public class CharacterTaskService {
     public void tasks(String type, CharacterMovementService movementService, CharacterInventoryService inventoryService,
             CharacterGearService gearService, CharacterCombatService combatService) {
         // Type could be: monsters or items
-        // If we have no task, move to task spot and get new task
-        getNewTaskIfWeHaveNone(type, movementService);
         // If we are done with our tasks, move to task spot and complete tasks
         completeTaskIfDone(movementService, inventoryService, gearService);
+        // If we have no task, move to task spot and get new task
+        getNewTaskIfWeHaveNone(type, movementService);
         // If inv full, deposit
         inventoryService.depositAllItemsIfNecessary(movementService);
 
@@ -56,6 +56,8 @@ public class CharacterTaskService {
 
     private void completeTaskIfDone(CharacterMovementService movementService,
             CharacterInventoryService inventoryService, CharacterGearService gearService) {
+        if (character.getData().task == null || character.getData().task.isEmpty())
+            return;
         if (character.getData().taskProgress >= character.getData().taskTotal) {
             this.logger.info("Done with task {}", character.getData().task);
 
@@ -132,8 +134,10 @@ public class CharacterTaskService {
             // Otherwise, find where to collect it
             List<Resource> resources = MapManager.getInstance().getResouce(character.getData().task);
             if (resources != null && !resources.isEmpty()) {
-                this.logger.info("To complete task I need to collect {} x{}", character.getData().task, quantityRemaining);
-                character.addTaskToQueue(new PlanStep(PlanAction.COLLECT, character.getData().task, quantityRemaining, "To fullfill my task I need to collect " + quantityRemaining));
+                this.logger.info("To complete task I need to collect {} x{}", character.getData().task,
+                        quantityRemaining);
+                character.addTaskToQueue(new PlanStep(PlanAction.COLLECT, character.getData().task, quantityRemaining,
+                        "To fullfill my task I need to collect " + quantityRemaining));
             } else {
                 // Otherwise, log an error, go into idle
                 this.logger.error("Unable to collect {}", character.getData().task);
