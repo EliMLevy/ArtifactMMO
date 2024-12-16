@@ -7,7 +7,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -32,6 +34,7 @@ public class EventManager implements Runnable {
     private final Map<String, PlanStep> interestingEvents;
     private final CharacterManager mgr;
     private static final Gson gson = InstantTypeAdapter.createGsonWithInstant();
+    private final Set<String> activeEvents = new HashSet<>();
 
     public EventManager(Map<String, PlanStep> interestingEvents, CharacterManager mgr) {
         this.interestingEvents = interestingEvents;
@@ -58,6 +61,12 @@ public class EventManager implements Runnable {
                         break;
                     }
                 }
+                this.activeEvents.clear();
+                for (JsonElement event : result.getAsJsonArray("data")) {
+                    if(event.isJsonObject() && event.getAsJsonObject().has("code") && event.getAsJsonObject().get("code").isJsonPrimitive()) {
+                        this.activeEvents.add(event.getAsJsonObject().get("code").getAsString());
+                    }
+                }
             } else {
                 logger.warn("result did not have data or is not array. {}", result);
             }
@@ -74,7 +83,7 @@ public class EventManager implements Runnable {
             JsonObject eventObj = event.getAsJsonObject();
             if (eventObj.has("code") && eventObj.get("code").isJsonPrimitive()) {
                 logger.info("Event: {}", eventObj.get("code").getAsString());
-                if (interestingEvents.containsKey(eventObj.get("code").getAsString())) {
+                if (interestingEvents.containsKey(eventObj.get("code").getAsString()) && !activeEvents.contains(eventObj.get("code").getAsString())) {
                     // Alert the character manager if they are
                     Instant expiration = gson.fromJson(eventObj.get("expiration"), Instant.class);
                     Duration d = Duration.between(expiration, Instant.now()).abs();
