@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -217,9 +219,16 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
         return highest;
     }
 
-    public void standbyMode() throws InterruptedException {
+    public void standbyMode()  {
         this.logger.info("Entering standby mode");
-        this.threads.get(0).join();
+        BlockingQueue<String> waiting = new ArrayBlockingQueue<>(5);
+        while(true) {
+            try {
+                waiting.take();
+            } catch (InterruptedException e) {
+                this.logger.error("{} {}", e.getMessage(), e.getStackTrace());
+            }
+        }
     }
 
     public void assignAllToTask(PlanStep task) {
