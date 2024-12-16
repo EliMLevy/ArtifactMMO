@@ -18,6 +18,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.elimelvy.artifacts.model.map.MapManager;
+
 public class EncyclopediaMaker implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(EncyclopediaMaker.class);
 
@@ -201,6 +203,7 @@ public class EncyclopediaMaker implements Runnable {
             combineMapsAndResources();
             combineMapsAndMonsters();
             convertItemsToDict();
+            MapManager.getInstance().reloadFromDisk();
         } catch (Exception e) {
             logger.error("Failed to create encyclopedia, {}. {}", e.getMessage(), e.getStackTrace());
         }

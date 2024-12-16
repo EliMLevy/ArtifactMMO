@@ -4,158 +4,177 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MapManager {
 
-    private final Map<String, List<MapTile>> index;
-    private final List<Monster> monsters;
-    private final List<Resource> resources;
-    private static MapManager instance;
+    private final ConcurrentHashMap<String, CopyOnWriteArrayList<MapTile>> index;
+    private final CopyOnWriteArrayList<Monster> monsters;
+    private final CopyOnWriteArrayList<Resource> resources;
+    private static volatile MapManager instance; // volatile for double-checked locking
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     private MapManager() {
-        this.monsters = new ArrayList<>();
-        this.resources = new ArrayList<>();
-        this.index = new HashMap<>();
-        readMonstersFromCSV("./src/main/resources/monsters.csv");
-        readResourcesFromCSV("./src/main/resources/resources.csv");
-        readAllMapsFromCSV("./src/main/resources/all_maps.csv");
+        this.monsters = new CopyOnWriteArrayList<>();
+        this.resources = new CopyOnWriteArrayList<>();
+        this.index = new ConcurrentHashMap<>();
+        reloadFromDisk();
     }
 
+    // Thread-safe singleton with double-checked locking
     public static MapManager getInstance() {
         if (instance == null) {
-            instance = new MapManager();
+            synchronized (MapManager.class) {
+                if (instance == null) {
+                    instance = new MapManager();
+                }
+            }
         }
         return instance;
     }
 
+    // Synchronized reloadFromDisk method
+    public final void reloadFromDisk() {
+        lock.writeLock().lock(); // Acquire write lock
+        try {
+            readMonstersFromCSV("./src/main/resources/monsters.csv");
+            readResourcesFromCSV("./src/main/resources/resources.csv");
+            readAllMapsFromCSV("./src/main/resources/all_maps.csv");
+        } finally {
+            lock.writeLock().unlock(); // Release write lock
+        }
+    }
+
     private void readResourcesFromCSV(String filePath) {
-
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            // Skip the header line
+            List<Resource> tempResources = new ArrayList<>();
+            br.readLine(); // Skip header
             String line;
-            br.readLine();
-
-            // Read data lines
             while ((line = br.readLine()) != null) {
-                // Split the line by comma
                 String[] values = line.split(",");
-
-                // Parse each value
                 Resource resource = new Resource(
-                        values[0], // resource_code
-                        Integer.parseInt(values[1]), // x
-                        Integer.parseInt(values[2]), // y
-                        Double.parseDouble(values[3]), // drop_chance
-                        values[4], // map_code
-                        Integer.parseInt(values[5]), // level
-                        values[6] // skill
-                );
-
-                resources.add(resource);
+                        values[0], Integer.parseInt(values[1]), Integer.parseInt(values[2]),
+                        Double.parseDouble(values[3]), values[4], Integer.parseInt(values[5]), values[6]);
+                tempResources.add(resource);
             }
+            resources.clear();
+            resources.addAll(tempResources);
         } catch (IOException e) {
             System.err.println("Error reading CSV file: " + e.getMessage());
         }
     }
 
     private void readMonstersFromCSV(String filePath) {
-
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            // Skip the header line
+            List<Monster> tempMonsters = new ArrayList<>();
+            br.readLine(); // Skip header
             String line;
-            br.readLine();
-
-            // Read data lines
             while ((line = br.readLine()) != null) {
-                // Split the line by comma
                 String[] values = line.split(",");
-
-                // Parse each value
                 Monster monster = new Monster(
-                        Integer.parseInt(values[0]), // level
-                        values[1], // resource_code
-                        Integer.parseInt(values[2]), // x
-                        Integer.parseInt(values[3]), // y
-                        Double.parseDouble(values[4]), // drop_chance
-                        values[5], // map_code
-                        Integer.parseInt(values[6]), // hp
-                        Integer.parseInt(values[7]), // attack_fire
-                        Integer.parseInt(values[8]), // attack_earth
-                        Integer.parseInt(values[9]), // attack_water
-                        Integer.parseInt(values[10]), // attack_air
-                        Integer.parseInt(values[11]), // res_fire
-                        Integer.parseInt(values[12]), // res_earth
-                        Integer.parseInt(values[13]), // res_water
-                        Integer.parseInt(values[14]) // res_air
-                );
-
-                monsters.add(monster);
-
+                        Integer.parseInt(values[0]), values[1], Integer.parseInt(values[2]),
+                        Integer.parseInt(values[3]),
+                        Double.parseDouble(values[4]), values[5], Integer.parseInt(values[6]),
+                        Integer.parseInt(values[7]), Integer.parseInt(values[8]), Integer.parseInt(values[9]),
+                        Integer.parseInt(values[10]), Integer.parseInt(values[11]), Integer.parseInt(values[12]),
+                        Integer.parseInt(values[13]), Integer.parseInt(values[14]));
+                tempMonsters.add(monster);
             }
+            monsters.clear();
+            monsters.addAll(tempMonsters);
         } catch (IOException e) {
             System.err.println("Error reading CSV file: " + e.getMessage());
         }
-
     }
-
 
     private void readAllMapsFromCSV(String filePath) {
-
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            // Skip the header line
+            ConcurrentHashMap<String, CopyOnWriteArrayList<MapTile>> tempIndex = new ConcurrentHashMap<>();
+            br.readLine(); // Skip header
             String line;
-            br.readLine();
-
-            // Read data lines
             while ((line = br.readLine()) != null) {
-                // Split the line by comma
                 String[] values = line.split(",");
-
-                // Parse each value
                 MapTile mapTile = new MapTile(
-                        Integer.parseInt(values[0]), // x
-                        Integer.parseInt(values[1]), // y
-                        values[2], // content_type
-                        values[3] // content_code
-                );
-
-                this.index.putIfAbsent(mapTile.getContentCode(), new ArrayList<>());
-                this.index.get(mapTile.getContentCode()).add(mapTile);
+                        Integer.parseInt(values[0]), Integer.parseInt(values[1]),
+                        values[2], values[3]);
+                tempIndex.computeIfAbsent(mapTile.getContentCode(), k -> new CopyOnWriteArrayList<>()).add(mapTile);
             }
+            index.clear();
+            index.putAll(tempIndex);
         } catch (IOException e) {
             System.err.println("Error reading CSV file: " + e.getMessage());
         }
-
     }
 
+    // Read operations with read lock for consistency
     public List<MapTile> getMap(String mapCode) {
-        return this.index.get(mapCode);
+        lock.readLock().lock();
+        try {
+            return index.getOrDefault(mapCode, new CopyOnWriteArrayList<>());
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     public boolean isMonsterDrop(String resourceCode) {
-        return !this.getMonster(resourceCode).isEmpty();
+        return !getMonster(resourceCode).isEmpty();
     }
 
     public List<Resource> getResouce(String resourceCode) {
-        return this.resources.stream().filter(elem -> elem.getResourceCode().equals(resourceCode)).toList();
+        lock.readLock().lock();
+        try {
+            return resources.stream()
+                    .filter(elem -> elem.getResourceCode().equals(resourceCode))
+                    .toList();
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     public List<Monster> getMonster(String resourceCode) {
-        return this.monsters.stream().filter(elem -> elem.getResourceCode().equals(resourceCode)).toList();
+        lock.readLock().lock();
+        try {
+            return monsters.stream()
+                    .filter(elem -> elem.getResourceCode().equals(resourceCode))
+                    .toList();
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     public List<Monster> getByMonsterCode(String monsterCode) {
-        return this.monsters.stream().filter(elem -> elem.getContentCode().equals(monsterCode)).toList();
+        lock.readLock().lock();
+        try {
+            return monsters.stream()
+                    .filter(elem -> elem.getContentCode().equals(monsterCode))
+                    .toList();
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     public List<Resource> getMapsBySkill(String skill) {
-        return this.resources.stream().filter(elem -> elem.getSkill().equals(skill)).toList();
+        lock.readLock().lock();
+        try {
+            return resources.stream()
+                    .filter(elem -> elem.getSkill().equals(skill))
+                    .toList();
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     public List<Monster> getMonstersByLevel(int min, int max) {
-        return this.monsters.stream().filter(elem -> elem.getLevel() >= min && elem.getLevel() <= max).toList();
+        lock.readLock().lock();
+        try {
+            return monsters.stream()
+                    .filter(elem -> elem.getLevel() >= min && elem.getLevel() <= max)
+                    .toList();
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 }

@@ -74,13 +74,12 @@ level,resource_code,x,y,drop_chance,map_code,hp,attack_fire,attack_earth,attack_
 30,owlbear_hair,10,2,12.0,owlbear,1100,0,0,80,0,0,-20,45,0
 30,life_crystal,9,7,2000.0,lich,1450,60,60,0,0,24,24,18,18
 30,lich_crown,9,7,600.0,lich,1450,60,60,0,0,24,24,18,18
-30,carrot,9,18,12.0,snowman,1800,0,0,50,0,-20,0,-20,0
-30,snowman_hat,9,18,600.0,snowman,1800,0,0,50,0,-20,0,-20,0
-30,gift,9,18,75.0,snowman,1800,0,0,50,0,-20,0,-20,0
 33,magic_stone,1,13,12.0,cultist_acolyte,1500,0,65,0,65,-10,10,-10,40
 33,magic_stone,-1,14,12.0,cultist_acolyte,1500,0,65,0,65,-10,10,-10,40
 33,cursed_book,1,13,20.0,cultist_acolyte,1500,0,65,0,65,-10,10,-10,40
 33,cursed_book,-1,14,20.0,cultist_acolyte,1500,0,65,0,65,-10,10,-10,40
+35,malefic_cloth,-1,12,160.0,cultist_emperor,1750,0,40,40,90,20,10,0,-10
+35,malefic_crystal,-1,12,2000.0,cultist_emperor,1750,0,40,40,90,20,10,0,-10
 35,goblin_tooth,6,-2,12.0,goblin,1650,0,0,0,170,10,30,-20,-20
 35,goblin_tooth,9,-2,12.0,goblin,1650,0,0,0,170,10,30,-20,-20
 35,goblin_eye,6,-2,12.0,goblin,1650,0,0,0,170,10,30,-20,-20

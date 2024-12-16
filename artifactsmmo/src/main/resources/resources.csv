@@ -63,6 +63,8 @@ dead_wood,9,6,1.0,dead_tree,30,woodcutting
 dead_wood,9,8,1.0,dead_tree,30,woodcutting
 sap,9,6,10.0,dead_tree,30,woodcutting
 sap,9,8,10.0,dead_tree,30,woodcutting
+magic_wood,-3,11,1.0,magic_tree,35,woodcutting
+magic_sap,-3,11,10.0,magic_tree,35,woodcutting
 salmon,-3,-4,1.0,salmon_fishing_spot,40,fishing
 salmon,-2,-4,1.0,salmon_fishing_spot,40,fishing
 algae,-3,-4,10.0,salmon_fishing_spot,40,fishing

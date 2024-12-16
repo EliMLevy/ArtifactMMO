@@ -2,6 +2,10 @@ package com.elimelvy.artifacts;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import com.elimelvy.artifacts.PlanGenerator.PlanAction;
@@ -14,13 +18,14 @@ import com.google.gson.JsonObject;
 public class App {
     public static void main(String[] args) throws Exception {
         CharacterManager mgr = new CharacterManager();
-        // ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
-        // int refreshRate = 10;
-        // scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 0, refreshRate, TimeUnit.MINUTES);
-        // Map<String, PlanStep> interestingEvents = Map.of("bandit_camp", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 1, "Bandit event is active!"),
-                                                        // "snowman", new PlanStep(PlanAction.ATTACK, "snowman", 1, "Snowman event is active!"));
-        // EventManager eventMgr = new EventManager(interestingEvents, mgr);
-        // scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the encyclopedia is up to date
+        ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
+        int refreshRate = 10;
+        scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 1, refreshRate, TimeUnit.MINUTES);
+        Map<String, PlanStep> interestingEvents = Map.of("bandit_camp", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 1, "Bandit event is active!"),
+                                                        "snowman", new PlanStep(PlanAction.ATTACK, "snowman", 1, "Snowman event is active!"),
+                                                        "portal_demon", new PlanStep(PlanAction.ATTACK, "demon", 1, "Demon event is active!"));
+        EventManager eventMgr = new EventManager(interestingEvents, mgr);
+        scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the encyclopedia is up to date
         runAllCharactersManually(mgr);
         // runCraftingManager();
         
@@ -36,7 +41,7 @@ public class App {
         // new EncyclopediaMaker().run();
         // getListOfCraftableGear();
         // getHighestMonsterDefeatable();
-        // simulateCharacterBattle("Bobby", "gingerbread");
+        // simulateCharacterBattle("Bobby", "imp");
 
     }
 
@@ -62,7 +67,15 @@ public class App {
         Bank.getInstance().refreshBankItems();
         mgr.loadCharacters();
         mgr.runCharacters();
-        mgr.assignAllToTask(new PlanStep(PlanAction.ATTACK, "gingerbread", 1, "Manual task complettion"));
+        // for(int i = 0; i < 3; i++) {
+        //     mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
+        //     mgr.addToAllQueues(new PlanStep(PlanAction.WITHDRAW, "trout", 150, "Everyone cooking trout"));
+        //     mgr.addToAllQueues(new PlanStep(PlanAction.CRAFT, "cooked_trout", 150, "Everyone cooking trout"));
+        //     mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
+        // }
+
+        mgr.assignAllToTask(new PlanStep(PlanAction.ATTACK, "gingerbread", 1, "Trying to get more christmas stars"));
+        // mgr.forceAllCharactersToDeposit();
         mgr.standbyMode();
     }
 
@@ -97,12 +110,13 @@ public class App {
         simulator.optomizeArmorFor(monster, MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
         
         // Armor overrides here
-        // simulator.setGear("body_armor_slot", "serpent_skin_armor");
-        // simulator.setGear("leg_armor_slot", "serpent_skin_legs_armor");
         
         // Potion overrides
-        // simulator.setElementPotionBoost("fire", 1.1);
-        // simulator.setElementPotionBoost("air", 1.1);
+        // simulator.setElementPotionBoost("water", 1.1);
+        simulator.setElementPotionResistance("fire", 0.90);
+        simulator.setElementPotionResistance("water", 0.90);
+        simulator.setElementPotionResistance("earth", 0.90);
+        simulator.setElementPotionResistance("air", 0.90);
 
         System.out.println(simulator.getLoadout());
         System.out.println(simulator.getDamageBreakdownAgainst(MapManager.getInstance().getByMonsterCode(monster).get(0)));

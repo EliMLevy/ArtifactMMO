@@ -183,6 +183,13 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
         }
     }
 
+    public void forceAllCharactersToDeposit() {
+        PlanStep depositStep = new PlanStep(PlanAction.DEPOSIT, "", 0, "Deposit all items");
+        for (Character c : this.characters.values()) {
+            c.interuptCharacter(depositStep);
+        }
+    }
+
     /**
      * This returns the total amount of that Item I have in the game (including all
      * players inventories)
@@ -220,6 +227,11 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
             character.setTask(task);
         }
     }
+    public void addToAllQueues(PlanStep task) {
+        for(Character character : this.characters.values()) {
+            character.addTaskToQueue(task);
+        }
+    }
 
     public Map<String, PlanStep> getAllAssignedTasks() {
         Map<String, PlanStep> result = new HashMap<>();
@@ -230,6 +242,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
     }
 
     public void scheduleAssignToTask(String character, PlanStep task, Long delay, TimeUnit unit) {
+        this.logger.info("Scheduling task {} to be done in {} {}", task, delay, unit);
         scheduler.schedule(() -> {
             this.assignSpecificCharacterToTask(character, task);
         }, delay, unit);

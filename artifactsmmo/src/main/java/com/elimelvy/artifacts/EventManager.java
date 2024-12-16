@@ -13,7 +13,9 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.elimelvy.artifacts.PlanGenerator.PlanAction;
 import com.elimelvy.artifacts.model.PlanStep;
+import com.elimelvy.artifacts.util.InstantTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -29,7 +31,7 @@ public class EventManager implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(EventManager.class);
     private final Map<String, PlanStep> interestingEvents;
     private final CharacterManager mgr;
-    private static final Gson gson = new Gson();
+    private static final Gson gson = InstantTypeAdapter.createGsonWithInstant();
 
     public EventManager(Map<String, PlanStep> interestingEvents, CharacterManager mgr) {
         this.interestingEvents = interestingEvents;
@@ -66,7 +68,8 @@ public class EventManager implements Runnable {
         }
     }
 
-    private boolean handleEvent(JsonElement event) {
+    public boolean handleEvent(JsonElement event) {
+        this.logger.info("Event manager running!");
         if (event.isJsonObject()) {
             JsonObject eventObj = event.getAsJsonObject();
             if (eventObj.has("code") && eventObj.get("code").isJsonPrimitive()) {
@@ -100,8 +103,27 @@ public class EventManager implements Runnable {
     }
 
     public static void main(String[] args) {
-        EventManager mgr = new EventManager(Map.of(), null);
-        mgr.run();
+        String exampleEvent = "{\r\n" + //
+                        "      \"name\": \"name\",\r\n" + //
+                        "      \"code\": \"code\",\r\n" + //
+                        "      \"map\": {\r\n" + //
+                        "        \"name\": \"mapname\",\r\n" + //
+                        "        \"skin\": \"mapskin\",\r\n" + //
+                        "        \"x\": 0,\r\n" + //
+                        "        \"y\": 1,\r\n" + //
+                        "        \"content\": {\r\n" + //
+                        "          \"type\": \"contenttype\",\r\n" + //
+                        "          \"code\": \"contentcode\"\r\n" + //
+                        "        }\r\n" + //
+                        "      },\r\n" + //
+                        "      \"previous_skin\": \"prevskin\",\r\n" + //
+                        "      \"duration\": 100,\r\n" + //
+                        "      \"expiration\": \"2024-12-15T17:44:22Z\",\r\n" + //
+                        "      \"created_at\": \"2024-12-15T14:15:22Z\"\r\n" + //
+                        "    }";
+        EventManager mgr = new EventManager(Map.of("code", new PlanStep(PlanAction.ATTACK, "exampleEvent", 0, "exampleEvent description")), null);
+        // mgr.run();
+        mgr.handleEvent(gson.fromJson(exampleEvent, JsonObject.class));
     }
 
 }

@@ -22,12 +22,17 @@ public class CharacterStatSimulator {
     public Map<String, GameItem> equippedGear = new HashMap<>(); // Map slot name to game item instance of gear
     public Map<String, Double> gearHealth = new HashMap<>(); // Map slot name to the health it provides
     public Map<String, Double> potionBoosts = new HashMap<>();
+    public Map<String, Double> potionRes = new HashMap<>();
     private final Character character;
 
     private final Logger logger = LoggerFactory.getLogger(CharacterStatSimulator.class);
 
     public CharacterStatSimulator(Character character) {
         this.character = character;
+        this.potionRes.put("fire", 0.95);
+        this.potionRes.put("water", 0.95);
+        this.potionRes.put("earth", 0.95);
+        this.potionRes.put("air", 0.95);
     }
 
     // API to set the gear
@@ -179,6 +184,14 @@ public class CharacterStatSimulator {
     public void setElementPotionBoost(String element, double boost) {
         this.potionBoosts.put(element, boost);
     }
+    /**
+     * 
+     * @param element
+     * @param resistance the resistance as a percentage of damage taken. ex: 10% res -> 0.9
+     */
+    public void setElementPotionResistance(String element, double resistance) {
+        this.potionRes.put(element, resistance);
+    }
 
     private double computePlayerAttack(Monster monster) {
         List<String> elements = List.of("fire", "earth", "water", "air");
@@ -201,10 +214,10 @@ public class CharacterStatSimulator {
 
     private double computeMonsterAttack(Monster monster) {
         // sum for each element, player res * monster attack
-        double fireAttack = monster.getAttackFire() * (1 - getPlayerResistance("fire") / 100);
-        double earthAttack = monster.getAttackEarth() * (1 - getPlayerResistance("earth") / 100);
-        double waterAttack = monster.getAttackWater() * (1 - getPlayerResistance("water") / 100);
-        double airAttack = monster.getAttackAir() * (1 - getPlayerResistance("air") / 100);
+        double fireAttack = monster.getAttackFire() * (1 - getPlayerResistance("fire") / 100) * this.potionRes.getOrDefault("fire", 1.0);
+        double earthAttack = monster.getAttackEarth() * (1 - getPlayerResistance("earth") / 100) * this.potionRes.getOrDefault("earth", 1.0);
+        double waterAttack = monster.getAttackWater() * (1 - getPlayerResistance("water") / 100) * this.potionRes.getOrDefault("water", 1.0);
+        double airAttack = monster.getAttackAir() * (1 - getPlayerResistance("air") / 100) * this.potionRes.getOrDefault("air", 1.0);
         return fireAttack + earthAttack + waterAttack + airAttack;
     }
 

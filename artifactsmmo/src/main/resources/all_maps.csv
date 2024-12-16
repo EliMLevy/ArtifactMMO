@@ -1,5 +1,4 @@
 x,y,content_type,content_code
-9,18,monster,snowman
 2,1,workshop,weaponcrafting
 1,13,monster,cultist_acolyte
 -1,14,monster,cultist_acolyte
@@ -23,6 +22,7 @@ x,y,content_type,content_code
 -1,13,monster,hellhound
 1,14,monster,hellhound
 1,6,resource,coal_rocks
+-1,12,monster,cultist_emperor
 3,1,workshop,gearcrafting
 7,12,resource,trout_fishing_spot
 2,3,workshop,alchemy
@@ -70,6 +70,7 @@ x,y,content_type,content_code
 2,0,resource,copper_rocks
 1,-2,monster,yellow_slime
 4,-1,monster,yellow_slime
+-3,11,resource,magic_tree
 9,17,monster,gingerbread
 5,19,monster,gingerbread
 7,19,monster,gingerbread

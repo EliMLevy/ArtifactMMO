@@ -52,7 +52,7 @@ public class CharacterCombatService {
         inventoryService.depositAllItemsIfNecessary(movementService);
 
         // Fill up on consumables if necessary
-        inventoryService.fillUpOnConsumables(List.of("cooked_wolf_meat", "cooked_chicken"), gearService, movementService);
+        inventoryService.fillUpOnConsumables(List.of("cooked_wolf_meat", "cooked_chicken", "cooked_trout"), gearService, movementService);
 
         // Move to the right spot if we arent there already
         movementService.moveToMap(target.getMapCode());
