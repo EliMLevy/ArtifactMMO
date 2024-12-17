@@ -74,8 +74,8 @@ public class App {
         //     mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
         // }
 
-        mgr.assignAllToTask(new PlanStep(PlanAction.ATTACK, "gingerbread", 1, "Trying to get more christmas stars"));
         // mgr.forceAllCharactersToDeposit();
+        mgr.assignAllToTask(new PlanStep(PlanAction.TASKS, "monsters", 1, "Leveling up characters"));
         mgr.standbyMode();
     }
 
