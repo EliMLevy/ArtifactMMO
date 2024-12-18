@@ -1,8 +1,11 @@
 from collections import defaultdict
+import json
 
-def count_monster_fights(file_path):
-    # Nested defaultdict to track monster fights by character
-    character_fights = defaultdict(lambda: defaultdict(int))
+def analyze_log(file_path):
+    # Nested defaultdict to track data
+    character_fights = defaultdict(lambda: defaultdict(int))  # Monster counts for ATTACK
+    character_collections = defaultdict(lambda: defaultdict(int))  # Resource counts for COLLECT
+    character_crafts = defaultdict(lambda: defaultdict(int))  # Crafted items for CRAFT
     
     try:
         with open(file_path, 'r') as file:
@@ -17,18 +20,47 @@ def count_monster_fights(file_path):
                 # Extract relevant fields
                 timestamp, action, character_name, request_body, response_body, outcome = parts
                 
-                # Process only ATTACK actions
                 if action == "ATTACK":
-                    target = request_body.strip()  # The monster's name is in the request body
+                    # Handle ATTACK action (monster name in request_body)
+                    target = request_body.strip()
                     if target:
-                        # Increment the count for the monster
                         character_fights[character_name][target] += 1
+                
+                elif action == "COLLECT":
+                    # Handle COLLECT action (resource name in request_body)
+                    resource = request_body.strip()
+                    if resource:
+                        character_collections[character_name][resource] += 1
+
+                elif action == "CRAFT":
+                    # Handle CRAFT action (crafted item name in request_body)
+                    item = json.loads(request_body.strip())
+                    if item:
+                        character_crafts[character_name][item['code']] += item['quantity']
         
         # Print the results
-        for character, monsters in character_fights.items():
+        print("Character Activity Summary:")
+        for character in set(character_fights) | set(character_collections) | set(character_crafts):
             print(f"Character: {character}")
-            for monster, count in monsters.items():
-                print(f"  {monster}: {count}")
+            
+            # Print monsters fought
+            if character in character_fights:
+                print("  Monsters:")
+                for monster, count in character_fights[character].items():
+                    print(f"    {monster}: {count}")
+            
+            # Print resources collected
+            if character in character_collections:
+                print("  Resources:")
+                for resource, count in character_collections[character].items():
+                    print(f"    {resource}: {count}")
+            
+            # Print crafted items
+            if character in character_crafts:
+                print("  Crafted Items:")
+                for item, count in character_crafts[character].items():
+                    print(f"    {item}: {count}")
+            
             print()
 
     except FileNotFoundError:
@@ -38,4 +70,4 @@ def count_monster_fights(file_path):
 
 # Call the function with your log file name
 log_file_path = 'events.log'
-count_monster_fights(log_file_path)
+analyze_log(log_file_path)
