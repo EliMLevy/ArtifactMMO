@@ -62,7 +62,7 @@ public class CharacterCombatService {
 
         // Attack
         this.logger.info("Attacking {}!", code);
-        JsonObject result = AtomicActions.attack(character.getName());
+        JsonObject result = AtomicActions.attack(character.getName(), target.getMapCode());
         character.handleActionResult(result);
     }
 

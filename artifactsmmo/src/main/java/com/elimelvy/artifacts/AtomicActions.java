@@ -1,7 +1,8 @@
 package com.elimelvy.artifacts;
 
-
 import com.elimelvy.artifacts.util.HTTPRequester;
+import com.elimelvy.artifacts.util.StructuredLogger;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class AtomicActions {
@@ -17,7 +18,9 @@ public class AtomicActions {
         JsonObject raw = new JsonObject();
         raw.addProperty("x", x);
         raw.addProperty("y", y);
-        return HTTPRequester.sendCharacterRequest(character, "/action/move", "POST", raw);
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/move", "POST", raw);
+        logEvent(raw.toString(), result, "MOVE", character, "destination");
+        return result;
     }
 
     /**
@@ -26,8 +29,37 @@ public class AtomicActions {
      * @param character Character name
      * @return API response
      */
-    public static JsonObject attack(String character) {
-        return HTTPRequester.sendCharacterRequest(character, "/action/fight", "POST", null);
+    public static JsonObject attack(String character, String monsterCode) {
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/fight", "POST", null);
+        reformatAttackResponseBody(result);
+        logEvent(monsterCode, result, "ATTACK", character, "fight");
+        return result;
+    }
+
+    private static JsonObject reformatAttackResponseBody(JsonObject result) {
+        if(result != null) {
+            if(result.has("data") && result.get("data").isJsonObject()) {
+                JsonObject data = result.getAsJsonObject("data");
+                if(data.has("fight") && data.get("fight").isJsonObject()) {
+                    JsonObject fight = data.getAsJsonObject("fight");
+                    if(fight.has("monster_blocked_hits")) {
+                        fight.remove("monster_blocked_hits");
+                    }
+                    if(fight.has("player_blocked_hits")) {
+                        fight.remove("player_blocked_hits");
+                    }
+                    if(fight.has("logs") && fight.get("logs").isJsonArray()) {
+                        JsonArray logs = fight.getAsJsonArray("logs");
+                        // Keep the first and last log message
+                        JsonArray abridged = new JsonArray(2);
+                        abridged.add(logs.get(0));
+                        abridged.add(logs.get(logs.size() - 1));
+                        fight.add("logs", abridged);
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -37,7 +69,10 @@ public class AtomicActions {
      * @return API response
      */
     public static JsonObject rest(String character) {
-        return HTTPRequester.sendCharacterRequest(character, "/action/rest", "POST", null);
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/rest", "POST", null);
+        logEvent("", result, "REST", character, "hp_restored");
+
+        return result;
     }
 
     /**
@@ -46,8 +81,10 @@ public class AtomicActions {
      * @param character Character name
      * @return API response
      */
-    public static JsonObject collect(String character) {
-        return HTTPRequester.sendCharacterRequest(character, "/action/gathering", "POST", null);
+    public static JsonObject collect(String character, String resourceCode) {
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/gathering", "POST", null);
+        logEvent(resourceCode, result, "COLLECT", character, "details");
+        return result;
     }
 
     /**
@@ -62,7 +99,9 @@ public class AtomicActions {
         JsonObject raw = new JsonObject();
         raw.addProperty("code", itemCode);
         raw.addProperty("quantity", quantity);
-        return HTTPRequester.sendCharacterRequest(character, "/action/crafting", "POST", raw);
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/crafting", "POST", raw);
+        logEvent(raw.toString(), result, "CRAFT", character, "details");
+        return result;
     }
 
     /**
@@ -77,7 +116,9 @@ public class AtomicActions {
         JsonObject raw = new JsonObject();
         raw.addProperty("code", code);
         raw.addProperty("quantity", quantity);
-        return HTTPRequester.sendCharacterRequest(character, "/action/recycling", "POST", raw);
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/recycling", "POST", raw);
+        logEvent(raw.toString(), result, "RECYCLE", character, "details");
+        return result;
     }
 
     /**
@@ -90,7 +131,9 @@ public class AtomicActions {
     public static JsonObject unequip(String character, String slot) {
         JsonObject raw = new JsonObject();
         raw.addProperty("slot", slot);
-        return HTTPRequester.sendCharacterRequest(character, "/action/unequip", "POST", raw);
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/unequip", "POST", raw);
+        logEvent(raw.toString(), result, "UNEQUIP", character, null);
+        return result;
     }
 
     /**
@@ -107,7 +150,9 @@ public class AtomicActions {
         raw.addProperty("code", code);
         raw.addProperty("slot", slot);
         raw.addProperty("quantity", quantity);
-        return HTTPRequester.sendCharacterRequest(character, "/action/equip", "POST", raw);
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/equip", "POST", raw);
+        logEvent(raw.toString(), result, "EQUIP", character, null);
+        return result;
     }
 
     /**
@@ -126,7 +171,7 @@ public class AtomicActions {
     public static JsonObject getCharacter(String name) {
         return HTTPRequester.sendRequestToUrl("https://api.artifactsmmo.com/characters/" + name, "", "GET", null);
     }
-    
+
     public static JsonObject getAllCharacters() {
         return HTTPRequester.sendRequestToUrl("https://api.artifactsmmo.com/my/characters", "", "GET", null);
     }
@@ -143,7 +188,9 @@ public class AtomicActions {
         JsonObject body = new JsonObject();
         body.addProperty("code", code);
         body.addProperty("quantity", quantity);
-        return HTTPRequester.sendCharacterRequest(character, "/action/bank/deposit", "POST", body);
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/bank/deposit", "POST", body);
+        logEvent(body.toString(), result, "DEPOSIT", character, null);
+        return result;
     }
 
     /**
@@ -160,7 +207,9 @@ public class AtomicActions {
         JsonObject body = new JsonObject();
         body.addProperty("code", code);
         body.addProperty("quantity", quantity);
-        return HTTPRequester.sendCharacterRequest(character, "/action/bank/withdraw", "POST", body);
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/bank/withdraw", "POST", body);
+        logEvent(body.toString(), result, "WITHDRAW", character, null);
+        return result;
     }
 
     /**
@@ -175,7 +224,9 @@ public class AtomicActions {
         JsonObject body = new JsonObject();
         body.addProperty("code", code);
         body.addProperty("quantity", quantity);
-        return HTTPRequester.sendCharacterRequest(character, "/action/use", "POST", body);
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/use", "POST", body);
+        logEvent(body.toString(), result, "USE_ITEM", character, null);
+        return result;
     }
 
     /**
@@ -185,7 +236,9 @@ public class AtomicActions {
      * @return API response
      */
     public static JsonObject acceptNewTask(String character) {
-        return HTTPRequester.sendCharacterRequest(character, "/action/task/new", "POST", null);
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/task/new", "POST", null);
+        logEvent("", result, "NEW_TASK", character, "task");
+        return result;
     }
 
     /**
@@ -195,7 +248,9 @@ public class AtomicActions {
      * @return API response
      */
     public static JsonObject completeTask(String character) {
-        return HTTPRequester.sendCharacterRequest(character, "/action/task/complete", "POST", null);
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/task/complete", "POST", null);
+        logEvent("", result, "END_TASK", character, "rewards");
+        return result;
     }
 
     /**
@@ -210,10 +265,29 @@ public class AtomicActions {
         JsonObject body = new JsonObject();
         body.addProperty("code", code);
         body.addProperty("quantity", quantity);
-        return HTTPRequester.sendCharacterRequest(character, "/action/task/trade", "POST", body);
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/task/trade", "POST", body);
+        logEvent(body.toString(), result, "TRADE_TASK_ITEMS", character, "trade");
+        return result;
     }
 
     public static JsonObject exchangeCoinsWithTaskMaster(String character) {
-        return HTTPRequester.sendCharacterRequest(character, "/action/task/exchange", "POST", null);
+        JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/task/exchange", "POST", null);
+        logEvent(null, result, "EXCHANGE_TASK_COINS", character, "rewards");
+        return result;
+    }
+
+    private static void logEvent(String requestBody, JsonObject result, String eventName, String character,
+            String responseBodyKey) {
+        if (result != null) {
+            if (result.has("error")) {
+                StructuredLogger.getInstance().logEvent(eventName, requestBody != null ? requestBody.toString() : "",
+                        character, result.toString(), 0);
+            } else {
+                JsonObject data = result.getAsJsonObject("data");
+                StructuredLogger.getInstance().logEvent(eventName, character,
+                        requestBody, responseBodyKey != null ? data.get(responseBodyKey).toString() : "",
+                        data.getAsJsonObject("cooldown").get("total_seconds").getAsLong());
+            }
+        }
     }
 }

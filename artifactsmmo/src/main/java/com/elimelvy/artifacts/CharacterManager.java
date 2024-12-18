@@ -280,6 +280,10 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
         return this.characters.get(this.jewelryCrafter);
     }
 
+    public Character getWeaponCrafter() {
+        return this.characters.get(this.weaponCrafter);
+    }
+
     public Character getGearCrafter() {
         return this.characters.get(this.armorCrafter);
     }

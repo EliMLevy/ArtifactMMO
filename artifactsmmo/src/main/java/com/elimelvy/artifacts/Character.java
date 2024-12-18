@@ -145,7 +145,7 @@ public class Character implements Runnable {
         movementService.moveToMap(target.getMapCode());
 
         // Collect
-        JsonObject result = AtomicActions.collect(this.data.name);
+        JsonObject result = AtomicActions.collect(this.data.name, target.getMapCode());
         this.handleActionResult(result);
         return true;
     }
