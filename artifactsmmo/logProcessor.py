@@ -54,7 +54,7 @@ def analyze_log(file_path):
                             item = json.loads(request_body.strip())  # Parse as a single item
                             code = item['code']
                             quantity = item['quantity']
-                            net_items[code] += quantity  # Subtract from net items
+                            net_items[code] += quantity  # Add to net items
                     except json.JSONDecodeError:
                         print(f"Error decoding JSON in DEPOSIT action: {request_body}")
 
@@ -65,7 +65,7 @@ def analyze_log(file_path):
                             item = json.loads(request_body.strip())  # Parse as a single item
                             code = item['code']
                             quantity = item['quantity']
-                            net_items[code] -= quantity  # Add to net items
+                            net_items[code] -= quantity  # Subtract from net items
                     except json.JSONDecodeError:
                         print(f"Error decoding JSON in WITHDRAW action: {request_body}")
         
@@ -94,9 +94,10 @@ def analyze_log(file_path):
             
             print()
         
-        # Print the net items deposited/withdrawn globally
-        print("Net Items Deposited/Withdrawn:")
-        for item, net_quantity in net_items.items():
+        # Print the net items deposited/withdrawn globally in descending order
+        print("Net Items Deposited/Withdrawn (Descending Order):")
+        sorted_net_items = sorted(net_items.items(), key=lambda x: x[1], reverse=True)
+        for item, net_quantity in sorted_net_items:
             if net_quantity != 0:
                 print(f"  {item}: {net_quantity}")
     
