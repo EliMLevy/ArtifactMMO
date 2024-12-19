@@ -28,8 +28,6 @@ public class App {
         Bank.getInstance().refreshBankItems();
         mgr.loadCharacters();
         mgr.runCharacters();
-        runCraftingManagerInLoop(mgr, "battlestaff", (innerMgr) -> innerMgr.getWeaponCrafter().getData().weaponcraftingLevel < 30);
-        doCompleteCrafting("gold_axe", 5, mgr);
         doCompleteCrafting("gold_pickaxe", 5, mgr);
         doCompleteCrafting("gold_fishing_rod", 5, mgr);
         doCompleteCrafting("elderwood_staff", 5, mgr);
@@ -46,7 +44,6 @@ public class App {
         mgr.setCraftingItem(item, quantity);
         mgr.launchCraftingManager();
         while (!mgr.runCraftingManager()) {
-            System.out.println("MAIN OPERATOR: not finished yet!");
             Thread.sleep(60 * 1000);
         }
         mgr.finishCraftingManager();
@@ -55,8 +52,6 @@ public class App {
     public static void runCraftingManagerInLoop(CharacterManager mgr, String item, Predicate<CharacterManager> until) throws Exception {
         while (until.test(mgr)) { 
             doCompleteCrafting(item ,5, mgr);
-            System.out.println("MAIN OPERATOR: jewelry crafting level - " + mgr.getJewelryCrafter().getData().jewelrycraftingLevel);
-            System.out.println("MAIN OPERATOR: gear crafting level - " + mgr.getGearCrafter().getData().gearcraftingLevel);
         }
     }
 

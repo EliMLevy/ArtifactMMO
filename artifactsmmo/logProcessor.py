@@ -2,8 +2,8 @@ from collections import defaultdict
 import json
 
 def analyze_log(file_path):
-    # Nested defaultdict to track data
-    character_fights = defaultdict(lambda: defaultdict(int))  # Monster counts for ATTACK
+    # Data structures for tracking
+    character_fights = defaultdict(lambda: defaultdict(lambda: {"count": 0, "drops": defaultdict(int)}))  # Monster counts and drops
     character_collections = defaultdict(lambda: defaultdict(int))  # Resource counts for COLLECT
     character_crafts = defaultdict(lambda: defaultdict(int))  # Crafted items for CRAFT
     net_items = defaultdict(int)  # Net items for DEPOSIT/WITHDRAW
@@ -25,11 +25,18 @@ def analyze_log(file_path):
                 if request_body.strip() == "||":
                     request_body = ""
                 
-                # Handle ATTACK action (monster name in request_body)
+                # Handle ATTACK action (monster name in request_body, drops in response_body)
                 if action == "ATTACK":
                     target = request_body.strip()
                     if target:
-                        character_fights[character_name][target] += 1
+                        character_fights[character_name][target]["count"] += 1
+                        # Parse drops from response_body
+                        try:
+                            response = json.loads(response_body.strip()) if response_body.strip() else {}
+                            for drop in response['drops']:
+                                character_fights[character_name][target]["drops"][drop['code']] += drop['quantity']
+                        except json.JSONDecodeError:
+                            print(f"Error decoding JSON in ATTACK drops: {response_body}")
                 
                 # Handle COLLECT action (resource name in request_body)
                 elif action == "COLLECT":
@@ -74,11 +81,15 @@ def analyze_log(file_path):
         for character in set(character_fights) | set(character_collections) | set(character_crafts):
             print(f"Character: {character}")
             
-            # Print monsters fought
+            # Print monsters fought and their drops
             if character in character_fights:
                 print("  Monsters:")
-                for monster, count in character_fights[character].items():
-                    print(f"    {monster}: {count}")
+                for monster, data in character_fights[character].items():
+                    print(f"    {monster}: {data['count']} times")
+                    if data["drops"]:
+                        print("      Drops:")
+                        for drop, quantity in data["drops"].items():
+                            print(f"        {drop}: {quantity}")
             
             # Print resources collected
             if character in character_collections:

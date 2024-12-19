@@ -122,7 +122,7 @@ public class Character implements Runnable {
             case "mining" ->
                 gearService.equipGear("weapon_slot", "iron_pickaxe", inventoryService, movementService, combatService);
             case "woodcutting" ->
-                gearService.equipGear("weapon_slot", "iron_axe", inventoryService, movementService, combatService);
+                gearService.equipGear("weapon_slot", "gold_axe", inventoryService, movementService, combatService);
         }
         // If we dont have the required level, train this skill
         if (target.getSkill().equals("woodcutting") && target.getLevel() > this.data.woodcuttingLevel) {
@@ -261,12 +261,12 @@ public class Character implements Runnable {
 
             if (this.pendingTasks.peek() != null) {
                 PlanStep step = this.pendingTasks.poll();
-                this.logger.info("Removing task from queue: {} {}. {}", step.action, step.code, step.description);
+                this.logger.debug("Removing task from queue: {} {}. {}", step.action, step.code, step.description);
                 this.doTask(step);
                 step.completeStep();
             } else {
                 if (this.currentTask.action != PlanAction.IDLE) {
-                    this.logger.info("Doing task: {} {}. {}", this.currentTask.action, this.currentTask.code,
+                    this.logger.debug("Doing task: {} {}. {}", this.currentTask.action, this.currentTask.code,
                             this.currentTask.description);
                 }
                 this.doTask(this.currentTask);
@@ -297,7 +297,7 @@ public class Character implements Runnable {
                         this.isInterupted.set(false);
                         break;
                     }
-                    this.logger.info("Collecting: {} ({}/{})", task.code, i, task.quantity);
+                    this.logger.debug("Collecting: {} ({}/{})", task.code, i, task.quantity);
                     this.collectResource(task.code);
                 }
             }
