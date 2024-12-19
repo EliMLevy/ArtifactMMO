@@ -272,7 +272,7 @@ public class AtomicActions {
 
     public static JsonObject exchangeCoinsWithTaskMaster(String character) {
         JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/task/exchange", "POST", null);
-        logEvent(null, result, "EXCHANGE_TASK_COINS", character, "rewards");
+        logEvent("", result, "EXCHANGE_TASK_COINS", character, "rewards");
         return result;
     }
 
@@ -280,8 +280,7 @@ public class AtomicActions {
             String responseBodyKey) {
         if (result != null) {
             if (result.has("error")) {
-                StructuredLogger.getInstance().logEvent(eventName, requestBody != null ? requestBody.toString() : "",
-                        character, result.toString(), 0);
+                StructuredLogger.getInstance().logEvent(eventName, character, requestBody, result.toString(), 0);
             } else {
                 JsonObject data = result.getAsJsonObject("data");
                 StructuredLogger.getInstance().logEvent(eventName, character,

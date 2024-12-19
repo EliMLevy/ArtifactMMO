@@ -28,11 +28,13 @@ public class App {
         Bank.getInstance().refreshBankItems();
         mgr.loadCharacters();
         mgr.runCharacters();
-        // "emerald_amulet", "sapphire_amulet", serpent_skin_armor, dreadful_ring
-        // doCompleteCrafting("battlestaff", 5, mgr);
-        // doCompleteCrafting("dreadful_ring", 10, mgr);
-
         runCraftingManagerInLoop(mgr, "battlestaff", (innerMgr) -> innerMgr.getWeaponCrafter().getData().weaponcraftingLevel < 30);
+        doCompleteCrafting("gold_axe", 5, mgr);
+        doCompleteCrafting("gold_pickaxe", 5, mgr);
+        doCompleteCrafting("gold_fishing_rod", 5, mgr);
+        doCompleteCrafting("elderwood_staff", 5, mgr);
+        doCompleteCrafting("golden_gloves", 5, mgr);
+
         // new EncyclopediaMaker().run();
         // getListOfCraftableGear();
         // getHighestMonsterDefeatable();
