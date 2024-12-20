@@ -312,6 +312,7 @@ public class Character implements Runnable {
                 }
             }
             case ATTACK -> combatService.attackMonster(task.code, movementService, gearService, inventoryService);
+            case EVENT -> combatService.attackMonster(task.code, movementService, gearService, inventoryService);
             case CRAFT -> this.craft(task.code, task.quantity);
             case COLLECT -> {
                 // This is necessary because plan generation requires that we respect the
