@@ -2,6 +2,10 @@ package com.elimelvy.artifacts;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import com.elimelvy.artifacts.PlanGenerator.PlanAction;
@@ -14,29 +18,30 @@ import com.google.gson.JsonObject;
 public class App {
     public static void main(String[] args) throws Exception {
         CharacterManager mgr = new CharacterManager();
-        // ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
-        // int refreshRate = 10;
-        // scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 1, refreshRate, TimeUnit.MINUTES);
-        // Map<String, PlanStep> interestingEvents = Map.of("bandit_camp", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 1, "Bandit event is active!"),
-                                                        // "snowman", new PlanStep(PlanAction.ATTACK, "snowman", 1, "Snowman event is active!"),
-                                                        // "portal_demon", new PlanStep(PlanAction.ATTACK, "demon", 1, "Demon event is active!"));
-        // EventManager eventMgr = new EventManager(interestingEvents, mgr);
-        // scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the encyclopedia is up to date
+        ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
+        int refreshRate = 10;
+        scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 1, refreshRate, TimeUnit.MINUTES);
         // runAllCharactersManually(mgr);
         // runCraftingManager();
         
         Bank.getInstance().refreshBankItems();
         mgr.loadCharacters();
         mgr.runCharacters();
-        doCompleteCrafting("gold_pickaxe", 5, mgr);
-        doCompleteCrafting("gold_fishing_rod", 5, mgr);
-        doCompleteCrafting("elderwood_staff", 5, mgr);
-        doCompleteCrafting("golden_gloves", 5, mgr);
+        // doCompleteCrafting("gold_pickaxe", 5, mgr);
+        // doCompleteCrafting("gold_fishing_rod", 5, mgr);
+        doCompleteCrafting("greater_dreadful_staff", 5, mgr);
+        doCompleteCrafting("gold_sword", 5, mgr);
+        Map<String, PlanStep> interestingEvents = Map.of("bandit_camp", new PlanStep(PlanAction.ATTACK, "bandit_lizard", 1, "Bandit event is active!"),
+                                                        "snowman", new PlanStep(PlanAction.ATTACK, "snowman", 1, "Snowman event is active!"),
+                                                        "portal_demon", new PlanStep(PlanAction.ATTACK, "demon", 1, "Demon event is active!"));
+        EventManager eventMgr = new EventManager(interestingEvents, mgr);
+        scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the encyclopedia is up to date
+        runAllCharactersManually(mgr);
 
         // new EncyclopediaMaker().run();
         // getListOfCraftableGear();
         // getHighestMonsterDefeatable();
-        // simulateCharacterBattle("Stuart", "imp");
+        // simulateCharacterBattle("Bobby", "lich");
 
     }
 
@@ -98,7 +103,7 @@ public class App {
         CharacterStatSimulator simulator = new CharacterStatSimulator(character);
         simulator.optimizeWeaponFor(monster, MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
         // Weapon override here
-        simulator.setGear("weapon_slot", "elderwood_staff");
+        // simulator.setGear("weapon_slot", "greater_dreadful_staff");
 
         simulator.optomizeArmorFor(monster, MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
         

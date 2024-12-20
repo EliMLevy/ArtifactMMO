@@ -120,9 +120,12 @@ public class Character implements Runnable {
         // Equip the correct tool if we havent already
         switch (target.getSkill()) {
             case "mining" ->
-                gearService.equipGear("weapon_slot", "iron_pickaxe", inventoryService, movementService, combatService);
+                gearService.equipGear("weapon_slot", "gold_pickaxe", inventoryService, movementService, combatService);
             case "woodcutting" ->
                 gearService.equipGear("weapon_slot", "gold_axe", inventoryService, movementService, combatService);
+            case "fishing" ->
+                gearService.equipGear("weapon_slot", "gold_fishing_rod", inventoryService, movementService, combatService);
+
         }
         // If we dont have the required level, train this skill
         if (target.getSkill().equals("woodcutting") && target.getLevel() > this.data.woodcuttingLevel) {
@@ -139,7 +142,10 @@ public class Character implements Runnable {
             }
         }
 
-        if(this.isInterupted.get()) return false;
+        if(this.isInterupted.get()) {
+            this.logger.info("Interupted! returning from collect routine!");
+            return false;
+        }
 
         // Move to the right spot if we arent there already
         movementService.moveToMap(target.getMapCode());
@@ -248,17 +254,6 @@ public class Character implements Runnable {
     @Override
     public void run() {
         while (true) {
-            if (this.data.cooldown > 0 && Instant.now().isBefore(this.data.cooldownExpiration)) {
-                try {
-                    Duration d = Duration.between(this.data.cooldownExpiration, Instant.now()).abs();
-                    this.logger.info("Sleeping off cooldown {} sec", d.toSeconds());
-                    Thread.sleep(d.toMillis() + 1000);
-                } catch (InterruptedException e) {
-                    logger.error("Interuppted from sleep!");
-                    continue;
-                }
-            }
-
             if (this.pendingTasks.peek() != null) {
                 PlanStep step = this.pendingTasks.poll();
                 this.logger.debug("Removing task from queue: {} {}. {}", step.action, step.code, step.description);
@@ -277,6 +272,17 @@ public class Character implements Runnable {
     }
 
     public void doTask(PlanStep task) {
+        if (this.data.cooldown > 0 && Instant.now().isBefore(this.data.cooldownExpiration)) {
+            try {
+                Duration d = Duration.between(this.data.cooldownExpiration, Instant.now()).abs();
+                this.logger.info("Sleeping off cooldown {} sec", d.toSeconds());
+                Thread.sleep(d.toMillis() + 1000);
+            } catch (InterruptedException e) {
+                logger.error("Interuppted from sleep!");
+                return;
+            }
+        }
+
         switch (task.action) {
             case IDLE -> {
                 try {
@@ -294,6 +300,7 @@ public class Character implements Runnable {
                 // This is also being used for task completion.
                 for (int i = 0; i < task.quantity; i++) {
                     if (this.isInterupted.get()) {
+                        this.logger.info("Interupted! stopping collecting");
                         this.isInterupted.set(false);
                         break;
                     }
