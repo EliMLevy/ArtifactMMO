@@ -114,6 +114,11 @@ public class Character implements Runnable {
         List<Resource> maps = MapManager.getInstance().getResouce(code);
         if (maps == null || maps.isEmpty()) {
             this.logger.warn("Invalid resource code: {}", code);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                this.logger.error("Interupted!", e);
+            }
             return false;
         }
         Resource target = movementService.getClosestMap(maps);
@@ -161,6 +166,11 @@ public class Character implements Runnable {
         GameItem item = GameItemManager.getInstance().getItem(code);
         if (!inventoryService.hasIngredientsForCrafting(item, gearService)) {
             this.logger.warn("I dont have the ingredients to craft {}.", code);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                this.logger.error("Interupted!", e);
+            }
             return;
         }
         this.logger.info("Attempting to craft {} x{}", code, quantity);
@@ -194,6 +204,11 @@ public class Character implements Runnable {
         List<Resource> maps = MapManager.getInstance().getMapsBySkill(type);
         if (maps == null || maps.isEmpty()) {
             this.logger.warn("Tried training a skill that doesnt have maps. {}", type);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                this.logger.error("Interupted!", e);
+            }
             return;
         }
 
@@ -236,6 +251,11 @@ public class Character implements Runnable {
     public void handleActionResult(JsonObject result) {
         if (result == null) {
             logger.warn("Result that got passed in was null");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                this.logger.error("Interupted!", e);
+            }
             return;
         }
         if (result.has("data")) {

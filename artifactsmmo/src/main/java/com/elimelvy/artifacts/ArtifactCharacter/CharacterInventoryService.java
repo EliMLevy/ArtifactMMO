@@ -165,10 +165,20 @@ public class CharacterInventoryService {
     public boolean hasIngredientsForCrafting(GameItem item, CharacterGearService gearService) {
         if (item == null) {
             this.logger.warn("The requested item is null");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                this.logger.error("Interupted!", e);
+            }
             return false;
         }
         if (item.craft() == null || item.craft().items() == null) {
             this.logger.warn("The requested item is not craftable. {}", item.code());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                this.logger.error("Interupted!", e);
+            }
             return false;
         }
 

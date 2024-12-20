@@ -165,7 +165,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
             depositStep.waitForCompletion();
             depositStep.waitForCompletion();
         } catch (InterruptedException e) {
-            this.logger.warn("Interupted while waiting for deposits");
+            this.logger.error("Interupted while waiting for deposits", e);
         }
         // Instruct our crafter to craft the item
         this.logger.info("All characters deposited! Assigniing {} to craft {} x{}", this.armorCrafter,
@@ -181,7 +181,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
             planToCraft.get(planToCraft.size() - 1).waitForCompletion();
             this.logger.info("Crafting is completed!");
         } catch (InterruptedException e) {
-            this.logger.warn("Interupted from waiting for completion of crafting!");
+            this.logger.error("Interupted from waiting for completion of crafting!", e);
         }
     }
 

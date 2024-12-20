@@ -31,6 +31,11 @@ public class CharacterCombatService {
         List<Monster> maps = MapManager.getInstance().getByMonsterCode(code);
         if (maps == null || maps.isEmpty()) {
             this.logger.warn("Invalid monster code: {}", code);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                this.logger.error("Interupted!", e);
+            }
             return;
         }
         Monster target = movementService.getClosestMap(maps);
@@ -52,7 +57,7 @@ public class CharacterCombatService {
         inventoryService.depositAllItemsIfNecessary(movementService);
 
         // Fill up on consumables if necessary
-        inventoryService.fillUpOnConsumables(List.of("cooked_wolf_meat", "cooked_chicken", "cooked_trout"), gearService, movementService);
+        inventoryService.fillUpOnConsumables(List.of("cooked_wolf_meat", "cooked_chicken", "cooked_trout", "gingerbread"), gearService, movementService);
 
         // Move to the right spot if we arent there already
         movementService.moveToMap(target.getMapCode());
@@ -80,6 +85,11 @@ public class CharacterCombatService {
         List<Monster> monsters = MapManager.getInstance().getMonstersByLevel(character.getLevel() - 10, character.getLevel());
         if(monsters == null || monsters.isEmpty()) {
             logger.warn("Cant find any monsters on my level. level: {}", character.getLevel());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                this.logger.error("Interupted!", e);
+            }
             return null;
         }
         // Sort in descending ordre of level
@@ -100,7 +110,7 @@ public class CharacterCombatService {
         // Attempt to use consumables first
         // Find consumables in our inventory
         
-        if ((double)character.getData().hp / (double)character.getData().maxHp < 0.5) {
+        if ((double)character.getData().hp / (double)character.getData().maxHp < 0.6) {
             inventoryService.useConsumablesForHealing(gearService);
             JsonObject result = AtomicActions.rest(character.getName());
             character.handleActionResult(result);

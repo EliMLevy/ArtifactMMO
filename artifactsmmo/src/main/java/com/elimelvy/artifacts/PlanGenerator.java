@@ -2,7 +2,6 @@ package com.elimelvy.artifacts;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -26,7 +25,8 @@ public class PlanGenerator {
         DEPOSIT,
         WITHDRAW,
         IDLE,
-        NOOP
+        NOOP,
+        EVENT
     }
 
     private static class Plan {

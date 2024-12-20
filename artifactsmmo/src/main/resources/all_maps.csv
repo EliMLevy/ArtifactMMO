@@ -56,7 +56,6 @@ x,y,content_type,content_code
 9,-2,monster,goblin
 7,-3,monster,cyclops
 8,-3,monster,cyclops
--1,5,monster,demon
 1,1,workshop,cooking
 -2,13,resource,mithril_rocks
 -1,0,resource,ash_tree

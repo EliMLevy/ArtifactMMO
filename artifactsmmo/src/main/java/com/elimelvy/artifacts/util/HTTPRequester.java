@@ -94,6 +94,11 @@ public class HTTPRequester {
             if (response.statusCode() != 200) {
                 logger.error("Unexpected status: " + response.statusCode() + " - " + result);
             }
+            if(response.statusCode() == 499) {
+                // Character is in cooldown
+                logger.error("Character is in cooldown so Im sleeping for 5 seconds");
+                Thread.sleep(5000);
+            }
             result.addProperty("timestamp", timestampOfRequest);
             return result;
 

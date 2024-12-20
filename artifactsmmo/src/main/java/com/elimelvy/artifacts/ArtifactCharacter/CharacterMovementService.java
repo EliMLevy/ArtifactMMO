@@ -1,15 +1,15 @@
 package com.elimelvy.artifacts.ArtifactCharacter;
 
-import com.elimelvy.artifacts.AtomicActions;
-import com.elimelvy.artifacts.model.map.MapManager;
-import com.elimelvy.artifacts.model.map.MapTile;
-import com.elimelvy.artifacts.Character;
-import com.google.gson.JsonObject;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import com.elimelvy.artifacts.AtomicActions;
+import com.elimelvy.artifacts.Character;
+import com.elimelvy.artifacts.model.map.MapManager;
+import com.elimelvy.artifacts.model.map.MapTile;
+import com.google.gson.JsonObject;
 
 public class CharacterMovementService {
     private final Character character;
@@ -57,6 +57,11 @@ public class CharacterMovementService {
             }
         } else {
             logger.warn("Tried to move to invalid map: {}", mapCode);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                this.logger.error("Interupted!", e);
+            }
         }
     }
 

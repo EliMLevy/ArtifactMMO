@@ -71,6 +71,11 @@ public class CharacterGearService {
                 inventoryService.withdrawFromBank(code, 1, movementService);
             } else {
                 logger.warn("Attempted to equip gear that is not available: {}", code);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    this.logger.error("Interupted!", e);
+                }
             }
         }
         // If the withdrawal was successful or if we already had it, equip
@@ -80,6 +85,11 @@ public class CharacterGearService {
             character.handleActionResult(result);
         } else {
             this.logger.warn("I was expecting to have {} in my inventory but found none", code);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                this.logger.error("Interupted!", e);
+            }
         }
     }
 
