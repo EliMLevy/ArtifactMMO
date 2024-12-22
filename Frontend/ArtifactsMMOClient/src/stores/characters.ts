@@ -58,6 +58,7 @@ export const useCharacterStore = defineStore('characters', {
                     },
                 });
                 this.logs = response.data.data;
+                // console.log(this.logs)
             } catch (error: any) {
                 this.error = error.response?.data?.message || 'Failed to load logs.';
             } finally {

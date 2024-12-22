@@ -20,6 +20,7 @@ export const useItemsStore = defineStore("itemsStore", {
             "/all_items.json"
           );
           this.items = response.data;
+          console.log(this.items)
         } catch (error: any) {
           this.error =
             error.response?.data?.message || "Failed to load items.";

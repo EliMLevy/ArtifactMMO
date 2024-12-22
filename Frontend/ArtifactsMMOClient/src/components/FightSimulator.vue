@@ -1,27 +1,31 @@
 <template>
     <v-card>
-        <v-card-title class="d-flex my-3">
-            <v-select
-                label="Character"
-                :items="charactersStore.characters.map((c) => c.name)"
-                variant="outlined"
-                density="compact"
-                hide-details
-                class="mr-3"
-                v-model:model-value="selectedCharacter"
-            ></v-select>
-            VS
-            <v-select
-                label="Monster"
-                :items="monstersStore.monsters.map((m) => m.name)"
-                variant="outlined"
-                density="compact"
-                hide-details
-                class="ml-3"
-                v-model:model-value="selectedMonster"
-            ></v-select>
+        <v-card-title class="d-flex justify-space-between">
+            Fight Simulator
+            <v-btn variant="outlined" density="compact" :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'" @click="expanded = !expanded"></v-btn>
         </v-card-title>
-        <v-card-item>
+        <v-card-item v-if="expanded">
+            <div class="d-flex">
+                <v-select
+                    label="Character"
+                    :items="charactersStore.characters.map((c) => c.name)"
+                    variant="outlined"
+                    density="compact"
+                    hide-details
+                    class="mr-3"
+                    v-model:model-value="selectedCharacter"
+                ></v-select>
+                VS
+                <v-select
+                    label="Monster"
+                    :items="monstersStore.monsters.map((m) => m.name)"
+                    variant="outlined"
+                    density="compact"
+                    hide-details
+                    class="ml-3"
+                    v-model:model-value="selectedMonster"
+                ></v-select>
+            </div>
             <div class="d-flex flex-wrap justify-center align-center">
                 <SelectGearBtn
                     class="ma-2"
@@ -175,6 +179,8 @@ const itemsStore = useItemsStore();
 
 const selectedCharacter = ref(undefined as CharacterName | undefined);
 const selectedMonster = ref(undefined as string | undefined);
+
+const expanded = ref(false)
 
 const characterInfo = computed(() => {
     return charactersStore.characters.find((c) => c.name == selectedCharacter.value);
