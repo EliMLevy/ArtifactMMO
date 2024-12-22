@@ -182,6 +182,36 @@ public class Character implements Runnable {
         this.handleActionResult(result);
     }
 
+    public void recycle(String code, int quantity) {
+        // Get the GameItem
+        GameItem item = GameItemManager.getInstance().getItem(code);
+        if (inventoryService.getInventoryQuantity(code, gearService) < quantity) {
+            this.logger.warn("I dont have enough to recyle {} x{}.", code, quantity);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                this.logger.error("Interupted!", e);
+            }
+            return;
+        }
+        this.logger.info("Attempting to recycle {} x{}", code, quantity);
+        // Move to the correct workshop
+        if(item.craft() != null) {
+            String skill = item.craft().skill();
+            movementService.moveToMap(skill);
+            // Call atomicactions.craft
+            JsonObject result = AtomicActions.recycle(this.data.name, code, quantity);
+            this.handleActionResult(result);
+        } else {
+            this.logger.warn("{} is not recycle-able.", code);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                this.logger.error("Interupted!", e);
+            }
+        }
+    }
+
     public void train(String type) {
         if (type == null) {
             this.logger.error("Cant train a null skill");
@@ -314,6 +344,7 @@ public class Character implements Runnable {
             case ATTACK -> combatService.attackMonster(task.code, movementService, gearService, inventoryService);
             case EVENT -> combatService.attackMonster(task.code, movementService, gearService, inventoryService);
             case CRAFT -> this.craft(task.code, task.quantity);
+            case RECYCLE -> this.recycle(task.code, task.quantity);
             case COLLECT -> {
                 // This is necessary because plan generation requires that we respect the
                 // quantity parameter

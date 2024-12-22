@@ -33,8 +33,9 @@ def analyze_log(file_path):
                         # Parse drops from response_body
                         try:
                             response = json.loads(response_body.strip()) if response_body.strip() else {}
-                            for drop in response['drops']:
-                                character_fights[character_name][target]["drops"][drop['code']] += drop['quantity']
+                            if 'drops' in response:
+                                for drop in response['drops']:
+                                    character_fights[character_name][target]["drops"][drop['code']] += drop['quantity']
                         except json.JSONDecodeError:
                             print(f"Error decoding JSON in ATTACK drops: {response_body}")
                 

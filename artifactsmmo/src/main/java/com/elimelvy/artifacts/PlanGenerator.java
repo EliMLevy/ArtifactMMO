@@ -19,6 +19,7 @@ public class PlanGenerator {
     public enum PlanAction {
         ATTACK,
         CRAFT,
+        RECYCLE,
         TRAIN,
         COLLECT,
         TASKS,

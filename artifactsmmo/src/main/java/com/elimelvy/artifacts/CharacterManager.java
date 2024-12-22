@@ -1,6 +1,7 @@
 package com.elimelvy.artifacts;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -286,5 +287,9 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
 
     public Character getGearCrafter() {
         return this.characters.get(this.armorCrafter);
+    }
+
+    public Collection<Character> getCharacters() {
+        return this.characters.values();
     }
 }
