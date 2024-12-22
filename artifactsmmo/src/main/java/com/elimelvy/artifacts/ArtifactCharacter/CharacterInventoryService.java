@@ -144,14 +144,21 @@ public class CharacterInventoryService {
         }
     }
 
+    /*
+     * Withdraws up to 25 food items. It will check each item in the list in order and
+     * withdraw up to 25 of the first one it can. 
+     */
     public void fillUpOnConsumables(List<String> candidateConsumables, CharacterGearService gearService,
             CharacterMovementService movementService) {
         int targetQuantity = 25;
         for (String food : candidateConsumables) {
-            if (getInventoryQuantity(food, gearService) == 0
-                    && Bank.getInstance().getBankQuantity(food) >= targetQuantity) {
-                this.withdrawFromBank(food, Math.min(Bank.getInstance().getBankQuantity(food), targetQuantity),
-                        movementService);
+            if (getInventoryQuantity(food, gearService) == 0 && Bank.getInstance().getBankQuantity(food) >= targetQuantity) {
+                int quantityToWithdraw = Math.min(Bank.getInstance().getBankQuantity(food), targetQuantity);
+                this.withdrawFromBank(food, quantityToWithdraw, movementService);
+                if(this.getInventoryQuantity(food, gearService) == quantityToWithdraw) {
+                    // Once we successfully withdrew some food we can break;
+                    break;
+                }
             }
         }
     }
