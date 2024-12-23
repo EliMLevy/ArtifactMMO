@@ -152,11 +152,15 @@ public class CharacterInventoryService {
             CharacterMovementService movementService) {
         int targetQuantity = 25;
         for (String food : candidateConsumables) {
-            if (getInventoryQuantity(food, gearService) == 0 && Bank.getInstance().getBankQuantity(food) >= targetQuantity) {
-                int quantityToWithdraw = Math.min(Bank.getInstance().getBankQuantity(food), targetQuantity);
-                this.withdrawFromBank(food, quantityToWithdraw, movementService);
-                if(this.getInventoryQuantity(food, gearService) == quantityToWithdraw) {
-                    // Once we successfully withdrew some food we can break;
+            if (Bank.getInstance().getBankQuantity(food) >= targetQuantity) {
+                if(getInventoryQuantity(food, gearService) == 0) {
+                    int quantityToWithdraw = Math.min(Bank.getInstance().getBankQuantity(food), targetQuantity);
+                    this.withdrawFromBank(food, quantityToWithdraw, movementService);
+                    if(this.getInventoryQuantity(food, gearService) == quantityToWithdraw) {
+                        // Once we successfully withdrew some food we can break;
+                        break;
+                    }
+                } else {
                     break;
                 }
             }

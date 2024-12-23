@@ -38,6 +38,9 @@ public class GearCraftingFilter implements Predicate<GameItem> {
         if (item.craft() == null) {
             return false;
         }
+        if(item.craft().level() < 20) {
+            return false;
+        }
         // Get the ingredients of this item.
         Map<String, Integer> ingredients = GearManager.getInredientsForGear(item.code(), 5);
         // For each ingredient determine if we can get it

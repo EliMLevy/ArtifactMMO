@@ -32,7 +32,7 @@ public class App {
         int refreshRate = 5;
         scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 1, refreshRate, TimeUnit.MINUTES);
         
-        // Bank.getInstance().refreshBankItems();
+        Bank.getInstance().refreshBankItems();
         mgr.loadCharacters();
         mgr.runCharacters();
         Map<String, PlanStep> interestingEvents = Map.of("bandit_camp", new PlanStep(PlanAction.EVENT, "bandit_lizard", 1, "Bandit event is active!"),
@@ -41,12 +41,11 @@ public class App {
         EventManager eventMgr = new EventManager(interestingEvents, mgr);
         scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the encyclopedia is up to date
         // new EncyclopediaMaker().run();
-        // doCompleteCrafting("topaz_amulet", 5, mgr);
-        runCraftingManagerInLoop(mgr, "piggy_helmet", (mgrInner) -> mgrInner.getGearCrafter().getData().gearcraftingLevel >= 30);
+        runCraftingManagerInLoop(mgr, "steel_ring", (mgrInner) -> mgrInner.getJewelryCrafter().getData().jewelrycraftingLevel >= 30);
         runAllCharactersManually(mgr);
         
         // makeSpaceInBank(mgr);
-        // getListOfCraftableGear();
+        // getListOfCraftableGear(mgr);
         // getHighestMonsterDefeatable();
         // simulateCharacterBattle("Bobby", "lich");
 
@@ -68,14 +67,11 @@ public class App {
     }
 
     public static void runAllCharactersManually(CharacterManager mgr) throws Exception {
-        Bank.getInstance().refreshBankItems();
-        mgr.loadCharacters();
-        mgr.runCharacters();
         // for(int i = 0; i < 2; i++) {
-        //     mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
-        //     mgr.addToAllQueues(new PlanStep(PlanAction.WITHDRAW, "trout", 150, "Everyone cooking trout"));
-        //     mgr.addToAllQueues(new PlanStep(PlanAction.CRAFT, "cooked_trout", 150, "Everyone cooking trout"));
-        //     mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
+            // mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
+            // mgr.addToAllQueues(new PlanStep(PlanAction.WITHDRAW, "piggy_helmet", 35, "Everyone cooking trout"));
+            // mgr.addToAllQueues(new PlanStep(PlanAction.RECYCLE, "piggy_helmet", 35, "Everyone cooking trout"));
+            // mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
         // }
 
         // mgr.forceAllCharactersToDeposit();
@@ -84,11 +80,7 @@ public class App {
     }
 
 
-    public static void getListOfCraftableGear() {
-        CharacterManager mgr = new CharacterManager();
-        Bank.getInstance().refreshBankItems();
-        mgr.loadCharacters();
-        mgr.runCharacters();
+    public static void getListOfCraftableGear(CharacterManager mgr) {
         mgr.pickItemToCraft();
     }
 
