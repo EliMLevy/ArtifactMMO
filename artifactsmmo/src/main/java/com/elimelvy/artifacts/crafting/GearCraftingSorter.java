@@ -32,9 +32,8 @@ public class GearCraftingSorter implements Comparator<GameItem> {
         int highestLevel = 0;
         for (RecipeIngredient i : ingredients) {
             // If its a monster drop
-            List<Monster> monsters = MapManager.getInstance().getMonster(i.code());
-            if (!monsters.isEmpty()) {
-                Monster monster = monsters.get(0);
+            Monster monster = MapManager.getInstance().getMonsterByDrop(i.code());
+            if (monster != null) {
                 int level = monster.getLevel();
                 if (level > highestLevel) {
                     highestLevel = level;

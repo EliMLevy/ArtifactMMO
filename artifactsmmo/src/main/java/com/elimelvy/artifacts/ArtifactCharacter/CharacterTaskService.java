@@ -132,8 +132,8 @@ public class CharacterTaskService {
 
         } else {
             // Otherwise, find where to collect it
-            List<Resource> resources = MapManager.getInstance().getResouce(character.getData().task);
-            if (resources != null && !resources.isEmpty()) {
+            Resource resource = MapManager.getInstance().getResouce(character.getData().task);
+            if (resource != null) {
                 this.logger.info("To complete task I need to collect {} x{}", character.getData().task,
                         quantityRemaining);
                 character.addTaskToQueue(new PlanStep(PlanAction.COLLECT, character.getData().task, quantityRemaining,

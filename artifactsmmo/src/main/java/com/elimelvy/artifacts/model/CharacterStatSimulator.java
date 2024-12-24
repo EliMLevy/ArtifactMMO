@@ -38,8 +38,8 @@ public class CharacterStatSimulator {
     // API to set the gear
 
     public void optimizeWeaponFor(String monster, MapManager mapMgr, GameItemManager gameItemMgr, Bank bank) {
-        List<Monster> maps = MapManager.getInstance().getByMonsterCode(monster);
-        if (maps == null || maps.isEmpty()) {
+        Monster target = MapManager.getInstance().getMonster(monster);
+        if (target == null) {
             return;
         }
         // Equip the correct gear if we havent already
@@ -56,8 +56,8 @@ public class CharacterStatSimulator {
      * @param bank
      */
     public void optomizeArmorFor(String monster, MapManager mapMgr, GameItemManager gameItemMgr, Bank bank) {
-        List<Monster> maps = MapManager.getInstance().getByMonsterCode(monster);
-        if (maps == null || maps.isEmpty()) {
+        Monster target = MapManager.getInstance().getMonster(monster);
+        if (target == null) {
             return;
         }
         String selection;
@@ -81,8 +81,8 @@ public class CharacterStatSimulator {
     }
 
     public void optimizeForMonster(String monster, MapManager mapMgr, GameItemManager gameItemMgr, Bank bank) {
-        List<Monster> maps = MapManager.getInstance().getByMonsterCode(monster);
-        if (maps == null || maps.isEmpty()) {
+        Monster target = MapManager.getInstance().getMonster(monster);
+        if (target == null) {
             return;
         }
         this.optimizeWeaponFor(monster, mapMgr, gameItemMgr, bank);
@@ -105,12 +105,11 @@ public class CharacterStatSimulator {
 
     public boolean getPlayerWinsAgainstMonster(String monster, List<String> fightLogs) {
         // Get the monster
-        List<Monster> monsters = MapManager.getInstance().getByMonsterCode(monster);
-        if (monsters == null || monsters.isEmpty()) {
-            logger.warn("Could not find monster: {}", monster);
+        Monster target = MapManager.getInstance().getMonster(monster);
+        if (target == null) {
+            logger.warn("Could not find monster: {}", target);
             return false;
         }
-        Monster target = monsters.get(0);
         // Get player damage per turn
         double playerAttack = this.computePlayerAttack(target);
         // Get monster damage per turn

@@ -122,10 +122,10 @@ public class CraftingManager {
         if (resourceWithFewestCollectors != null) {
             this.workAssignments.get(resourceWithFewestCollectors).add(character.getName());
             if(MapManager.getInstance().isMonsterDrop(resourceWithFewestCollectors)) {
-                List<Monster> monsters = MapManager.getInstance().getMonster(resourceWithFewestCollectors);
-                if(!monsters.isEmpty()) {
-                    this.logger.info("Assigning {} to attack {}", character.getName(), monsters.get(0).getContentCode());
-                    character.setTask(new PlanStep(PlanAction.ATTACK, monsters.get(0).getContentCode(), 0, "Crafting manager assignment"));
+                Monster monster = MapManager.getInstance().getMonster(resourceWithFewestCollectors);
+                if(monster != null) {
+                    this.logger.info("Assigning {} to attack {}", character.getName(), monster.getCode());
+                    character.setTask(new PlanStep(PlanAction.ATTACK, monster.getCode(), 0, "Crafting manager assignment"));
                 } else {
                     logger.warn("Map manager returned no instances for {}", resourceWithFewestCollectors);
                 }

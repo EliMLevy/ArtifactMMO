@@ -1,14 +1,11 @@
 package com.elimelvy.artifacts;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
 
 import com.elimelvy.artifacts.model.CharacterStatSimulator;
 import com.elimelvy.artifacts.model.item.GameItemManager;
@@ -57,8 +54,8 @@ public class CharacterStatSimulatorTest {
         Monster target = null;
         for (Monster m : monsters) {
             CharacterStatSimulator simulator = new CharacterStatSimulator(joe);
-            simulator.optimizeForMonster(m.getContentCode(), MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
-            if(simulator.getPlayerWinsAgainstMonster(m.getContentCode())) {
+            simulator.optimizeForMonster(m.getCode(), MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
+            if(simulator.getPlayerWinsAgainstMonster(m.getCode())) {
                 target = m;
                 break;
             } else {

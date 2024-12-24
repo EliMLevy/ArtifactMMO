@@ -1,24 +1,16 @@
 package com.elimelvy.artifacts.model.map;
 
-public class Resource extends MapTile {
+public class Resource {
     // Resource properties based on the CSV columns
-    private final String resourceCode;
-    private final int x;
-    private final int y;
-    private final double dropChance;
-    private final String mapCode;
+    private final String code;
+    private final String name;
     private final int level;
     private final String skill;
 
     // Constructor
-    public Resource(String resourceCode, int x, int y, double dropChance,
-            String mapCode, int level, String skill) {
-        super(x, y, "resource", mapCode);
-        this.resourceCode = resourceCode;
-        this.x = x;
-        this.y = y;
-        this.dropChance = dropChance;
-        this.mapCode = mapCode;
+    public Resource(String code, String name, int level, String skill) {
+        this.code = code;
+        this.name = name;
         this.level = level;
         this.skill = skill;
     }
@@ -26,26 +18,12 @@ public class Resource extends MapTile {
     
 
     // Getters (you can add setters if needed)
-    public String getResourceCode() {
-        return resourceCode;
+    public String getCode() {
+        return code;
     }
 
-    @Override
-    public int getX() {
-        return x;
-    }
-
-    @Override
-    public int getY() {
-        return y;
-    }
-
-    public double getDropChance() {
-        return dropChance;
-    }
-
-    public String getMapCode() {
-        return mapCode;
+    public String getName() {
+        return name;
     }
 
     public int getLevel() {
@@ -60,13 +38,55 @@ public class Resource extends MapTile {
     @Override
     public String toString() {
         return "Resource{" +
-                "resourceCode='" + resourceCode + '\'' +
-                ", x=" + x +
-                ", y=" + y +
-                ", dropChance=" + dropChance +
-                ", mapCode='" + mapCode + '\'' +
+                "code='" + code + '\'' +
                 ", level=" + level +
                 ", skill='" + skill + '\'' +
                 '}';
     }
+
+
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((code == null) ? 0 : code.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + level;
+        result = prime * result + ((skill == null) ? 0 : skill.hashCode());
+        return result;
+    }
+
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Resource other = (Resource) obj;
+        if (code == null) {
+            if (other.code != null)
+                return false;
+        } else if (!code.equals(other.code))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (level != other.level)
+            return false;
+        if (skill == null) {
+            if (other.skill != null)
+                return false;
+        } else if (!skill.equals(other.skill))
+            return false;
+        return true;
+    }
+
+    
 }

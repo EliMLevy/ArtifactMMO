@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -12,14 +14,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class MapManager {
 
     private final ConcurrentHashMap<String, CopyOnWriteArrayList<MapTile>> index;
-    private final CopyOnWriteArrayList<Monster> monsters;
-    private final CopyOnWriteArrayList<Resource> resources;
+    private final ConcurrentHashMap<String, Monster> monsters;
+    private final ConcurrentHashMap<String, Resource> resources;
+    private final ConcurrentHashMap<String, List<Drop>> drops;
     private static volatile MapManager instance; // volatile for double-checked locking
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     private MapManager() {
-        this.monsters = new CopyOnWriteArrayList<>();
-        this.resources = new CopyOnWriteArrayList<>();
+        this.monsters = new ConcurrentHashMap<>();
+        this.resources = new ConcurrentHashMap<>();
+        this.drops = new ConcurrentHashMap<>();
         this.index = new ConcurrentHashMap<>();
         reloadFromDisk();
     }
@@ -43,6 +47,7 @@ public class MapManager {
             readMonstersFromCSV("./src/main/resources/monsters.csv");
             readResourcesFromCSV("./src/main/resources/resources.csv");
             readAllMapsFromCSV("./src/main/resources/all_maps.csv");
+            readDropsFromCSV("./src/main/resources/drops.csv");
         } finally {
             lock.writeLock().unlock(); // Release write lock
         }
@@ -50,18 +55,16 @@ public class MapManager {
 
     private void readResourcesFromCSV(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            List<Resource> tempResources = new ArrayList<>();
+            Map<String, Resource> tempResources = new HashMap<>();
             br.readLine(); // Skip header
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                Resource resource = new Resource(
-                        values[0], Integer.parseInt(values[1]), Integer.parseInt(values[2]),
-                        Double.parseDouble(values[3]), values[4], Integer.parseInt(values[5]), values[6]);
-                tempResources.add(resource);
+                Resource resource = new Resource(values[1], values[2], Integer.parseInt(values[0]), values[3]);
+                tempResources.put(resource.getCode(), resource);
             }
             resources.clear();
-            resources.addAll(tempResources);
+            resources.putAll(tempResources);
         } catch (IOException e) {
             System.err.println("Error reading CSV file: " + e.getMessage());
         }
@@ -69,22 +72,40 @@ public class MapManager {
 
     private void readMonstersFromCSV(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            List<Monster> tempMonsters = new ArrayList<>();
+            Map<String, Monster> tempMonsters = new HashMap<>();
             br.readLine(); // Skip header
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 Monster monster = new Monster(
-                        Integer.parseInt(values[0]), values[1], Integer.parseInt(values[2]),
-                        Integer.parseInt(values[3]),
-                        Double.parseDouble(values[4]), values[5], Integer.parseInt(values[6]),
+                        Integer.parseInt(values[0]), values[1], values[2], Integer.parseInt(values[3]),
+                        Integer.parseInt(values[4]), Integer.parseInt(values[5]), Integer.parseInt(values[6]),
                         Integer.parseInt(values[7]), Integer.parseInt(values[8]), Integer.parseInt(values[9]),
-                        Integer.parseInt(values[10]), Integer.parseInt(values[11]), Integer.parseInt(values[12]),
-                        Integer.parseInt(values[13]), Integer.parseInt(values[14]));
-                tempMonsters.add(monster);
+                        Integer.parseInt(values[10]), Integer.parseInt(values[11]));
+                tempMonsters.put(monster.getCode(), monster);
             }
             monsters.clear();
-            monsters.addAll(tempMonsters);
+            monsters.putAll(tempMonsters);
+        } catch (IOException e) {
+            System.err.println("Error reading CSV file: " + e.getMessage());
+        }
+    }
+
+    private void readDropsFromCSV(String filePath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            Map<String, List<Drop>> tempDrops = new HashMap<>();
+            br.readLine(); // Skip header
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                Drop drop = new Drop(
+                        values[0], values[1], Integer.parseInt(values[2]),
+                        Integer.parseInt(values[3]), Integer.parseInt(values[4]));
+                tempDrops.putIfAbsent(drop.getDropCode(), new ArrayList<>());
+                tempDrops.get(drop.getDropCode()).add(drop);
+            }
+            drops.clear();
+            drops.putAll(tempDrops);
         } catch (IOException e) {
             System.err.println("Error reading CSV file: " + e.getMessage());
         }
@@ -111,55 +132,90 @@ public class MapManager {
 
     // Read operations with read lock for consistency
     public List<MapTile> getMap(String mapCode) {
-        lock.readLock().lock();
-        try {
-            return index.getOrDefault(mapCode, new CopyOnWriteArrayList<>());
-        } finally {
-            lock.readLock().unlock();
-        }
+        return index.getOrDefault(mapCode, new CopyOnWriteArrayList<>());
     }
 
     public boolean isMonsterDrop(String resourceCode) {
-        return !getMonster(resourceCode).isEmpty();
+        return getMonster(drops.get(resourceCode).get(0).getContentCode()) == null;
     }
 
-    public List<Resource> getResouce(String resourceCode) {
-        lock.readLock().lock();
-        try {
-            return resources.stream()
-                    .filter(elem -> elem.getResourceCode().equals(resourceCode))
-                    .toList();
-        } finally {
-            lock.readLock().unlock();
+    public Resource getResouce(String resourceCode) {
+        return resources.get(resourceCode);
+    }
+
+    public Monster getMonster(String monsterCode) {
+        return monsters.get(monsterCode);
+    }
+
+    /**
+     * Check the drop table for a list of places where this resource is dropped.
+     * Filter out spots that arent avaiable. Choose the spot with the best rate.
+     * The return value is a list because a given map may have several locations.
+     * 
+     * @param resourceCode The code of the resource or mosnter drop
+     * @return the map tiles where this resource could be collected
+     */
+    public List<MapTile> getMapByResource(String resourceCode) {
+        if(drops.containsKey(resourceCode)) {
+            List<Drop> dropCandidates = this.drops.get(resourceCode);
+            List<MapTile> result = null;
+            int bestRate = Integer.MAX_VALUE;
+            for(Drop d : dropCandidates) {
+                if(this.index.containsKey(d.getContentCode())) {
+                    if(d.getRate() < bestRate) {
+                        result = this.index.get(d.getContentCode());
+                    }
+                }
+            }
+            return result;
+            
+        } else {
+            return null;
         }
     }
 
-    public List<Monster> getMonster(String resourceCode) {
-        lock.readLock().lock();
-        try {
-            return monsters.stream()
-                    .filter(elem -> elem.getResourceCode().equals(resourceCode))
-                    .toList();
-        } finally {
-            lock.readLock().unlock();
+    public Monster getMonsterByDrop(String resourceCode) {
+        if (drops.containsKey(resourceCode)) {
+            List<Drop> dropCandidates = this.drops.get(resourceCode);
+            Monster result = null;
+            int bestRate = Integer.MAX_VALUE;
+            for (Drop d : dropCandidates) {
+                if (this.monsters.containsKey(d.getContentCode())) {
+                    if (d.getRate() < bestRate) {
+                        result = this.monsters.get(d.getContentCode());
+                    }
+                }
+            }
+            return result;
+
+        } else {
+            return null;
         }
     }
 
-    public List<Monster> getByMonsterCode(String monsterCode) {
-        lock.readLock().lock();
-        try {
-            return monsters.stream()
-                    .filter(elem -> elem.getContentCode().equals(monsterCode))
-                    .toList();
-        } finally {
-            lock.readLock().unlock();
+    public Resource getResourceByDrop(String resourceCode) {
+        if (drops.containsKey(resourceCode)) {
+            List<Drop> dropCandidates = this.drops.get(resourceCode);
+            Resource result = null;
+            int bestRate = Integer.MAX_VALUE;
+            for (Drop d : dropCandidates) {
+                if (this.resources.containsKey(d.getContentCode())) {
+                    if (d.getRate() < bestRate) {
+                        result = this.resources.get(d.getContentCode());
+                    }
+                }
+            }
+            return result;
+
+        } else {
+            return null;
         }
     }
 
     public List<Resource> getMapsBySkill(String skill) {
         lock.readLock().lock();
         try {
-            return resources.stream()
+            return resources.values().stream()
                     .filter(elem -> elem.getSkill().equals(skill))
                     .toList();
         } finally {
@@ -170,7 +226,7 @@ public class MapManager {
     public List<Monster> getMonstersByLevel(int min, int max) {
         lock.readLock().lock();
         try {
-            return monsters.stream()
+            return monsters.values().stream()
                     .filter(elem -> elem.getLevel() >= min && elem.getLevel() <= max)
                     .toList();
         } finally {

@@ -1,13 +1,11 @@
 package com.elimelvy.artifacts.model.map;
 
-public class Monster extends MapTile {
+public class Monster {
     // Monster properties based on the CSV columns
     private final int level;
-    private final String resourceCode;
-    private final int x;
-    private final int y;
-    private final double dropChance;
-    private final String mapCode;
+    private final String name;
+    private final String code;
+    private final int hp;
     private final int attackFire;
     private final int attackEarth;
     private final int attackWater;
@@ -16,20 +14,15 @@ public class Monster extends MapTile {
     private final int resEarth;
     private final int resWater;
     private final int resAir;
-    private final int hp;
 
     // Constructor
-    public Monster(int level, String resourceCode, int x, int y, double dropChance,
-            String mapCode, int hp, int attackFire, int attackEarth,
+    public Monster(int level, String code,
+            String name, int hp, int attackFire, int attackEarth,
             int attackWater, int attackAir, int resFire,
             int resEarth, int resWater, int resAir) {
-        super(x, y, "monster", mapCode);
         this.level = level;
-        this.resourceCode = resourceCode;
-        this.x = x;
-        this.y = y;
-        this.dropChance = dropChance;
-        this.mapCode = mapCode;
+        this.name = name;
+        this.code = code;
         this.hp = hp;
         this.attackFire = attackFire;
         this.attackEarth = attackEarth;
@@ -48,26 +41,12 @@ public class Monster extends MapTile {
         return level;
     }
 
-    public String getResourceCode() {
-        return resourceCode;
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public int getX() {
-        return x;
-    }
-
-    @Override
-    public int getY() {
-        return y;
-    }
-
-    public double getDropChance() {
-        return dropChance;
-    }
-
-    public String getMapCode() {
-        return mapCode;
+    public String getCode() {
+        return code;
     }
 
     public int getHp() {
@@ -111,12 +90,71 @@ public class Monster extends MapTile {
     public String toString() {
         return "Monster{" +
                 "level=" + level +
-                ", resourceCode='" + resourceCode + '\'' +
-                ", x=" + x +
-                ", y=" + y +
-                ", dropChance=" + dropChance +
-                ", mapCode='" + mapCode + '\'' +
+                ", code='" + code + '\'' +
                 '}';
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + level;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((code == null) ? 0 : code.hashCode());
+        result = prime * result + hp;
+        result = prime * result + attackFire;
+        result = prime * result + attackEarth;
+        result = prime * result + attackWater;
+        result = prime * result + attackAir;
+        result = prime * result + resFire;
+        result = prime * result + resEarth;
+        result = prime * result + resWater;
+        result = prime * result + resAir;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Monster other = (Monster) obj;
+        if (level != other.level)
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (code == null) {
+            if (other.code != null)
+                return false;
+        } else if (!code.equals(other.code))
+            return false;
+        if (hp != other.hp)
+            return false;
+        if (attackFire != other.attackFire)
+            return false;
+        if (attackEarth != other.attackEarth)
+            return false;
+        if (attackWater != other.attackWater)
+            return false;
+        if (attackAir != other.attackAir)
+            return false;
+        if (resFire != other.resFire)
+            return false;
+        if (resEarth != other.resEarth)
+            return false;
+        if (resWater != other.resWater)
+            return false;
+        if (resAir != other.resAir)
+            return false;
+        return true;
+    }
+
+    
 
 }

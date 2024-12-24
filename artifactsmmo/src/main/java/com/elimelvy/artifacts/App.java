@@ -3,11 +3,7 @@ package com.elimelvy.artifacts;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import org.slf4j.Logger;
@@ -27,27 +23,27 @@ public class App {
     public static Logger logger = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) throws Exception {
-        CharacterManager mgr = new CharacterManager();
-        ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
-        int refreshRate = 5;
-        scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 1, refreshRate, TimeUnit.MINUTES);
-        
         Bank.getInstance().refreshBankItems();
+        CharacterManager mgr = new CharacterManager();
         mgr.loadCharacters();
         mgr.runCharacters();
-        Map<String, PlanStep> interestingEvents = Map.of("bandit_camp", new PlanStep(PlanAction.EVENT, "bandit_lizard", 1, "Bandit event is active!"),
-                                                        "snowman", new PlanStep(PlanAction.EVENT, "snowman", 1, "Snowman event is active!"),
-                                                        "portal_demon", new PlanStep(PlanAction.EVENT, "demon", 1, "Demon event is active!"));
-        EventManager eventMgr = new EventManager(interestingEvents, mgr);
-        scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the encyclopedia is up to date
+        // ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
+        // int refreshRate = 5;
+        // scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 1, refreshRate, TimeUnit.MINUTES);
+        
+        // Map<String, PlanStep> interestingEvents = Map.of("bandit_camp", new PlanStep(PlanAction.EVENT, "bandit_lizard", 1, "Bandit event is active!"),
+        //                                                 "snowman", new PlanStep(PlanAction.EVENT, "snowman", 1, "Snowman event is active!"),
+        //                                                 "portal_demon", new PlanStep(PlanAction.EVENT, "demon", 1, "Demon event is active!"));
+        // EventManager eventMgr = new EventManager(interestingEvents, mgr);
+        // scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the encyclopedia is up to date
         // new EncyclopediaMaker().run();
-        runCraftingManagerInLoop(mgr, "steel_ring", (mgrInner) -> mgrInner.getJewelryCrafter().getData().jewelrycraftingLevel >= 30);
-        runAllCharactersManually(mgr);
+        // runCraftingManagerInLoop(mgr, "steel_ring", (mgrInner) -> mgrInner.getJewelryCrafter().getData().jewelrycraftingLevel >= 30);
+        // runAllCharactersManually(mgr);
         
         // makeSpaceInBank(mgr);
         // getListOfCraftableGear(mgr);
         // getHighestMonsterDefeatable();
-        // simulateCharacterBattle("Bobby", "lich");
+        simulateCharacterBattle("Bobby", "goblin");
 
     }
 
@@ -67,15 +63,15 @@ public class App {
     }
 
     public static void runAllCharactersManually(CharacterManager mgr) throws Exception {
-        // for(int i = 0; i < 2; i++) {
-            // mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
-            // mgr.addToAllQueues(new PlanStep(PlanAction.WITHDRAW, "piggy_helmet", 35, "Everyone cooking trout"));
-            // mgr.addToAllQueues(new PlanStep(PlanAction.RECYCLE, "piggy_helmet", 35, "Everyone cooking trout"));
-            // mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
-        // }
+        for(int i = 0; i < 3; i++) {
+            mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
+            mgr.addToAllQueues(new PlanStep(PlanAction.WITHDRAW, "trout", 150, "Everyone cooking trout"));
+            mgr.addToAllQueues(new PlanStep(PlanAction.CRAFT, "cooked_trout", 150, "Everyone cooking trout"));
+            mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
+        }
 
         // mgr.forceAllCharactersToDeposit();
-        mgr.assignAllToTask(new PlanStep(PlanAction.TASKS, "monsters", 1, "Leveling up characters"));
+        // mgr.assignAllToTask(new PlanStep(PlanAction.TASKS, "monsters", 1, "Leveling up characters"));
         mgr.standbyMode();
     }
 
@@ -116,7 +112,7 @@ public class App {
         // simulator.setElementPotionResistance("air", 0.90);
 
         System.out.println(simulator.getLoadout());
-        System.out.println(simulator.getDamageBreakdownAgainst(MapManager.getInstance().getByMonsterCode(monster).get(0)));
+        System.out.println(simulator.getDamageBreakdownAgainst(MapManager.getInstance().getMonster(monster)));
         
         
         List<String> logs = new ArrayList<>();
@@ -132,7 +128,7 @@ public class App {
         Set<String> usefulGear = new HashSet<>();
         CharacterStatSimulator simulator = new CharacterStatSimulator(mgr.getWeaponCrafter());
         for(Monster m : MapManager.getInstance().getMonstersByLevel(0, 40)) {
-            simulator.optimizeForMonster(m.getContentCode(), MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
+            simulator.optimizeForMonster(m.getCode(), MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
             for(GameItem gear : simulator.equippedGear.values()) {
                 usefulGear.add(gear.code());
             }

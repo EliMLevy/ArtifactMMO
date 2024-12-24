@@ -22,6 +22,7 @@ import com.elimelvy.artifacts.model.PlanStep;
 import com.elimelvy.artifacts.model.item.GameItem;
 import com.elimelvy.artifacts.model.item.GameItemManager;
 import com.elimelvy.artifacts.model.map.MapManager;
+import com.elimelvy.artifacts.model.map.MapTile;
 import com.elimelvy.artifacts.model.map.Resource;
 import com.elimelvy.artifacts.util.HTTPRequester;
 import com.elimelvy.artifacts.util.InstantTypeAdapter;
@@ -111,7 +112,7 @@ public class Character implements Runnable {
         this.inventoryService.depositAllItemsIfNecessary(movementService);
 
         // Get resource map
-        List<Resource> maps = MapManager.getInstance().getResouce(code);
+        List<MapTile> maps = MapManager.getInstance().getMapByResource(code);
         if (maps == null || maps.isEmpty()) {
             this.logger.warn("Invalid resource code: {}", code);
             try {
@@ -121,9 +122,12 @@ public class Character implements Runnable {
             }
             return false;
         }
-        Resource target = movementService.getClosestMap(maps);
+        MapTile target = movementService.getClosestMap(maps);
+        Resource resource = MapManager.getInstance().getResouce(code);
+        String skill = resource.getSkill();
+        int level = resource.getLevel();
         // Equip the correct tool if we havent already
-        switch (target.getSkill()) {
+        switch (skill) {
             case "mining" ->
                 gearService.equipGear("weapon_slot", "gold_pickaxe", inventoryService, movementService, combatService);
             case "woodcutting" ->
@@ -133,16 +137,16 @@ public class Character implements Runnable {
 
         }
         // If we dont have the required level, train this skill
-        if (target.getSkill().equals("woodcutting") && target.getLevel() > this.data.woodcuttingLevel) {
-            while (target.getLevel() > this.data.woodcuttingLevel && !this.isInterupted.get()) {
+        if (skill.equals("woodcutting") && level > this.data.woodcuttingLevel) {
+            while (level > this.data.woodcuttingLevel && !this.isInterupted.get()) {
                 this.train("woodcutting");
             }
-        } else if (target.getSkill().equals("mining") && target.getLevel() > this.data.miningLevel) {
-            while (target.getLevel() > this.data.miningLevel && !this.isInterupted.get()) {
+        } else if (skill.equals("mining") && level > this.data.miningLevel) {
+            while (level > this.data.miningLevel && !this.isInterupted.get()) {
                 this.train("mining");
             }
-        } else if (target.getSkill().equals("fishing") && target.getLevel() > this.data.fishingLevel) {
-            while (target.getLevel() > this.data.fishingLevel && !this.isInterupted.get()) {
+        } else if (skill.equals("fishing") && level > this.data.fishingLevel) {
+            while (level > this.data.fishingLevel && !this.isInterupted.get()) {
                 this.train("fishing");
             }
         }
@@ -153,10 +157,10 @@ public class Character implements Runnable {
         }
 
         // Move to the right spot if we arent there already
-        movementService.moveToMap(target.getMapCode());
+        movementService.moveToMap(target.getContentCode());
 
         // Collect
-        JsonObject result = AtomicActions.collect(this.data.name, target.getMapCode());
+        JsonObject result = AtomicActions.collect(this.data.name, resource.getCode());
         this.handleActionResult(result);
         return true;
     }
@@ -271,8 +275,8 @@ public class Character implements Runnable {
         }
         if (highestUnlocked != null) {
             this.logger.info("Training {} by collecting {}. Level: {}. XP: {}/{}.", type,
-                    highestUnlocked.getResourceCode(), level, xp, maxXp);
-            this.collectResource(highestUnlocked.getResourceCode());
+                    highestUnlocked.getCode(), level, xp, maxXp);
+            this.collectResource(highestUnlocked.getCode());
         } else {
             this.logger.error("Cant train {} becuase there are no places to train", type);
         }

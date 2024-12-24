@@ -1,6 +1,5 @@
 package com.elimelvy.artifacts.crafting;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -48,10 +47,10 @@ public class GearCraftingFilter implements Predicate<GameItem> {
         for (Map.Entry<String, Integer> ingredient : ingredients.entrySet()) {
             // If the ingredient is a drop, simulate a fight with best gear agains the
             // mosnter
-            List<Monster> m = MapManager.getInstance().getMonster(ingredient.getKey());
-            if (m != null && !m.isEmpty()) {
+            if (MapManager.getInstance().isMonsterDrop(ingredient.getKey())) {
+                Monster m = MapManager.getInstance().getMonsterByDrop(ingredient.getKey());
                 // Make sure we have the level
-                if (m.get(0).getLevel() <= this.highestLevel) {
+                if (m.getLevel() <= this.highestLevel) {
                     // TODO simulate the fight
                     boolean canWeDefeatMonster = true;
                     if (!canWeDefeatMonster) {
@@ -62,8 +61,8 @@ public class GearCraftingFilter implements Predicate<GameItem> {
                 }
             } else {
                 // Check if it is a resource
-                List<Resource> r = MapManager.getInstance().getResouce(ingredient.getKey());
-                if(r == null || r.isEmpty()) {
+                Resource r = MapManager.getInstance().getResourceByDrop(ingredient.getKey());
+                if(r == null) {
                     // Check in the bank for it
                     if(Bank.getInstance().getBankQuantity(ingredient.getKey()) < ingredient.getValue() && !ingredient.getKey().equals("jasper_crystal")) {
                         logger.info("Cant craft {} becuase {} is inaccessible", item.code(), ingredient.getKey());

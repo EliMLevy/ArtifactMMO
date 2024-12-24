@@ -88,12 +88,11 @@ public class GearManager {
             MapManager mapMgr,
             GameItemManager gameItemMgr, Bank bank) {
         // Get the monster
-        List<Monster> monsters = mapMgr.getByMonsterCode(monster);
-        if (monsters == null || monsters.isEmpty()) {
+        Monster target = mapMgr.getMonster(monster);
+        if (target == null) {
             logger.warn("Failed to retrieve monster: {}", monster);
             return null;
         }
-        Monster target = monsters.get(0);
         logger.debug("Monster: {}. ", target);
 
         // Get all candidate armor pieces
@@ -134,12 +133,11 @@ public class GearManager {
     public static String getBestWeaponAgainstMonster(Character character, String monster, MapManager mapMgr,
             GameItemManager gameItemMgr, Bank bank) {
         // Get the monster
-        List<Monster> monsters = mapMgr.getByMonsterCode(monster);
-        if (monsters == null || monsters.isEmpty()) {
+        Monster target = mapMgr.getMonster(monster);
+        if (target == null) {
             logger.warn("Failed to retrieve monster: {}", monster);
             return null;
         }
-        Monster target = monsters.get(0);
         logger.debug("Monster: {}. ", target);
 
         // Get all the candidate weapons

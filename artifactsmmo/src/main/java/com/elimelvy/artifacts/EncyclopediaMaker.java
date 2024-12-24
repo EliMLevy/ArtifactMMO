@@ -78,86 +78,91 @@ public class EncyclopediaMaker implements Runnable {
         }
     }
 
-    public static void combineMapsAndResources() throws Exception {
+    public static void createResourcesTable() throws Exception {
         String resourcesContent = Files.readString(Paths.get("resources/all_resources.json"));
         JSONArray resources = new JSONArray(resourcesContent);
 
-        String mapsContent = Files.readString(Paths.get("maps/all_interesting_maps.json"));
-        JSONObject maps = new JSONObject(mapsContent);
-
         CSVFormat.Builder.create();
         try (CSVPrinter printer = new CSVPrinter(new FileWriter("src/main/resources/resources.csv"),
-                CSVFormat.Builder.create().setHeader("resource_code", "x", "y", "drop_chance", "map_code",
-                        "level", "skill").build())) {
+                CSVFormat.Builder.create().setHeader("level", "code", "name", "skill").build())) {
 
             for (int i = 0; i < resources.length(); i++) {
                 JSONObject resource = resources.getJSONObject(i);
                 String resourceCode = resource.getString("code");
 
-                if (maps.has(resourceCode)) {
-                    JSONArray locations = maps.getJSONArray(resourceCode);
-
-                    JSONArray drops = resource.getJSONArray("drops");
-                    for (int j = 0; j < drops.length(); j++) {
-                        JSONObject drop = drops.getJSONObject(j);
-                        for (int k = 0; k < locations.length(); k++) {
-                            JSONObject location = locations.getJSONObject(k);
-                            printer.printRecord(drop.getString("code"), location.getInt("x"), location.getInt("y"),
-                                    drop.getDouble("rate"), location.getJSONObject("content").getString("code"),
-                                    resource.getInt("level"), resource.getString("skill"));
-                        }
-                    }
-                }
+                printer.printRecord(resource.get("level"), resourceCode, resource.get("name"), resource.get("skill"));
             }
         }
     }
 
-    public static void combineMapsAndMonsters() throws Exception {
+    public static void createMonstersTable() throws Exception {
         String monstersContent = Files.readString(Paths.get("monsters/all_monsters.json"));
         JSONArray monsters = new JSONArray(monstersContent);
-
-        String mapsContent = Files.readString(Paths.get("maps/all_interesting_maps.json"));
-        JSONObject maps = new JSONObject(mapsContent);
 
         CSVFormat.Builder.create();
         try (CSVPrinter printer = new CSVPrinter(new FileWriter("src/main/resources/monsters.csv"),
                 CSVFormat.Builder.create()
-                        .setHeader("level", "resource_code", "x", "y", "drop_chance", "map_code", "hp", "attack_fire",
-                                "attack_earth", "attack_water", "attack_air", "res_fire", "res_earth", "res_water",
-                                "res_air")
+                        .setHeader("level",
+                                "code", "name", "hp", "attack_fire", "attack_earth", "attack_water", "attack_air",
+                                "res_fire", "res_earth", "res_water", "res_air")
                         .build())) {
-
+            // TODO add a csv printer for the drops
             for (int i = 0; i < monsters.length(); i++) {
                 JSONObject monster = monsters.getJSONObject(i);
                 String monsterCode = monster.getString("code");
+                printer.printRecord(monster.get("level"), monsterCode, monster.get("name"), monster.get("hp"),
+                        monster.get("attack_fire"),
+                        monster.get("attack_earth"), monster.get("attack_water"), monster.get("attack_air"),
+                        monster.get("res_fire"), monster.get("res_earth"), monster.get("res_water"),
+                        monster.get("res_air"));
+            }
+        }
+    }
 
-                if (maps.has(monsterCode)) {
-                    JSONArray locations = maps.getJSONArray(monsterCode);
+    public static void createDropsTable() throws Exception {
+        String monstersContent = Files.readString(Paths.get("monsters/all_monsters.json"));
+        JSONArray monsters = new JSONArray(monstersContent);
 
-                    JSONArray drops = monster.getJSONArray("drops");
-                    for (int j = 0; j < drops.length(); j++) {
-                        JSONObject drop = drops.getJSONObject(j);
-                        for (int k = 0; k < locations.length(); k++) {
-                            JSONObject location = locations.getJSONObject(k);
-                            printer.printRecord(monster.get("level"), drop.getString("code"), location.getInt("x"),
-                                    location.getInt("y"), drop.getDouble("rate"),
-                                    location.getJSONObject("content").getString("code"), monster.get("hp"),
-                                    monster.get("attack_fire"), monster.get("attack_earth"),
-                                    monster.get("attack_water"), monster.get("attack_air"), monster.get("res_fire"),
-                                    monster.get("res_earth"), monster.get("res_water"), monster.get("res_air"));
-                        }
-                    }
+        String resourcesContent = Files.readString(Paths.get("resources/all_resources.json"));
+        JSONArray resources = new JSONArray(resourcesContent);
+
+        CSVFormat.Builder.create();
+        try (CSVPrinter printer = new CSVPrinter(new FileWriter("src/main/resources/drops.csv"),
+                CSVFormat.Builder.create()
+                        .setHeader("content_code", "drop_code", "min_quantity", "max_quantity", "rate")
+                        .build())) {
+            for (int i = 0; i < monsters.length(); i++) {
+                JSONObject monster = monsters.getJSONObject(i);
+                String monsterCode = monster.getString("code");
+                JSONArray drops = monster.getJSONArray("drops");
+                for(int j = 0; j < drops.length(); j++) {
+                    JSONObject drop = drops.getJSONObject(j);
+                    printer.printRecord(monsterCode, drop.get("code"), drop.get("min_quantity"), 
+                            drop.get("max_quantity"), drop.get("rate"));
+                }
+            }
+
+            for (int i = 0; i < resources.length(); i++) {
+                JSONObject resource = resources.getJSONObject(i);
+                String resourceCode = resource.getString("code");
+                JSONArray drops = resource.getJSONArray("drops");
+                for (int j = 0; j < drops.length(); j++) {
+                    JSONObject drop = drops.getJSONObject(j);
+                    printer.printRecord(resourceCode, drop.get("code"), drop.get("min_quantity"),
+                            drop.get("max_quantity"), drop.get("rate"));
                 }
             }
         }
+
     }
 
     public static void convertMapsFromJsonToCsv() throws Exception {
         String mapsContent = Files.readString(Paths.get("maps/all_interesting_maps.json"));
         JSONObject data = new JSONObject(mapsContent);
 
-        try (CSVPrinter printer = new CSVPrinter(new FileWriter("src/main/resources/all_maps.csv"), CSVFormat.Builder.create().setHeader(
-                "x", "y", "content_type", "content_code").build())) {
+        try (CSVPrinter printer = new CSVPrinter(new FileWriter("src/main/resources/all_maps.csv"),
+                CSVFormat.Builder.create().setHeader(
+                        "x", "y", "content_type", "content_code").build())) {
 
             for (String contentCode : data.keySet()) {
                 JSONArray items = data.getJSONArray(contentCode);
@@ -187,7 +192,8 @@ public class EncyclopediaMaker implements Runnable {
     }
 
     public static void main(String[] args) throws Exception {
-        new EncyclopediaMaker().run();
+            createDropsTable();
+            // new EncyclopediaMaker().run();
     }
 
     @Override
@@ -197,12 +203,13 @@ public class EncyclopediaMaker implements Runnable {
             fetchAllPagesAndSave("https://api.artifactsmmo.com/items?size=100", "items/all_items.json");
             fetchAllPagesAndSave("https://api.artifactsmmo.com/monsters?size=100", "monsters/all_monsters.json");
             fetchAllPagesAndSave("https://api.artifactsmmo.com/resources?size=100", "resources/all_resources.json");
-    
+
             mapCombination();
             convertMapsFromJsonToCsv();
-            combineMapsAndResources();
-            combineMapsAndMonsters();
+            createResourcesTable();
+            createMonstersTable();
             convertItemsToDict();
+            createDropsTable();
             MapManager.getInstance().reloadFromDisk();
         } catch (Exception e) {
             logger.error("Failed to create encyclopedia, {}. {}", e.getMessage(), e.getStackTrace());

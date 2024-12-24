@@ -12,6 +12,7 @@ import com.elimelvy.artifacts.Character;
 import com.elimelvy.artifacts.model.CharacterStatSimulator;
 import com.elimelvy.artifacts.model.item.GameItemManager;
 import com.elimelvy.artifacts.model.map.MapManager;
+import com.elimelvy.artifacts.model.map.MapTile;
 import com.elimelvy.artifacts.model.map.Monster;
 import com.google.gson.JsonObject;
 
@@ -28,7 +29,7 @@ public class CharacterCombatService {
 
     public void attackMonster(String code, CharacterMovementService movementService, CharacterGearService gearService, CharacterInventoryService inventoryService) {
         // Get resource map
-        List<Monster> maps = MapManager.getInstance().getByMonsterCode(code);
+        List<MapTile> maps = MapManager.getInstance().getMap(code);
         if (maps == null || maps.isEmpty()) {
             this.logger.warn("Invalid monster code: {}", code);
             try {
@@ -38,17 +39,16 @@ public class CharacterCombatService {
             }
             return;
         }
-        Monster target = movementService.getClosestMap(maps);
         // Make sure I can defeat this monster, otherwise train combat
         CharacterStatSimulator simulator = new CharacterStatSimulator(character);
-        simulator.optimizeForMonster(target.getMapCode(), MapManager.getInstance(), GameItemManager.getInstance(),
+        simulator.optimizeForMonster(code, MapManager.getInstance(), GameItemManager.getInstance(),
                 Bank.getInstance());
-        if (!simulator.getPlayerWinsAgainstMonster(target.getMapCode())) {
-            this.logger.info("Can't defeat {} so Im going to train combat", target.getMapCode());
+        if (!simulator.getPlayerWinsAgainstMonster(code)) {
+            this.logger.info("Can't defeat {} so Im going to train combat", code);
             this.trainCombat(movementService, gearService, inventoryService);
             return;
         } else {
-            this.logger.info("I can defeat {} with this loadout {}", target.getMapCode(), simulator.getLoadout());
+            this.logger.info("I can defeat {} with this loadout {}", code, simulator.getLoadout());
         }
         // Equip the correct gear
         gearService.equipGearForBattle(code, inventoryService, movementService, this);
@@ -60,14 +60,14 @@ public class CharacterCombatService {
         inventoryService.fillUpOnConsumables(List.of("cooked_wolf_meat", "cooked_chicken", "cooked_trout", "gingerbread", "apple_pie"), gearService, movementService);
 
         // Move to the right spot if we arent there already
-        movementService.moveToMap(target.getMapCode());
+        movementService.moveToMap(code);
 
         // Rest if we need to rest
         healIfNecessary(inventoryService, gearService);
 
         // Attack
         this.logger.info("Attacking {}!", code);
-        JsonObject result = AtomicActions.attack(character.getName(), target.getMapCode());
+        JsonObject result = AtomicActions.attack(character.getName(), code);
         character.handleActionResult(result);
     }
 
@@ -77,8 +77,8 @@ public class CharacterCombatService {
         // Sort in descending ordre of level
         // Find the first one we can defeat and battle him
         Monster target = this.getHighestMonsterDefeatable();
-        this.logger.info("Training combat by fighting {}", target.getMapCode());
-        this.attackMonster(target.getMapCode(), movementService, gearService, inventoryService);
+        this.logger.info("Training combat by fighting {}", target.getCode());
+        this.attackMonster(target.getCode(), movementService, gearService, inventoryService);
     }
 
     public Monster getHighestMonsterDefeatable() {
@@ -98,8 +98,8 @@ public class CharacterCombatService {
         // Find the first one we can defeat and battle him
         for (Monster m : monsters) {
             CharacterStatSimulator simulator = new CharacterStatSimulator(character);
-            simulator.optimizeForMonster(m.getContentCode(), MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
-            if(simulator.getPlayerWinsAgainstMonster(m.getContentCode())) {
+            simulator.optimizeForMonster(m.getCode(), MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
+            if(simulator.getPlayerWinsAgainstMonster(m.getCode())) {
                 return m;
             } 
         }
