@@ -32,29 +32,31 @@ public class App {
         CharacterManager mgr = new CharacterManager();
         mgr.loadCharacters();
         mgr.runCharacters();
-        ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
-        int refreshRate = 5;
-        scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 1, refreshRate, TimeUnit.MINUTES);
-
-        Map<String, PlanStep> interestingEvents = Map.of("bandit_camp",
-                new PlanStep(PlanAction.EVENT, "bandit_lizard", 1, "Bandit event is active!"),
-                "snowman", new PlanStep(PlanAction.EVENT, "snowman", 1, "Snowman event is active!"),
-                "portal_demon", new PlanStep(PlanAction.EVENT, "demon", 1, "Demon event is active!"));
-        EventManager eventMgr = new EventManager(interestingEvents, mgr);
-        scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the
-                                                                                   // encyclopedia is up to date
+        scheduleEventManager(mgr);
+        // encyclopedia is up to date
         // new EncyclopediaMaker().run();
 
-        List<String> gearToCraft = List.of(
-                 "obsidian_helmet", "lost_amulet",
-                "ruby_ring"
-                // ,"gold_helm", "royal_skeleton_armor", "obsidian_legs_armor",
-                // "gold_platebody",  "obsidian_armor", "dreadful_ring", "lizard_boots",
-                //  "greater_dreadful_amulet", "topaz_ring", "lich_crown", "serpent_skin_armor",
-                // "death_knight_sword", "lizard_skin_armor",  "obsidian_battleaxe"
-                );
+        List<String> gearWithObsidian = List.of(
+                "lost_amulet",
+                "ruby_ring", // we need 9 more
+                "obsidian_legs_armor",
+                "obsidian_armor",
+                "topaz_ring", 
+                "obsidian_battleaxe");
 
-        List<GameItem> items = gearToCraft.stream().map(item -> GameItemManager.getInstance().getItem(item))
+        List<String> noObsidianGear = List.of(
+                "gold_helm",
+                "royal_skeleton_armor",
+                "gold_platebody",
+                "dreadful_ring",
+                "lizard_boots",
+                "greater_dreadful_amulet",
+                "serpent_skin_armor",
+                "lizard_skin_armor");
+
+        
+
+        List<GameItem> items = noObsidianGear.stream().map(item -> GameItemManager.getInstance().getItem(item))
                 .filter(item -> item.craft() != null)
                 .sorted(new GearCraftingSorter())
                 .toList();
@@ -64,7 +66,9 @@ public class App {
                     GearCraftingSorter.getHighestLevelMonsterIngredient(item.craft().items()));
         });
 
-
+        
+        doCompleteCrafting("obsidian_helmet", 5, mgr);
+        doCompleteCrafting("ruby_ring", 1, mgr);
         for (GameItem item : items) {
             if (item.type().equals("ring")) {
                 doCompleteCrafting(item.code(), 10, mgr);
@@ -78,8 +82,21 @@ public class App {
         // makeSpaceInBank(mgr);
         // getListOfCraftableGear(mgr);
         // getHighestMonsterDefeatable();
-        // simulateCharacterBattle("Bobby", "cultist_acolyte");
+        simulateCharacterBattle("Bobby", "cultist_acolyte");
 
+    }
+
+    private static void scheduleEventManager(CharacterManager mgr) {
+        ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
+        int refreshRate = 5;
+        scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 1, refreshRate, TimeUnit.MINUTES);
+
+        Map<String, PlanStep> interestingEvents = Map.of("bandit_camp",
+                new PlanStep(PlanAction.EVENT, "bandit_lizard", 1, "Bandit event is active!"),
+                "snowman", new PlanStep(PlanAction.EVENT, "snowman", 1, "Snowman event is active!"),
+                "portal_demon", new PlanStep(PlanAction.EVENT, "demon", 1, "Demon event is active!"));
+        EventManager eventMgr = new EventManager(interestingEvents, mgr);
+        scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the
     }
 
     public static void doCompleteCrafting(String item, int quantity, CharacterManager mgr) throws Exception {
@@ -101,10 +118,14 @@ public class App {
 
     public static void runAllCharactersManually(CharacterManager mgr) throws Exception {
         // for (int i = 0; i < 3; i++) {
-        //     mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
-        //     mgr.addToAllQueues(new PlanStep(PlanAction.WITHDRAW, "trout", 150, "Everyone cooking trout"));
-        //     mgr.addToAllQueues(new PlanStep(PlanAction.CRAFT, "cooked_trout", 150, "Everyone cooking trout"));
-        //     mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
+        // mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked
+        // trout"));
+        // mgr.addToAllQueues(new PlanStep(PlanAction.WITHDRAW, "trout", 150, "Everyone
+        // cooking trout"));
+        // mgr.addToAllQueues(new PlanStep(PlanAction.CRAFT, "cooked_trout", 150,
+        // "Everyone cooking trout"));
+        // mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked
+        // trout"));
         // }
 
         // mgr.forceAllCharactersToDeposit();
@@ -162,13 +183,14 @@ public class App {
         Character character = Character.fromJson(characterData);
         CharacterStatSimulator simulator = new CharacterStatSimulator(character);
         simulator.optimizeWeaponFor(monster, MapManager.getInstance(), GameItemManager.getInstance(),
-                new FakeBank());
+                Bank.getInstance());
         // Weapon override here
-        // simulator.setGear("weapon_slot", "greater_dreadful_staff");
-
+        
         simulator.optomizeArmorFor(monster, MapManager.getInstance(), GameItemManager.getInstance(),
-                new FakeBank());
-
+        Bank.getInstance());
+        
+        simulator.setGear("body_armor_slot", "bandit_armor");
+        simulator.setGear("helmet_slot", "obsidian_helmet");
         // Armor overrides here
 
         // Potion overrides

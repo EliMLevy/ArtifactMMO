@@ -34,7 +34,6 @@ public class EventManager implements Runnable {
     private final Map<String, PlanStep> interestingEvents;
     private final CharacterManager mgr;
     private static final Gson gson = InstantTypeAdapter.createGsonWithInstant();
-    private final Set<String> activeEvents = new HashSet<>();
 
     public EventManager(Map<String, PlanStep> interestingEvents, CharacterManager mgr) {
         this.interestingEvents = interestingEvents;
@@ -61,13 +60,6 @@ public class EventManager implements Runnable {
                         break;
                     }
                 }
-                this.activeEvents.clear();
-                for (JsonElement event : result.getAsJsonArray("data")) {
-                    if (event.isJsonObject() && event.getAsJsonObject().has("code")
-                            && event.getAsJsonObject().get("code").isJsonPrimitive()) {
-                        this.activeEvents.add(event.getAsJsonObject().get("code").getAsString());
-                    }
-                }
             } else {
                 logger.warn("result did not have data or is not array. {}", result);
             }
@@ -84,8 +76,7 @@ public class EventManager implements Runnable {
             JsonObject eventObj = event.getAsJsonObject();
             if (eventObj.has("code") && eventObj.get("code").isJsonPrimitive()) {
                 logger.info("Event: {}", eventObj.get("code").getAsString());
-                if (interestingEvents.containsKey(eventObj.get("code").getAsString())
-                        && !activeEvents.contains(eventObj.get("code").getAsString())) {
+                if (interestingEvents.containsKey(eventObj.get("code").getAsString())) {
                     // Alert the character manager if they are
                     Instant expiration = gson.fromJson(eventObj.get("expiration"), Instant.class);
                     Duration d = Duration.between(expiration, Instant.now()).abs();
@@ -93,15 +84,13 @@ public class EventManager implements Runnable {
                             d.toSeconds(), eventObj.get("code").getAsString());
                     if (mgr != null) {
                         Map<String, PlanStep> assignedTasks = mgr.getAllAssignedTasks();
-                        mgr.assignAllToTask(interestingEvents.get(eventObj.get("code").getAsString()));
-                        // Schedule the mgr to assign everyone to the tasks they had before when the
-                        // event expires
-
-                        for (String c : assignedTasks.keySet()) {
-                            if (assignedTasks.get(c).action != PlanAction.EVENT) {
-                                // If the character is currently doing an event then we can assume they already
-                                // have a scheduled action
-                                mgr.scheduleAssignToTask(c, assignedTasks.get(c), d.toSeconds(), TimeUnit.SECONDS);
+                        for (Map.Entry<String, PlanStep> assignment : assignedTasks.entrySet()) {
+                            String name = assignment.getKey();
+                            if(assignment.getValue().action == PlanAction.EVENT) { // Only assign characters who arent working on an event right now
+                                logger.info("Character {} is busy with event {}", name, assignment.getValue().code);
+                            } else {
+                                mgr.assignSpecificCharacterToTask(name, interestingEvents.get(eventObj.get("code").getAsString()));
+                                mgr.scheduleAssignToTask(name, assignedTasks.get(name), d.toSeconds(), TimeUnit.SECONDS);
                             }
                         }
                     }
@@ -118,24 +107,25 @@ public class EventManager implements Runnable {
     }
 
     public static void main(String[] args) {
-        String exampleEvent = "{\r\n" + //
-                "      \"name\": \"name\",\r\n" + //
-                "      \"code\": \"code\",\r\n" + //
-                "      \"map\": {\r\n" + //
-                "        \"name\": \"mapname\",\r\n" + //
-                "        \"skin\": \"mapskin\",\r\n" + //
-                "        \"x\": 0,\r\n" + //
-                "        \"y\": 1,\r\n" + //
-                "        \"content\": {\r\n" + //
-                "          \"type\": \"contenttype\",\r\n" + //
-                "          \"code\": \"contentcode\"\r\n" + //
-                "        }\r\n" + //
-                "      },\r\n" + //
-                "      \"previous_skin\": \"prevskin\",\r\n" + //
-                "      \"duration\": 100,\r\n" + //
-                "      \"expiration\": \"2024-12-15T17:44:22Z\",\r\n" + //
-                "      \"created_at\": \"2024-12-15T14:15:22Z\"\r\n" + //
-                "    }";
+        String exampleEvent = """
+                              {\r
+                                    "name": "name",\r
+                                    "code": "code",\r
+                                    "map": {\r
+                                      "name": "mapname",\r
+                                      "skin": "mapskin",\r
+                                      "x": 0,\r
+                                      "y": 1,\r
+                                      "content": {\r
+                                        "type": "contenttype",\r
+                                        "code": "contentcode"\r
+                                      }\r
+                                    },\r
+                                    "previous_skin": "prevskin",\r
+                                    "duration": 100,\r
+                                    "expiration": "2024-12-15T17:44:22Z",\r
+                                    "created_at": "2024-12-15T14:15:22Z"\r
+                                  }""";
         EventManager mgr = new EventManager(
                 Map.of("code", new PlanStep(PlanAction.ATTACK, "exampleEvent", 0, "exampleEvent description")), null);
         // mgr.run();

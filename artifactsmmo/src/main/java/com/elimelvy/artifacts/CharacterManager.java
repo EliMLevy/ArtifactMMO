@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -48,10 +46,9 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
     }
 
     private final Set<GameItem> unlockedGear = new HashSet<>();
-    private final Queue<String> gearToCraft = new LinkedList<>();
     private String currentlyCrafting;
     private int currentCraftingQuantity;
-    private Goal currentGoal = Goal.CRAFTING_NEW_GEAR;
+    private final Goal currentGoal = Goal.CRAFTING_NEW_GEAR;
     private CraftingManager craftingMgr = null;
 
     public void loadCharacters() {
