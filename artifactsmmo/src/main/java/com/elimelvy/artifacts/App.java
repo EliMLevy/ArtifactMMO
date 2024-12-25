@@ -67,8 +67,6 @@ public class App {
         });
 
         
-        doCompleteCrafting("obsidian_helmet", 5, mgr);
-        doCompleteCrafting("ruby_ring", 1, mgr);
         for (GameItem item : items) {
             if (item.type().equals("ring")) {
                 doCompleteCrafting(item.code(), 10, mgr);
