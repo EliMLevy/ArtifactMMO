@@ -44,7 +44,6 @@ public class App {
         scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the
                                                                                    // encyclopedia is up to date
         // new EncyclopediaMaker().run();
-        // runAllCharactersManually(mgr);
 
         List<String> gearToCraft = List.of(
                  "obsidian_helmet", "lost_amulet",
@@ -65,6 +64,7 @@ public class App {
                     GearCraftingSorter.getHighestLevelMonsterIngredient(item.craft().items()));
         });
 
+        runAllCharactersManually(mgr);
 
         for (GameItem item : items) {
             if (item.type().equals("ring")) {
@@ -99,16 +99,15 @@ public class App {
     }
 
     public static void runAllCharactersManually(CharacterManager mgr) throws Exception {
-        for (int i = 0; i < 3; i++) {
-            mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
-            mgr.addToAllQueues(new PlanStep(PlanAction.WITHDRAW, "trout", 150, "Everyone cooking trout"));
-            mgr.addToAllQueues(new PlanStep(PlanAction.CRAFT, "cooked_trout", 150, "Everyone cooking trout"));
-            mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
-        }
+        // for (int i = 0; i < 3; i++) {
+        //     mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
+        //     mgr.addToAllQueues(new PlanStep(PlanAction.WITHDRAW, "trout", 150, "Everyone cooking trout"));
+        //     mgr.addToAllQueues(new PlanStep(PlanAction.CRAFT, "cooked_trout", 150, "Everyone cooking trout"));
+        //     mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked trout"));
+        // }
 
         // mgr.forceAllCharactersToDeposit();
-        // mgr.assignAllToTask(new PlanStep(PlanAction.TASKS, "monsters", 1, "Leveling
-        // up characters"));
+        mgr.assignAllToTask(new PlanStep(PlanAction.TASKS, "monsters", 1, "Leveling up characters"));
         mgr.standbyMode();
     }
 
