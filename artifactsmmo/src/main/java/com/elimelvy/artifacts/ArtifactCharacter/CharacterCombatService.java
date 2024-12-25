@@ -97,6 +97,7 @@ public class CharacterCombatService {
         monsters.sort((a, b) -> b.getLevel() - a.getLevel());
         // Find the first one we can defeat and battle him
         for (Monster m : monsters) {
+            if(MapManager.getInstance().getMap(m.getCode()) == null) continue;
             CharacterStatSimulator simulator = new CharacterStatSimulator(character);
             simulator.optimizeForMonster(m.getCode(), MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
             if(simulator.getPlayerWinsAgainstMonster(m.getCode())) {

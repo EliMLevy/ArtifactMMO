@@ -31,9 +31,6 @@ public class Bank {
     private volatile List<InventoryItem> bankItems;
     private volatile AtomicLong lastUpdated = new AtomicLong();
 
-    // Private constructor to prevent instantiation
-    private Bank() {
-    }
 
     // Singleton getter
     public static synchronized Bank getInstance() {

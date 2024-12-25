@@ -42,6 +42,10 @@ public class GearManager {
 
     public static Map<String, Integer> getInredientsForGear(String code, int quantity) {
         GameItem target = GameItemManager.getInstance().getItem(code);
+        if(target == null) {
+            logger.warn("Invalid item code: {}", code);
+            return null;
+        }
         if (target.craft() != null) {
             return ingredientCollector(target, new HashMap<>(), quantity);
         } else {
@@ -98,14 +102,15 @@ public class GearManager {
         // Get all candidate armor pieces
         String currentArmor = character.gearService.getGearInSlot(gearType + "_slot");
         List<GameItem> candidateArmors = gameItemMgr.getItems(item -> {
+            String type = gearType.startsWith("ring") ? "ring" : gearType;
             int bankQuantity = bank.getBankQuantity(item.code());
             int invQuantity = character.inventoryService.getInventoryQuantity(item.code(), character.gearService);
-            String type = gearType.startsWith("ring") ? "ring" : gearType;
-            return item.type().equals(type) &&
+            boolean result = item.type().equals(type) &&
                     (bankQuantity > 0 || invQuantity > 0
                             || (currentArmor != null && currentArmor.equals(item.code())))
                     &&
                     item.level() <= character.getLevel();
+            return result;
         });
 
         if (candidateArmors == null || candidateArmors.isEmpty()) {
@@ -153,7 +158,6 @@ public class GearManager {
                             || (currentWeapon != null && currentWeapon.equals(item.code())))
                     &&
                     item.level() <= character.getLevel();
-
             return result;
         });
 
@@ -173,9 +177,10 @@ public class GearManager {
         for (GameItem weapon : candidateWeapons) {
             double total_dmg = getWeaponDamage(target, weapon);
             logger.debug("Total damage of {} against {} is {}", weapon.code(), monster, total_dmg);
-            if (total_dmg > highestDmg || 
-                // Use this clause to prefer fire weapons over non fire weapons.  
-                (total_dmg == highestDmg && getEffectValue(weapon, "attack_fire") > getEffectValue(bestWeapon, "attack_fire"))) {
+            if (total_dmg > highestDmg ||
+            // Use this clause to prefer fire weapons over non fire weapons.
+                    (total_dmg == highestDmg
+                            && getEffectValue(weapon, "attack_fire") > getEffectValue(bestWeapon, "attack_fire"))) {
                 highestDmg = total_dmg;
                 bestWeapon = weapon;
             }
@@ -217,7 +222,7 @@ public class GearManager {
         double res_air = (getEffectValue(armor, "res_air") / 100) * target.getAttackAir();
         // Add to the resistance, health added / 10 because tough fights last ~10 rounds
         double health = getEffectValue(armor, "hp");
-        double total_res = res_fire + res_earth + res_water + res_air + health/10;
+        double total_res = res_fire + res_earth + res_water + res_air + health / 10;
         return total_res;
     }
 

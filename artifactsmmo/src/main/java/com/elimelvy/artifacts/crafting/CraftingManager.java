@@ -121,20 +121,16 @@ public class CraftingManager {
         this.logger.info("Resource with fewest collectors: {}", resourceWithFewestCollectors);
         if (resourceWithFewestCollectors != null) {
             this.workAssignments.get(resourceWithFewestCollectors).add(character.getName());
-            if(MapManager.getInstance().isMonsterDrop(resourceWithFewestCollectors)) {
-                Monster monster = MapManager.getInstance().getMonster(resourceWithFewestCollectors);
-                if(monster != null) {
-                    this.logger.info("Assigning {} to attack {}", character.getName(), monster.getCode());
-                    character.setTask(new PlanStep(PlanAction.ATTACK, monster.getCode(), 0, "Crafting manager assignment"));
-                } else {
-                    logger.warn("Map manager returned no instances for {}", resourceWithFewestCollectors);
-                }
+            Monster monster = MapManager.getInstance().getMonsterByDrop(resourceWithFewestCollectors);
+            if(monster != null) {
+                this.logger.info("Assigning {} to attack {}", character.getName(), monster.getCode());
+                character.setTask(new PlanStep(PlanAction.ATTACK, monster.getCode(), 0, "Crafting manager assignment"));
             } else {
                 // If this resource is jasper, assign character to complete tasks
                 Set<String> fromTasks = Set.of("magical_cure", "jasper_crystal", "astralyte_crystal", "enchanted_fabric", "diamond");
                 if(fromTasks.contains(resourceWithFewestCollectors)) {
                     this.logger.info("Assigning {} to Tasks! so that we can get more {}", character.getName(), resourceWithFewestCollectors);
-                    character.setTask(new PlanStep(PlanAction.TASKS, "items", 0, "Crafting manager assignment"));
+                    character.setTask(new PlanStep(PlanAction.TASKS, "monsters", 0, "Crafting manager assignment"));
                 } else {
                     this.logger.info("Assigning {} to collect {}", character.getName(), resourceWithFewestCollectors);
                     character.setTask(new PlanStep(PlanAction.COLLECT, resourceWithFewestCollectors, 1, "Crafting manager assignment"));

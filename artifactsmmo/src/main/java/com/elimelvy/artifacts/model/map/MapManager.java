@@ -132,11 +132,15 @@ public class MapManager {
 
     // Read operations with read lock for consistency
     public List<MapTile> getMap(String mapCode) {
-        return index.getOrDefault(mapCode, new CopyOnWriteArrayList<>());
+        return index.get(mapCode);
     }
 
     public boolean isMonsterDrop(String resourceCode) {
-        return getMonster(drops.get(resourceCode).get(0).getContentCode()) == null;
+        if(drops.get(resourceCode) != null) {
+            return getMonster(drops.get(resourceCode).get(0).getContentCode()) == null;
+        } else {
+            return false;
+        }
     }
 
     public Resource getResouce(String resourceCode) {
@@ -180,7 +184,7 @@ public class MapManager {
             Monster result = null;
             int bestRate = Integer.MAX_VALUE;
             for (Drop d : dropCandidates) {
-                if (this.monsters.containsKey(d.getContentCode())) {
+                if (this.monsters.containsKey(d.getContentCode()) && this.index.containsKey(d.getContentCode())) {
                     if (d.getRate() < bestRate) {
                         result = this.monsters.get(d.getContentCode());
                     }

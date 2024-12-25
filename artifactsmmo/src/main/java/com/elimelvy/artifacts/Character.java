@@ -113,8 +113,15 @@ public class Character implements Runnable {
 
         // Get resource map
         List<MapTile> maps = MapManager.getInstance().getMapByResource(code);
-        if (maps == null || maps.isEmpty()) {
-            this.logger.warn("Invalid resource code: {}", code);
+        Resource resource = MapManager.getInstance().getResouce(code);
+        if(resource == null) { // If the drop was passed in
+            resource = MapManager.getInstance().getResourceByDrop(code);
+        }
+        if(maps == null) {
+            maps = MapManager.getInstance().getMap(code);
+        }
+        if (maps == null || maps.isEmpty() || resource == null) {
+            this.logger.warn("Invalid resource code: {}. {} {}", code, maps, resource);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -123,7 +130,6 @@ public class Character implements Runnable {
             return false;
         }
         MapTile target = movementService.getClosestMap(maps);
-        Resource resource = MapManager.getInstance().getResouce(code);
         String skill = resource.getSkill();
         int level = resource.getLevel();
         // Equip the correct tool if we havent already

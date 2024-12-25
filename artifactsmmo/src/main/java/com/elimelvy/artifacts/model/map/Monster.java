@@ -85,13 +85,14 @@ public class Monster {
         return resAir;
     }
 
-    // Optional: toString method for easy printing
+    
+
     @Override
     public String toString() {
-        return "Monster{" +
-                "level=" + level +
-                ", code='" + code + '\'' +
-                '}';
+        return "Monster [level=" + level + ", name=" + name + ", code=" + code + ", hp=" + hp + ", attackFire="
+                + attackFire + ", attackEarth=" + attackEarth + ", attackWater=" + attackWater + ", attackAir="
+                + attackAir + ", resFire=" + resFire + ", resEarth=" + resEarth + ", resWater=" + resWater + ", resAir="
+                + resAir + "]";
     }
 
     @Override
