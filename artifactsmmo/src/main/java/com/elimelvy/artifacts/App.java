@@ -64,7 +64,6 @@ public class App {
                     GearCraftingSorter.getHighestLevelMonsterIngredient(item.craft().items()));
         });
 
-        runAllCharactersManually(mgr);
 
         for (GameItem item : items) {
             if (item.type().equals("ring")) {
@@ -73,6 +72,8 @@ public class App {
                 doCompleteCrafting(item.code(), 5, mgr);
             }
         }
+
+        runAllCharactersManually(mgr);
 
         // makeSpaceInBank(mgr);
         // getListOfCraftableGear(mgr);
