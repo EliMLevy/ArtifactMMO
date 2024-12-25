@@ -1,7 +1,11 @@
-1. implement the fight simulator
-2. Filter out items in the GearCraftingFilter that we cants beat yet
+# Bank space optimizer
+Create a item purging routine
+- Go through each monster and create a set of useful items
+- Recycle each non-useful item
 
-1. Keep making the crafting manager more robust
-- Characters should train a skill if they cant harvest a resource yet
-- Characters should complete tasks to get jasper crystals
+Cook food routine
+- For every resource that there is just one possible thing to craft with it, craft it
+
+
+Figure out gear to craft
 - 

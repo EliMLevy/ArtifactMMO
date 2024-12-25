@@ -1,83 +1,21 @@
-resource_code,x,y,drop_chance,map_code,level,skill
-ash_wood,-1,0,1.0,ash_tree,1,woodcutting
-ash_wood,6,1,1.0,ash_tree,1,woodcutting
-sap,-1,0,10.0,ash_tree,1,woodcutting
-sap,6,1,10.0,ash_tree,1,woodcutting
-gudgeon,4,2,1.0,gudgeon_fishing_spot,1,fishing
-algae,4,2,10.0,gudgeon_fishing_spot,1,fishing
-copper_ore,2,0,1.0,copper_rocks,1,mining
-topaz_stone,2,0,600.0,copper_rocks,1,mining
-topaz,2,0,5000.0,copper_rocks,1,mining
-emerald,2,0,5000.0,copper_rocks,1,mining
-emerald_stone,2,0,600.0,copper_rocks,1,mining
-ruby,2,0,5000.0,copper_rocks,1,mining
-ruby_stone,2,0,600.0,copper_rocks,1,mining
-sapphire,2,0,5000.0,copper_rocks,1,mining
-sapphire_stone,2,0,600.0,copper_rocks,1,mining
-sunflower,2,2,1.0,sunflower,1,alchemy
-shrimp,5,2,1.0,shrimp_fishing_spot,10,fishing
-algae,5,2,10.0,shrimp_fishing_spot,10,fishing
-iron_ore,1,7,1.0,iron_rocks,10,mining
-topaz_stone,1,7,600.0,iron_rocks,10,mining
-topaz,1,7,5000.0,iron_rocks,10,mining
-emerald,1,7,5000.0,iron_rocks,10,mining
-emerald_stone,1,7,600.0,iron_rocks,10,mining
-ruby,1,7,5000.0,iron_rocks,10,mining
-ruby_stone,1,7,600.0,iron_rocks,10,mining
-sapphire,1,7,5000.0,iron_rocks,10,mining
-sapphire_stone,1,7,600.0,iron_rocks,10,mining
-spruce_wood,2,6,1.0,spruce_tree,10,woodcutting
-spruce_wood,1,9,1.0,spruce_tree,10,woodcutting
-sap,2,6,10.0,spruce_tree,10,woodcutting
-sap,1,9,10.0,spruce_tree,10,woodcutting
-apple,2,6,10.0,spruce_tree,10,woodcutting
-apple,1,9,10.0,spruce_tree,10,woodcutting
-coal,1,6,1.0,coal_rocks,20,mining
-topaz_stone,1,6,600.0,coal_rocks,20,mining
-topaz,1,6,5000.0,coal_rocks,20,mining
-emerald,1,6,5000.0,coal_rocks,20,mining
-emerald_stone,1,6,600.0,coal_rocks,20,mining
-ruby,1,6,5000.0,coal_rocks,20,mining
-ruby_stone,1,6,600.0,coal_rocks,20,mining
-sapphire,1,6,5000.0,coal_rocks,20,mining
-sapphire_stone,1,6,600.0,coal_rocks,20,mining
-trout,7,12,1.0,trout_fishing_spot,20,fishing
-algae,7,12,10.0,trout_fishing_spot,20,fishing
-birch_wood,3,5,1.0,birch_tree,20,woodcutting
-birch_wood,-1,6,1.0,birch_tree,20,woodcutting
-sap,3,5,10.0,birch_tree,20,woodcutting
-sap,-1,6,10.0,birch_tree,20,woodcutting
-nettle_leaf,7,14,1.0,nettle,20,alchemy
-bass,6,12,1.0,bass_fishing_spot,30,fishing
-algae,6,12,10.0,bass_fishing_spot,30,fishing
-gold_ore,6,-3,1.0,gold_rocks,30,mining
-topaz_stone,6,-3,600.0,gold_rocks,30,mining
-topaz,6,-3,5000.0,gold_rocks,30,mining
-emerald,6,-3,5000.0,gold_rocks,30,mining
-emerald_stone,6,-3,600.0,gold_rocks,30,mining
-ruby,6,-3,5000.0,gold_rocks,30,mining
-ruby_stone,6,-3,600.0,gold_rocks,30,mining
-sapphire,6,-3,5000.0,gold_rocks,30,mining
-sapphire_stone,6,-3,600.0,gold_rocks,30,mining
-dead_wood,9,6,1.0,dead_tree,30,woodcutting
-dead_wood,9,8,1.0,dead_tree,30,woodcutting
-sap,9,6,10.0,dead_tree,30,woodcutting
-sap,9,8,10.0,dead_tree,30,woodcutting
-salmon,-3,-4,1.0,salmon_fishing_spot,40,fishing
-salmon,-2,-4,1.0,salmon_fishing_spot,40,fishing
-algae,-3,-4,10.0,salmon_fishing_spot,40,fishing
-algae,-2,-4,10.0,salmon_fishing_spot,40,fishing
-glowstem_leaf,1,10,1.0,glowstem,40,alchemy
-mithril_ore,-2,13,1.0,mithril_rocks,40,mining
-topaz_stone,-2,13,550.0,mithril_rocks,40,mining
-topaz,-2,13,4500.0,mithril_rocks,40,mining
-emerald,-2,13,4500.0,mithril_rocks,40,mining
-emerald_stone,-2,13,550.0,mithril_rocks,40,mining
-ruby,-2,13,4500.0,mithril_rocks,40,mining
-ruby_stone,-2,13,550.0,mithril_rocks,40,mining
-sapphire,-2,13,4500.0,mithril_rocks,40,mining
-sapphire_stone,-2,13,550.0,mithril_rocks,40,mining
-maple_wood,1,12,1.0,maple_tree,40,woodcutting
-maple_wood,4,14,1.0,maple_tree,40,woodcutting
-maple_sap,1,12,10.0,maple_tree,40,woodcutting
-maple_sap,4,14,10.0,maple_tree,40,woodcutting
+level,code,name,skill
+1,ash_tree,Ash Tree,woodcutting
+1,gudgeon_fishing_spot,Gudgeon Fishing Spot,fishing
+1,copper_rocks,Copper Rocks,mining
+1,sunflower,Sunflower,alchemy
+10,shrimp_fishing_spot,Shrimp Fishing Spot,fishing
+10,iron_rocks,Iron Rocks,mining
+10,spruce_tree,Spruce Tree,woodcutting
+20,coal_rocks,Coal Rocks,mining
+20,trout_fishing_spot,Trout Fishing Spot,fishing
+20,birch_tree,Birch Tree,woodcutting
+20,nettle,Nettle,alchemy
+30,bass_fishing_spot,Bass Fishing Spot,fishing
+30,gold_rocks,Gold Rocks,mining
+30,dead_tree,Dead Tree,woodcutting
+35,strange_rocks,Strange Rocks,mining
+35,magic_tree,Magic Tree,woodcutting
+40,salmon_fishing_spot,Salmon Fishing Spot,fishing
+40,glowstem,Glowstem,alchemy
+40,mithril_rocks,Mithril Rocks,mining
+40,maple_tree,Maple Tree,woodcutting

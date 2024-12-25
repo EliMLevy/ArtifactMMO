@@ -36,12 +36,12 @@ public class App {
         int refreshRate = 5;
         scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 1, refreshRate, TimeUnit.MINUTES);
 
-        // Map<String, PlanStep> interestingEvents = Map.of("bandit_camp",
-                // new PlanStep(PlanAction.EVENT, "bandit_lizard", 1, "Bandit event is active!"),
-                // "snowman", new PlanStep(PlanAction.EVENT, "snowman", 1, "Snowman event is active!"),
-                // "portal_demon", new PlanStep(PlanAction.EVENT, "demon", 1, "Demon event is active!"));
-        // EventManager eventMgr = new EventManager(interestingEvents, mgr);
-        // scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the
+        Map<String, PlanStep> interestingEvents = Map.of("bandit_camp",
+                new PlanStep(PlanAction.EVENT, "bandit_lizard", 1, "Bandit event is active!"),
+                "snowman", new PlanStep(PlanAction.EVENT, "snowman", 1, "Snowman event is active!"),
+                "portal_demon", new PlanStep(PlanAction.EVENT, "demon", 1, "Demon event is active!"));
+        EventManager eventMgr = new EventManager(interestingEvents, mgr);
+        scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the
                                                                                    // encyclopedia is up to date
         // new EncyclopediaMaker().run();
         // runAllCharactersManually(mgr);
