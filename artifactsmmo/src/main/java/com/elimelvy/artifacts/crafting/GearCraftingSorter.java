@@ -12,6 +12,13 @@ public class GearCraftingSorter implements Comparator<GameItem> {
 
     @Override
     public int compare(GameItem a, GameItem b) {
+        // Check the recipes for jasper crystals
+        boolean aJasper = a.craft().items().stream().anyMatch(ingredient -> ingredient.code().equals("jasper_crystal"));
+        boolean bJasper = b.craft().items().stream().anyMatch(ingredient -> ingredient.code().equals("jasper_crystal"));
+        if(aJasper != bJasper) {
+            if(aJasper) return 1;
+            else return -1;
+        }
         // Check the recipes for the highest level monster drop
         int aMonsterLevel = getHighestLevelMonsterIngredient(a.craft().items());
         int bMonsterLevel = getHighestLevelMonsterIngredient(b.craft().items());

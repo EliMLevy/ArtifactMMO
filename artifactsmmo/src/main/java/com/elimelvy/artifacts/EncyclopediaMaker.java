@@ -21,14 +21,14 @@ import org.slf4j.LoggerFactory;
 import com.elimelvy.artifacts.model.map.MapManager;
 
 public class EncyclopediaMaker implements Runnable {
-    private final Logger logger = LoggerFactory.getLogger(EncyclopediaMaker.class);
+    private static final Logger logger = LoggerFactory.getLogger(EncyclopediaMaker.class);
 
     public static void fetchAllPagesAndSave(String url, String output) throws Exception {
         int page = 1;
         int pages = 2;
         List<JSONObject> allResults = new ArrayList<>();
         while (page <= pages) {
-            System.out.println(url + "&page=" + page);
+            logger.info("{}", url + "&page=" + page);
             HttpURLConnection connection = (HttpURLConnection) new URL(url + "&page=" + page).openConnection();
             connection.setRequestProperty("Accept", "application/json");
 
@@ -199,6 +199,7 @@ public class EncyclopediaMaker implements Runnable {
     @Override
     public void run() {
         try {
+            logger.info("Loading encyclopeida");
             fetchAllPagesAndSave("https://api.artifactsmmo.com/maps?size=100", "maps/all_maps.json");
             fetchAllPagesAndSave("https://api.artifactsmmo.com/items?size=100", "items/all_items.json");
             fetchAllPagesAndSave("https://api.artifactsmmo.com/monsters?size=100", "monsters/all_monsters.json");

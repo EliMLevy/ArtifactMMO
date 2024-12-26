@@ -335,7 +335,7 @@ public class Character implements Runnable {
         if (this.data.cooldown > 0 && Instant.now().isBefore(this.data.cooldownExpiration)) {
             try {
                 Duration d = Duration.between(this.data.cooldownExpiration, Instant.now()).abs();
-                this.logger.info("Sleeping off cooldown {} sec", d.toSeconds());
+                this.logger.info("Sleeping off cooldown {} sec. {} ms", d.toSeconds(), d.toMillis());
                 Thread.sleep(d.toMillis() + 1000);
             } catch (InterruptedException e) {
                 logger.error("Interuppted from sleep!");

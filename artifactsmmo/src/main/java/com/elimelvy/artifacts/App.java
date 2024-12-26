@@ -46,13 +46,10 @@ public class App {
 
         List<String> noObsidianGear = List.of(
                 "gold_helm",
-                "royal_skeleton_armor",
                 "gold_platebody",
                 "dreadful_ring",
                 "lizard_boots",
-                "greater_dreadful_amulet",
-                "serpent_skin_armor",
-                "lizard_skin_armor");
+                "serpent_skin_armor");
 
         
 
