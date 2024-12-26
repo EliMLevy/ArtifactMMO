@@ -45,10 +45,7 @@ public class App {
                 "obsidian_battleaxe");
 
         List<String> noObsidianGear = List.of(
-                "gold_helm",
-                "gold_platebody",
                 "dreadful_ring",
-                "lizard_boots",
                 "serpent_skin_armor");
 
         
@@ -63,7 +60,8 @@ public class App {
                     GearCraftingSorter.getHighestLevelMonsterIngredient(item.craft().items()));
         });
 
-        
+        doCompleteCrafting("ruby_ring", 1, mgr);
+
         for (GameItem item : items) {
             if (item.type().equals("ring")) {
                 doCompleteCrafting(item.code(), 10, mgr);

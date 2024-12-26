@@ -132,7 +132,7 @@ public class CharacterTaskService {
 
         } else {
             // Otherwise, find where to collect it
-            Resource resource = MapManager.getInstance().getResouce(character.getData().task);
+            Resource resource = MapManager.getInstance().getResourceByDrop(character.getData().task);
             if (resource != null) {
                 this.logger.info("To complete task I need to collect {} x{}", character.getData().task,
                         quantityRemaining);

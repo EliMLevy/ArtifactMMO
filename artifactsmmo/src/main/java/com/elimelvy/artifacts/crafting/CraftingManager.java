@@ -130,7 +130,7 @@ public class CraftingManager {
                 Set<String> fromTasks = Set.of("magical_cure", "jasper_crystal", "astralyte_crystal", "enchanted_fabric", "diamond");
                 if(fromTasks.contains(resourceWithFewestCollectors)) {
                     this.logger.info("Assigning {} to Tasks! so that we can get more {}", character.getName(), resourceWithFewestCollectors);
-                    character.setTask(new PlanStep(PlanAction.TASKS, "monsters", 0, "Crafting manager assignment"));
+                    character.setTask(new PlanStep(PlanAction.TASKS, "items", 0, "Crafting manager assignment"));
                 } else {
                     this.logger.info("Assigning {} to collect {}", character.getName(), resourceWithFewestCollectors);
                     character.setTask(new PlanStep(PlanAction.COLLECT, resourceWithFewestCollectors, 1, "Crafting manager assignment"));

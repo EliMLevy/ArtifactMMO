@@ -51,7 +51,6 @@ x,y,content_type,content_code
 5,2,resource,shrimp_fishing_spot
 10,6,monster,vampire
 10,8,monster,vampire
-10,0,monster,bandit_lizard
 1,3,workshop,jewelrycrafting
 6,-2,monster,goblin
 9,-2,monster,goblin
@@ -76,6 +75,7 @@ x,y,content_type,content_code
 2,2,resource,sunflower
 2,6,resource,spruce_tree
 1,9,resource,spruce_tree
+0,13,monster,rosenblood
 -2,-3,workshop,woodcutting
 2,-2,monster,red_slime
 1,-1,monster,red_slime
