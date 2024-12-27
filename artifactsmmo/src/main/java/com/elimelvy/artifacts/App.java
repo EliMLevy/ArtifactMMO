@@ -38,17 +38,14 @@ public class App {
 
         List<String> gearWithObsidian = List.of(
                 "lost_amulet",
-                "ruby_ring", // we need 9 more
+                "ruby_ring", // we need 8 more
                 "obsidian_legs_armor",
                 "obsidian_armor",
-                "topaz_ring", 
+                "topaz_ring",
                 "obsidian_battleaxe");
 
         List<String> noObsidianGear = List.of(
-                "dreadful_ring",
-                "serpent_skin_armor");
-
-        
+                "dreadful_ring", "lizard_skin_legs_armor", "gold_platelegs");
 
         List<GameItem> items = noObsidianGear.stream().map(item -> GameItemManager.getInstance().getItem(item))
                 .filter(item -> item.craft() != null)
@@ -59,8 +56,6 @@ public class App {
             logger.info("{} {} {}", item.code(), item.level(),
                     GearCraftingSorter.getHighestLevelMonsterIngredient(item.craft().items()));
         });
-
-        doCompleteCrafting("ruby_ring", 1, mgr);
 
         for (GameItem item : items) {
             if (item.type().equals("ring")) {
@@ -178,10 +173,10 @@ public class App {
         simulator.optimizeWeaponFor(monster, MapManager.getInstance(), GameItemManager.getInstance(),
                 Bank.getInstance());
         // Weapon override here
-        
+
         simulator.optomizeArmorFor(monster, MapManager.getInstance(), GameItemManager.getInstance(),
-        Bank.getInstance());
-        
+                Bank.getInstance());
+
         simulator.setGear("body_armor_slot", "bandit_armor");
         simulator.setGear("helmet_slot", "obsidian_helmet");
         // Armor overrides here
