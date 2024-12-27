@@ -42,10 +42,10 @@ public class App {
                 "obsidian_legs_armor",
                 "obsidian_armor",
                 "topaz_ring",
-                "obsidian_battleaxe");
+                "obsidian_battleaxe", "sapphire_ring", "emerald_ring");
 
         List<String> noObsidianGear = List.of(
-                "dreadful_ring", "lizard_skin_legs_armor", "gold_platelegs");
+                "dreadful_ring", "lizard_skin_legs_armor");
 
         List<GameItem> items = noObsidianGear.stream().map(item -> GameItemManager.getInstance().getItem(item))
                 .filter(item -> item.craft() != null)
@@ -59,7 +59,8 @@ public class App {
 
         for (GameItem item : items) {
             if (item.type().equals("ring")) {
-                doCompleteCrafting(item.code(), 10, mgr);
+                doCompleteCrafting(item.code(), 5, mgr);
+                doCompleteCrafting(item.code(), 5, mgr);
             } else {
                 doCompleteCrafting(item.code(), 5, mgr);
             }
@@ -79,8 +80,8 @@ public class App {
         int refreshRate = 5;
         scheduled.scheduleAtFixedRate(new EncyclopediaMaker(), 1, refreshRate, TimeUnit.MINUTES);
 
-        Map<String, PlanStep> interestingEvents = Map.of("bandit_camp",
-                new PlanStep(PlanAction.EVENT, "bandit_lizard", 1, "Bandit event is active!"),
+        Map<String, PlanStep> interestingEvents = Map.of(
+                "bandit_camp", new PlanStep(PlanAction.EVENT, "bandit_lizard", 1, "Bandit event is active!"),
                 "snowman", new PlanStep(PlanAction.EVENT, "snowman", 1, "Snowman event is active!"),
                 "portal_demon", new PlanStep(PlanAction.EVENT, "demon", 1, "Demon event is active!"));
         EventManager eventMgr = new EventManager(interestingEvents, mgr);

@@ -27,13 +27,15 @@ public class CharacterCombatService {
 
     }
 
-    public void attackMonster(String code, CharacterMovementService movementService, CharacterGearService gearService, CharacterInventoryService inventoryService) {
+    public void attackMonster(String code, CharacterMovementService movementService, CharacterGearService gearService,
+            CharacterInventoryService inventoryService) {
         // Get resource map
         List<MapTile> maps = MapManager.getInstance().getMap(code);
         if (maps == null || maps.isEmpty()) {
             this.logger.warn("Invalid monster code: {}", code);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(10000); // This error sometimes happens when there is a lag in updating the monsters on
+                                     // the map for an event
             } catch (InterruptedException e) {
                 this.logger.error("Interupted!", e);
             }
@@ -57,7 +59,9 @@ public class CharacterCombatService {
         inventoryService.depositAllItemsIfNecessary(movementService);
 
         // Fill up on consumables if necessary
-        inventoryService.fillUpOnConsumables(List.of("cooked_wolf_meat", "cooked_chicken", "cooked_trout", "gingerbread", "apple_pie"), gearService, movementService);
+        inventoryService.fillUpOnConsumables(
+                List.of("cooked_wolf_meat", "cooked_chicken", "cooked_trout", "gingerbread", "apple_pie"), gearService,
+                movementService);
 
         // Move to the right spot if we arent there already
         movementService.moveToMap(code);
@@ -82,8 +86,9 @@ public class CharacterCombatService {
     }
 
     public Monster getHighestMonsterDefeatable() {
-        List<Monster> monsters = MapManager.getInstance().getMonstersByLevel(character.getLevel() - 10, character.getLevel());
-        if(monsters == null || monsters.isEmpty()) {
+        List<Monster> monsters = MapManager.getInstance().getMonstersByLevel(character.getLevel() - 10,
+                character.getLevel());
+        if (monsters == null || monsters.isEmpty()) {
             logger.warn("Cant find any monsters on my level. level: {}", character.getLevel());
             try {
                 Thread.sleep(1000);
@@ -97,12 +102,14 @@ public class CharacterCombatService {
         monsters.sort((a, b) -> b.getLevel() - a.getLevel());
         // Find the first one we can defeat and battle him
         for (Monster m : monsters) {
-            if(MapManager.getInstance().getMap(m.getCode()) == null) continue;
+            if (MapManager.getInstance().getMap(m.getCode()) == null)
+                continue;
             CharacterStatSimulator simulator = new CharacterStatSimulator(character);
-            simulator.optimizeForMonster(m.getCode(), MapManager.getInstance(), GameItemManager.getInstance(), Bank.getInstance());
-            if(simulator.getPlayerWinsAgainstMonster(m.getCode())) {
+            simulator.optimizeForMonster(m.getCode(), MapManager.getInstance(), GameItemManager.getInstance(),
+                    Bank.getInstance());
+            if (simulator.getPlayerWinsAgainstMonster(m.getCode())) {
                 return m;
-            } 
+            }
         }
         return null;
     }
@@ -110,8 +117,8 @@ public class CharacterCombatService {
     public void healIfNecessary(CharacterInventoryService inventoryService, CharacterGearService gearService) {
         // Attempt to use consumables first
         // Find consumables in our inventory
-        
-        if ((double)character.getData().hp / (double)character.getData().maxHp < 0.6) {
+
+        if ((double) character.getData().hp / (double) character.getData().maxHp < 0.6) {
             inventoryService.useConsumablesForHealing(gearService);
             JsonObject result = AtomicActions.rest(character.getName());
             character.handleActionResult(result);
