@@ -173,7 +173,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
                 this.currentCraftingQuantity,
                 (int) Math.floor((double) crafter.getInventoryMaxItems() * 0.8));
         this.logger.info("Add this plan to {}'s queue {}", crafter.getName(), planToCraft);
-        crafter.addTasksToQueue(planToCraft);
+        crafter.interuptCharacter(planToCraft); // Make sure that the crafter starts the plan
         try {
             this.logger.info("Plan submitted! Waiting for crafting to complete");
             planToCraft.get(planToCraft.size() - 1).waitForCompletion();
@@ -257,6 +257,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
 
     public void assignSpecificCharacterToTask(String character, PlanStep task) {
         this.characters.get(character).setTask(task);
+        this.characters.get(character).interuptCharacter();
     }
 
     @Override

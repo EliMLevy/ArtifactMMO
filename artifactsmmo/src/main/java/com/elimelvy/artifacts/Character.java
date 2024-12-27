@@ -411,6 +411,23 @@ public class Character implements Runnable {
         this.isInterupted.set(true);
     }
 
+    public void interuptCharacter(List<PlanStep> tasks) {
+        // This will stop the character if he is doing long running task
+        // and to empty his task queue.
+        this.pendingTasks.clear();
+        this.pendingTasks.addAll(tasks);
+        this.isInterupted.set(true);
+    }
+
+    public void interuptCharacter() {
+        // This will stop the character if he is doing long running task
+        // and to empty his task queue.
+        this.pendingTasks.clear();
+        this.isInterupted.set(true);
+    }
+
+
+
     public PlanStep getCurrentTask() {
         return this.currentTask;
     }
