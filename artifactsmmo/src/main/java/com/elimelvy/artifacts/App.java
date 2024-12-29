@@ -130,11 +130,12 @@ public class App {
         // }
 
         // Bobby, George and Tim will fight Lich
-        mgr.getCharacter("Bobby").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
+        // mgr.getCharacter("Bobby").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
         mgr.getCharacter("George").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
         mgr.getCharacter("Tim").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
         
         loopCharacterWithPlan(mgr.getCharacter("Joe"), craftWaterBoost);
+        loopCharacterWithPlan(mgr.getCharacter("Bobby"), craftWaterBoost);
         loopCharacterWithPlan(mgr.getCharacter("Stuart"), cookTrout);
         // for(int i = 0; i < 20; i++) {
         //     // Stuart will craft cooked bass
