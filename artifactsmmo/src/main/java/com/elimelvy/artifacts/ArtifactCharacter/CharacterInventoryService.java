@@ -39,6 +39,13 @@ public class CharacterInventoryService {
         if (GearManager.allGearTypes.contains(item.type())) {
             equippedQuantity += gearService.getQuantityEquipped(item);
         }
+        // Handle utility
+        if(gearService.getGearInSlot("utility1").equals(code)) {
+            equippedQuantity += 1;
+        } 
+        if (gearService.getGearInSlot("utility2").equals(code)) {
+            equippedQuantity += 1;
+        } 
 
         return equippedQuantity + getInventoryQuantityWithoutEquipped(code);
     }

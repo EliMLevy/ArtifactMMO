@@ -44,10 +44,9 @@ public class App {
                 "topaz_ring",
                 "obsidian_battleaxe", "sapphire_ring", "emerald_ring");
 
-        List<String> noObsidianGear = List.of(
-                "dreadful_ring", "lizard_skin_legs_armor");
+   
 
-        List<GameItem> items = noObsidianGear.stream().map(item -> GameItemManager.getInstance().getItem(item))
+        List<GameItem> items = gearWithObsidian.stream().map(item -> GameItemManager.getInstance().getItem(item))
                 .filter(item -> item.craft() != null)
                 .sorted(new GearCraftingSorter())
                 .toList();
@@ -56,22 +55,23 @@ public class App {
             logger.info("{} {} {}", item.code(), item.level(),
                     GearCraftingSorter.getHighestLevelMonsterIngredient(item.craft().items()));
         });
+        // doCompleteCrafting("dreadful_ring", 5, mgr);
 
-        for (GameItem item : items) {
-            if (item.type().equals("ring")) {
-                doCompleteCrafting(item.code(), 5, mgr);
-                doCompleteCrafting(item.code(), 5, mgr);
-            } else {
-                doCompleteCrafting(item.code(), 5, mgr);
-            }
-        }
+        // for (GameItem item : items) {
+        // if (item.type().equals("ring")) {
+        // doCompleteCrafting(item.code(), 5, mgr);
+        // doCompleteCrafting(item.code(), 5, mgr);
+        // } else {
+        // doCompleteCrafting(item.code(), 5, mgr);
+        // }
+        // }
 
         runAllCharactersManually(mgr);
 
         // makeSpaceInBank(mgr);
         // getListOfCraftableGear(mgr);
         // getHighestMonsterDefeatable();
-        simulateCharacterBattle("Bobby", "cultist_acolyte");
+        // simulateCharacterBattle("Bobby", "lich");
 
     }
 
@@ -82,7 +82,8 @@ public class App {
 
         Map<String, PlanStep> interestingEvents = Map.of(
                 "bandit_camp", new PlanStep(PlanAction.EVENT, "bandit_lizard", 1, "Bandit event is active!"),
-                "snowman", new PlanStep(PlanAction.EVENT, "snowman", 1, "Snowman event is active!"),
+                // "snowman", new PlanStep(PlanAction.EVENT, "snowman", 1, "Snowman event is
+                // active!"),
                 "portal_demon", new PlanStep(PlanAction.EVENT, "demon", 1, "Demon event is active!"));
         EventManager eventMgr = new EventManager(interestingEvents, mgr);
         scheduled.scheduleAtFixedRate(eventMgr, 2, refreshRate, TimeUnit.MINUTES); // offset by 2 minutes so that the
@@ -106,20 +107,66 @@ public class App {
     }
 
     public static void runAllCharactersManually(CharacterManager mgr) throws Exception {
-        // for (int i = 0; i < 3; i++) {
-        // mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked
-        // trout"));
-        // mgr.addToAllQueues(new PlanStep(PlanAction.WITHDRAW, "trout", 150, "Everyone
-        // cooking trout"));
-        // mgr.addToAllQueues(new PlanStep(PlanAction.CRAFT, "cooked_trout", 150,
-        // "Everyone cooking trout"));
-        // mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty cooked
-        // trout"));
+        List<PlanStep> cookTrout = List.of(
+            new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory"),
+            new PlanStep(PlanAction.GET_DROP, "trout", 150, "withdraw trout"),
+            new PlanStep(PlanAction.CRAFT, "cooked_trout", 150, "Craft cooked trout"),
+            new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory")
+        );
+        List<PlanStep> craftWaterBoost = List.of(
+                new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory"),
+                new PlanStep(PlanAction.GET_DROP, "blue_slimeball", 10, "Collect slimeball"),
+                new PlanStep(PlanAction.GET_DROP, "algae", 10, "withdraw algae"),
+                new PlanStep(PlanAction.GET_DROP, "sunflower", 10, "withdraw sunflower"),
+                new PlanStep(PlanAction.CRAFT, "water_boost_potion", 10, "Craft potion"),
+                new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory")
+        );
+
+        // mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Deposit all before starting"));
+        // for (int i = 0; i < 2; i++) {
+        //     mgr.getCharacter("Bobby").addTasksToQueue(cookTrout);
+        //     mgr.getCharacter("George").addTasksToQueue(cookTrout);
+        //     mgr.getCharacter("Tim").addTasksToQueue(cookTrout);
         // }
 
+        // Bobby, George and Tim will fight Lich
+        mgr.getCharacter("Bobby").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
+        mgr.getCharacter("George").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
+        mgr.getCharacter("Tim").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
+        
+        loopCharacterWithPlan(mgr.getCharacter("Joe"), craftWaterBoost);
+        loopCharacterWithPlan(mgr.getCharacter("Stuart"), cookTrout);
+        // for(int i = 0; i < 20; i++) {
+        //     // Stuart will craft cooked bass
+        //     mgr.getCharacter("Stuart").addTasksToQueue(cookTrout);
+        //     // Joe will craft water boost potion
+        //     mgr.getCharacter("Joe").addTasksToQueue(craftWaterBoost);
+
+        // }
+
+        // mgr.assignSpecificCharacterToTask(character, task);
         // mgr.forceAllCharactersToDeposit();
-        mgr.assignAllToTask(new PlanStep(PlanAction.TASKS, "monsters", 1, "Leveling up characters"));
+        // mgr.assignAllToTask(new PlanStep(PlanAction.TASKS, "monsters", 1, "Leveling up characters"));
         mgr.standbyMode();
+    }
+
+    public static void loopCharacterWithPlan(Character c, List<PlanStep> plan) {
+        Thread t = new Thread(() -> {
+            while(true) {
+                logger.info("Adding plan to {}", c.getName());
+                // Assign the plan to the character
+                c.addTasksToQueue(plan);
+                // Wait on the last step
+                try {
+                    plan.get(plan.size() - 1).waitForCompletion();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // Repeat
+            }
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     public static void getListOfCraftableGear(CharacterManager mgr) {
@@ -178,15 +225,16 @@ public class App {
         simulator.optomizeArmorFor(monster, MapManager.getInstance(), GameItemManager.getInstance(),
                 Bank.getInstance());
 
-        simulator.setGear("body_armor_slot", "bandit_armor");
-        simulator.setGear("helmet_slot", "obsidian_helmet");
+        // simulator.setGear("body_armor_slot", "bandit_armor");
+        // simulator.setGear("helmet_slot", "obsidian_helmet");
         // Armor overrides here
 
         // Potion overrides
-        // simulator.setElementPotionBoost("water", 1.1);
+        simulator.setElementPotionBoost("water", 1.12);
+        // simulator.setElementPotionBoost("earth", 1.1);
         // simulator.setElementPotionResistance("fire", 0.90);
-        // simulator.setElementPotionResistance("water", 0.90);
-        // simulator.setElementPotionResistance("earth", 0.90);
+        // simulator.setElementPotionResistance("water", 0.85);
+        // simulator.setElementPotionResistance("earth", 0.85);
         // simulator.setElementPotionResistance("air", 0.90);
 
         System.out.println(simulator.getLoadout());

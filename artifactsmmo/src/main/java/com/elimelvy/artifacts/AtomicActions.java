@@ -128,9 +128,10 @@ public class AtomicActions {
      * @param slot      Slot to unequip from
      * @return API response
      */
-    public static JsonObject unequip(String character, String slot) {
+    public static JsonObject unequip(String character, String slot, int quantity) {
         JsonObject raw = new JsonObject();
         raw.addProperty("slot", slot);
+        raw.addProperty("quantity", quantity);
         JsonObject result = HTTPRequester.sendCharacterRequest(character, "/action/unequip", "POST", raw);
         logEvent(raw.toString(), result, "UNEQUIP", character, null);
         return result;

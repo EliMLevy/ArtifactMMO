@@ -23,6 +23,7 @@ import com.elimelvy.artifacts.model.item.GameItem;
 import com.elimelvy.artifacts.model.item.GameItemManager;
 import com.elimelvy.artifacts.model.map.MapManager;
 import com.elimelvy.artifacts.model.map.MapTile;
+import com.elimelvy.artifacts.model.map.Monster;
 import com.elimelvy.artifacts.model.map.Resource;
 import com.elimelvy.artifacts.util.HTTPRequester;
 import com.elimelvy.artifacts.util.InstantTypeAdapter;
@@ -36,6 +37,7 @@ public class Character implements Runnable {
     private volatile PlanStep currentTask = new PlanStep(PlanAction.IDLE, "", 0, "Initial Idling");
 
     private final BlockingQueue<PlanStep> pendingTasks = new LinkedBlockingQueue<>();
+    private final BlockingQueue<PlanStep> pausedTasks = new LinkedBlockingQueue<>();
 
     private final ReentrantLock lock = new ReentrantLock();
 
@@ -117,8 +119,8 @@ public class Character implements Runnable {
         if(resource == null) { // If the drop was passed in
             resource = MapManager.getInstance().getResourceByDrop(code);
         }
-        if(maps == null) {
-            maps = MapManager.getInstance().getMap(code);
+        if(maps == null && resource != null) {
+            maps = MapManager.getInstance().getMap(resource.getCode());
         }
         if (maps == null || maps.isEmpty() || resource == null) {
             this.logger.warn("Invalid resource code: {}. {} {}", code, maps, resource);
@@ -352,6 +354,32 @@ public class Character implements Runnable {
                 }
             }
             case ATTACK -> combatService.attackMonster(task.code, movementService, gearService, inventoryService);
+            case GET_DROP -> {
+                // If we have enoug in inv, return
+                if(this.inventoryService.getInventoryQuantity(task.code, gearService) >= task.quantity) {
+                    break;
+                }
+                // If we have enough in bank + inv, withdraw
+                if(this.inventoryService.getInventoryQuantity(task.code, gearService) + Bank.getInstance().getBankQuantity(task.code) >= task.quantity) {
+                    int quantity = task.quantity - this.inventoryService.getInventoryQuantity(task.code, gearService);
+                    this.inventoryService.withdrawFromBank(task.code, quantity, movementService);
+                    break;
+                }
+                // Attack until we have enough in inv + bank
+                while(this.inventoryService.getInventoryQuantity(task.code, gearService) < task.quantity) {
+                    if (this.isInterupted.get()) {
+                        this.logger.info("Interupted! stopping getting drops");
+                        this.isInterupted.set(false);
+                        break;
+                    }
+                    if(MapManager.getInstance().isMonsterDrop(task.code)) {
+                        Monster m = MapManager.getInstance().getMonsterByDrop(task.code);
+                        this.combatService.attackMonster(m.getCode(), movementService, gearService, inventoryService);
+                    } else {
+                        this.collectResource(task.code);
+                    }
+                }
+            }
             case EVENT -> combatService.attackMonster(task.code, movementService, gearService, inventoryService);
             case CRAFT -> this.craft(task.code, task.quantity);
             case RECYCLE -> this.recycle(task.code, task.quantity);
@@ -424,6 +452,15 @@ public class Character implements Runnable {
         // and to empty his task queue.
         this.pendingTasks.clear();
         this.isInterupted.set(true);
+    }
+
+    public void pausePendingTasks() {
+        this.pausedTasks.clear();
+        this.pausedTasks.addAll(this.pendingTasks);
+        this.pendingTasks.clear();
+    }
+    public void resumePausedTasks() {
+        this.pendingTasks.addAll(pendingTasks);
     }
 
 

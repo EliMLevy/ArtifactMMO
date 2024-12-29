@@ -33,6 +33,8 @@ public class CharacterGearService {
             case "ring1_slot" -> this.character.getData().ring1Slot;
             case "ring2_slot" -> this.character.getData().ring2Slot;
             case "amulet_slot" -> this.character.getData().amuletSlot;
+            case "utility1" -> this.character.getData().utility1Slot;
+            case "utility2" -> this.character.getData().utility2Slot;
             default -> null;
         };
     }
@@ -58,7 +60,8 @@ public class CharacterGearService {
         if (getGearInSlot(slot) != null && !getGearInSlot(slot).isEmpty()) {
             this.logger.info("To equip {} we need to unequip {}", code, this.getGearInSlot(slot));
             combatService.healIfNecessary(inventoryService, this);
-            JsonObject result = AtomicActions.unequip(this.character.getName(), slot.replace("_slot", ""));
+            int quantity = !slot.startsWith("utility") ? 1 : slot.startsWith("utility1") ? this.character.getData().utility1SlotQuantity : this.character.getData().utility2SlotQuantity;
+            JsonObject result = AtomicActions.unequip(this.character.getName(), slot.replace("_slot", ""), quantity);
             character.handleActionResult(result);
         }
 
@@ -68,7 +71,11 @@ public class CharacterGearService {
             this.logger.info("{} not found in inventory so I need to withdraw it", code);
             if (Bank.getInstance().getBankQuantity(code) > 0) {
                 inventoryService.depositAllItems(movementService);
-                inventoryService.withdrawFromBank(code, 1, movementService);
+                if(slot.startsWith("utility")) {
+                    inventoryService.withdrawFromBank(code, Math.min(10, Bank.getInstance().getBankQuantity(code)), movementService);
+                } else {
+                    inventoryService.withdrawFromBank(code, 1, movementService);
+                }
             } else {
                 logger.warn("Attempted to equip gear that is not available: {}", code);
                 try {
@@ -81,7 +88,8 @@ public class CharacterGearService {
         // If the withdrawal was successful or if we already had it, equip
         if (inventoryService.getInventoryQuantityWithoutEquipped(code) > 0) {
             this.logger.info("Equipping {} into {}", code, slot);
-            JsonObject result = AtomicActions.equip(this.character.getName(), code, slot.replace("_slot", ""));
+            int quantity = slot.startsWith("utility") ? Math.min(10, inventoryService.getInventoryQuantityWithoutEquipped(code)) : 1;
+            JsonObject result = AtomicActions.equip(this.character.getName(), code, slot.replace("_slot", ""), quantity);
             character.handleActionResult(result);
         } else {
             this.logger.warn("I was expecting to have {} in my inventory but found none", code);

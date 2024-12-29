@@ -137,7 +137,8 @@ public class MapManager {
 
     public boolean isMonsterDrop(String resourceCode) {
         if(drops.get(resourceCode) != null) {
-            return getMonster(drops.get(resourceCode).get(0).getContentCode()) == null;
+            String monsterCode = drops.get(resourceCode).get(0).getContentCode();
+            return getMonster(monsterCode) != null;
         } else {
             return false;
         }

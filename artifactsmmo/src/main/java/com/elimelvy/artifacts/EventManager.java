@@ -89,6 +89,7 @@ public class EventManager implements Runnable {
                             if(assignment.getValue().action == PlanAction.EVENT) { // Only assign characters who arent working on an event right now
                                 logger.info("Character {} is busy with event {}", name, assignment.getValue().code);
                             } else {
+                                mgr.getCharacter(name).pausePendingTasks();
                                 mgr.assignSpecificCharacterToTask(name, interestingEvents.get(eventObj.get("code").getAsString()));
                                 mgr.scheduleAssignToTask(name, assignedTasks.get(name), d.toSeconds(), TimeUnit.SECONDS);
                             }

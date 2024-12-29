@@ -27,7 +27,8 @@ public class PlanGenerator {
         WITHDRAW,
         IDLE,
         NOOP,
-        EVENT
+        EVENT,
+        GET_DROP
     }
 
     private static class Plan {

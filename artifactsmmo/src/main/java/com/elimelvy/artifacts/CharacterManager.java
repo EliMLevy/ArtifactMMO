@@ -251,6 +251,7 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
     public void scheduleAssignToTask(String character, PlanStep task, Long delay, TimeUnit unit) {
         this.logger.info("Scheduling task {} to be done in {} {}", task, delay, unit);
         scheduler.schedule(() -> {
+            this.characters.get(character).resumePausedTasks();
             this.assignSpecificCharacterToTask(character, task);
         }, delay, unit);
     }
@@ -285,6 +286,10 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
 
     public Character getGearCrafter() {
         return this.characters.get(this.armorCrafter);
+    }
+
+    public Character getCharacter(String name) {
+        return this.characters.get(name);
     }
 
     public Collection<Character> getCharacters() {

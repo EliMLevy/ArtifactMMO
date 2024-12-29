@@ -139,15 +139,15 @@ public class CharacterStatSimulator {
                 break;
             }
         }
-        logger.debug("{} won in {} rounds! with {} (out of {}) health remaining", monsterWon ? "Monster" : "Player", i,
-                monsterWon ? target.getHp() : this.character.getMaxHp(), monsterWon ? monsterHealth : playerHealth);
-        fightLogs.add(String.format("%s won in %d rounds! with %f (out of %f) health remaining", monsterWon ? "Monster" : "Player",
-                i, monsterWon ? monsterHealth : playerHealth, monsterWon ? target.getHp() : playerMaxHealth));
+        logger.debug("{} won in {} rounds! Player HP {} (out of {}). Monster HP {} (out of {})", monsterWon ? "Monster" : "Player", i,
+                playerHealth, this.character.getMaxHp(), monsterHealth , target.getHp());
+        fightLogs.add(String.format("%s won in %d rounds! Player HP %f (out of %f). Monster HP %f (out of %d)", monsterWon ? "Monster" : "Player",
+                i,playerHealth, playerMaxHealth, monsterHealth,  target.getHp() ));
 
         return !monsterWon;
     }
 
-    private double computeAttackOfElement(String element, Monster monster) {
+    public double computeAttackOfElement(String element, Monster monster) {
         // Get attack fire from the weapon
         GameItem weapon = this.equippedGear.get("weapon_slot");
         if (weapon == null) {

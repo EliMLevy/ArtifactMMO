@@ -1,5 +1,4 @@
 x,y,content_type,content_code
-4,17,monster,snowman
 2,1,workshop,weaponcrafting
 1,13,monster,cultist_acolyte
 -1,14,monster,cultist_acolyte
@@ -32,7 +31,6 @@ x,y,content_type,content_code
 -1,6,resource,birch_tree
 1,5,workshop,mining
 5,1,grand_exchange,grand_exchange
-5,14,monster,efreet_sultan
 1,10,resource,glowstem
 6,-3,resource,gold_rocks
 5,3,monster,mushmush

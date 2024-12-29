@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 
 public class MapManagerTest {
@@ -46,8 +45,10 @@ public class MapManagerTest {
     public void testIsMonsterDrop() {
         assertTrue(MapManager.getInstance().isMonsterDrop("serpent_skin"));
         assertFalse(MapManager.getInstance().isMonsterDrop("coal"));
+        assertTrue(MapManager.getInstance().isMonsterDrop("blue_slimeball"));
     }
 
+    
     @Test
     public void testGetMonster() {
         Monster expected = new Monster(12, "flying_serpent", "Flying Serpent", 360, 0, 0, 0, 34, -20, 0, -20, 40);
