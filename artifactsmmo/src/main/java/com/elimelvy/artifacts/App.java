@@ -44,8 +44,6 @@ public class App {
                 "topaz_ring",
                 "obsidian_battleaxe", "sapphire_ring", "emerald_ring");
 
-   
-
         List<GameItem> items = gearWithObsidian.stream().map(item -> GameItemManager.getInstance().getItem(item))
                 .filter(item -> item.craft() != null)
                 .sorted(new GearCraftingSorter())
@@ -108,52 +106,74 @@ public class App {
 
     public static void runAllCharactersManually(CharacterManager mgr) throws Exception {
         List<PlanStep> cookTrout = List.of(
-            new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory"),
-            new PlanStep(PlanAction.GET_DROP, "trout", 150, "withdraw trout"),
-            new PlanStep(PlanAction.CRAFT, "cooked_trout", 150, "Craft cooked trout"),
-            new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory")
-        );
+                new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory"),
+                new PlanStep(PlanAction.GET_DROP, "trout", 150, "withdraw trout"),
+                new PlanStep(PlanAction.CRAFT, "cooked_trout", 150, "Craft cooked trout"),
+                new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory"));
         List<PlanStep> craftWaterBoost = List.of(
                 new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory"),
                 new PlanStep(PlanAction.GET_DROP, "blue_slimeball", 10, "Collect slimeball"),
                 new PlanStep(PlanAction.GET_DROP, "algae", 10, "withdraw algae"),
                 new PlanStep(PlanAction.GET_DROP, "sunflower", 10, "withdraw sunflower"),
                 new PlanStep(PlanAction.CRAFT, "water_boost_potion", 10, "Craft potion"),
-                new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory")
-        );
-
-        // mgr.addToAllQueues(new PlanStep(PlanAction.DEPOSIT, "", 0, "Deposit all before starting"));
-        // for (int i = 0; i < 2; i++) {
-        //     mgr.getCharacter("Bobby").addTasksToQueue(cookTrout);
-        //     mgr.getCharacter("George").addTasksToQueue(cookTrout);
-        //     mgr.getCharacter("Tim").addTasksToQueue(cookTrout);
-        // }
+                new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory"));
 
         // Bobby, George and Tim will fight Lich
-        // mgr.getCharacter("Bobby").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
+        mgr.assignAllToTask(new PlanStep(PlanAction.TRAIN, "woodcutting", 1, "trying to hit 35"));
+        while (mgr.getCharacter("Bobby").getData().woodcuttingLevel < 35 ||
+                mgr.getCharacter("George").getData().woodcuttingLevel < 35 ||
+                mgr.getCharacter("Stuart").getData().woodcuttingLevel < 35 ||
+                mgr.getCharacter("Tim").getData().woodcuttingLevel < 35 ||
+                mgr.getCharacter("Joe").getData().woodcuttingLevel < 35) {
+            if(mgr.getCharacter("Bobby").getData().woodcuttingLevel >= 35) {
+                mgr.getCharacter("Bobby").setTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
+            }
+            if (mgr.getCharacter("Stuart").getData().woodcuttingLevel >= 35) {
+                mgr.getCharacter("Stuart").setTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
+            }
+            if (mgr.getCharacter("George").getData().woodcuttingLevel >= 35) {
+                mgr.getCharacter("George").setTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
+            }
+            if (mgr.getCharacter("Tim").getData().woodcuttingLevel >= 35) {
+                mgr.getCharacter("Tim").setTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
+            }
+            if (mgr.getCharacter("Joe").getData().woodcuttingLevel >= 35) {
+                mgr.getCharacter("Joe").setTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
+            }
+            Thread.sleep(60 * 1000);
+        }
+        mgr.assignAllToTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
+        while (mgr.getCharacter("Bobby").getData().miningLevel < 35 ||
+                mgr.getCharacter("George").getData().miningLevel < 35 ||
+                mgr.getCharacter("Stuart").getData().miningLevel < 35 ||
+                mgr.getCharacter("Tim").getData().miningLevel < 35 ||
+                mgr.getCharacter("Joe").getData().miningLevel < 35) {
+            Thread.sleep(60 * 1000);
+        }
+
         mgr.getCharacter("George").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
         mgr.getCharacter("Tim").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
-        
         loopCharacterWithPlan(mgr.getCharacter("Joe"), craftWaterBoost);
         loopCharacterWithPlan(mgr.getCharacter("Bobby"), craftWaterBoost);
         loopCharacterWithPlan(mgr.getCharacter("Stuart"), cookTrout);
         // for(int i = 0; i < 20; i++) {
-        //     // Stuart will craft cooked bass
-        //     mgr.getCharacter("Stuart").addTasksToQueue(cookTrout);
-        //     // Joe will craft water boost potion
-        //     mgr.getCharacter("Joe").addTasksToQueue(craftWaterBoost);
+        // // Stuart will craft cooked bass
+        // mgr.getCharacter("Stuart").addTasksToQueue(cookTrout);
+        // // Joe will craft water boost potion
+        // mgr.getCharacter("Joe").addTasksToQueue(craftWaterBoost);
 
         // }
 
         // mgr.assignSpecificCharacterToTask(character, task);
         // mgr.forceAllCharactersToDeposit();
-        // mgr.assignAllToTask(new PlanStep(PlanAction.TASKS, "monsters", 1, "Leveling up characters"));
+        // mgr.assignAllToTask(new PlanStep(PlanAction.TASKS, "monsters", 1, "Leveling
+        // up characters"));
         mgr.standbyMode();
     }
 
     public static void loopCharacterWithPlan(Character c, List<PlanStep> plan) {
         Thread t = new Thread(() -> {
-            while(true) {
+            while (true) {
                 logger.info("Adding plan to {}", c.getName());
                 // Assign the plan to the character
                 c.addTasksToQueue(plan);
