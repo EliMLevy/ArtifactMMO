@@ -460,7 +460,7 @@ public class Character implements Runnable {
         this.pendingTasks.clear();
     }
     public void resumePausedTasks() {
-        this.pendingTasks.addAll(pendingTasks);
+        this.pendingTasks.addAll(this.pausedTasks);
     }
 
 
