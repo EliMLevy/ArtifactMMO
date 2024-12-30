@@ -251,8 +251,14 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
     public void scheduleAssignToTask(String character, PlanStep task, Long delay, TimeUnit unit) {
         this.logger.info("Scheduling task {} to be done in {} {}", task, delay, unit);
         scheduler.schedule(() -> {
-            this.characters.get(character).resumePausedTasks();
-            this.assignSpecificCharacterToTask(character, task);
+            try {
+                this.logger.info("Resuming paused tasks for {}", character);
+                this.characters.get(character).resumePausedTasks();
+                this.logger.info("Assigning {} back to {}", character, task);
+                this.assignSpecificCharacterToTask(character, task);
+            } catch (Exception e) {
+                this.logger.error("Failed to reassign character {}. {}", character, e);
+            }
         }, delay, unit);
     }
 
