@@ -278,7 +278,7 @@ public class Character implements Runnable {
         Resource highestUnlocked = null;
         
         for (Resource r : maps) {
-            List<MapTile> locations = MapManager.getInstance().getMapByResource(r.getCode());
+            List<MapTile> locations = MapManager.getInstance().getMap(r.getCode());
             if (r.getLevel() <= level && locations != null && !locations.isEmpty() && (highestUnlocked == null || r.getLevel() > highestUnlocked.getLevel())) {
                 highestUnlocked = r;
             }
