@@ -120,11 +120,11 @@ public class App {
 
         // Bobby, George and Tim will fight Lich
         mgr.assignAllToTask(new PlanStep(PlanAction.TRAIN, "woodcutting", 1, "trying to hit 35"));
+        mgr.assignSpecificCharacterToTask("Joe", new PlanStep(PlanAction.TRAIN, "combat", 1, "training combat"));
         while (mgr.getCharacter("Bobby").getData().woodcuttingLevel < 35 ||
                 mgr.getCharacter("George").getData().woodcuttingLevel < 35 ||
                 mgr.getCharacter("Stuart").getData().woodcuttingLevel < 35 ||
-                mgr.getCharacter("Tim").getData().woodcuttingLevel < 35 ||
-                mgr.getCharacter("Joe").getData().woodcuttingLevel < 35) {
+                mgr.getCharacter("Tim").getData().woodcuttingLevel < 35) {
             if(mgr.getCharacter("Bobby").getData().woodcuttingLevel >= 35) {
                 mgr.getCharacter("Bobby").setTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
             }
@@ -137,23 +137,17 @@ public class App {
             if (mgr.getCharacter("Tim").getData().woodcuttingLevel >= 35) {
                 mgr.getCharacter("Tim").setTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
             }
-            if (mgr.getCharacter("Joe").getData().woodcuttingLevel >= 35) {
-                mgr.getCharacter("Joe").setTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
-            }
             Thread.sleep(60 * 1000);
         }
-        mgr.assignAllToTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
         while (mgr.getCharacter("Bobby").getData().miningLevel < 35 ||
                 mgr.getCharacter("George").getData().miningLevel < 35 ||
                 mgr.getCharacter("Stuart").getData().miningLevel < 35 ||
-                mgr.getCharacter("Tim").getData().miningLevel < 35 ||
-                mgr.getCharacter("Joe").getData().miningLevel < 35) {
+                mgr.getCharacter("Tim").getData().miningLevel < 35) {
             Thread.sleep(60 * 1000);
         }
 
         mgr.getCharacter("George").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
         mgr.getCharacter("Tim").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
-        loopCharacterWithPlan(mgr.getCharacter("Joe"), craftWaterBoost);
         loopCharacterWithPlan(mgr.getCharacter("Bobby"), craftWaterBoost);
         loopCharacterWithPlan(mgr.getCharacter("Stuart"), cookTrout);
         // for(int i = 0; i < 20; i++) {
