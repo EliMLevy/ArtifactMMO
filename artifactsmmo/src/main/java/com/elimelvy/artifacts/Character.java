@@ -125,7 +125,7 @@ public class Character implements Runnable {
         if (maps == null || maps.isEmpty() || resource == null) {
             this.logger.warn("Invalid resource code: {}. {} {}", code, maps, resource);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
                 this.logger.error("Interupted!", e);
             }
@@ -276,8 +276,10 @@ public class Character implements Runnable {
         }
 
         Resource highestUnlocked = null;
+        
         for (Resource r : maps) {
-            if (r.getLevel() <= level && (highestUnlocked == null || r.getLevel() > highestUnlocked.getLevel())) {
+            List<MapTile> locations = MapManager.getInstance().getMapByResource(r.getCode());
+            if (r.getLevel() <= level && locations != null && !locations.isEmpty() && (highestUnlocked == null || r.getLevel() > highestUnlocked.getLevel())) {
                 highestUnlocked = r;
             }
         }
