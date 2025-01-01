@@ -188,6 +188,15 @@ public class CharacterManager implements OwnershipQuantity, Runnable {
         for (Character c : this.characters.values()) {
             c.interuptCharacter(depositStep);
         }
+        try {
+            depositStep.waitForCompletion();
+            depositStep.waitForCompletion();
+            depositStep.waitForCompletion();
+            depositStep.waitForCompletion();
+            depositStep.waitForCompletion();
+        } catch (InterruptedException e) {
+            this.logger.error("Failed {}", e);
+        }
     }
 
     /**

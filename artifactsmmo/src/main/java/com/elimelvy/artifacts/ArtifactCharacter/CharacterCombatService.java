@@ -93,7 +93,7 @@ public class CharacterCombatService {
 
         // Fill up on consumables if necessary
         inventoryService.fillUpOnConsumables(
-                List.of("cooked_wolf_meat", "cooked_chicken", "cooked_trout", "gingerbread", "apple_pie"), gearService,
+                List.of("cooked_wolf_meat", "cooked_chicken", "cooked_trout", "gingerbread", "apple_pie", "cooked_bass"), gearService,
                 movementService);
 
         // Move to the right spot if we arent there already

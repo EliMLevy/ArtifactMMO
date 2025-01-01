@@ -37,12 +37,8 @@ public class App {
         // new EncyclopediaMaker().run();
 
         List<String> gearWithObsidian = List.of(
-                "lost_amulet",
                 "ruby_ring", // we need 8 more
-                "obsidian_legs_armor",
-                "obsidian_armor",
-                "topaz_ring",
-                "obsidian_battleaxe", "sapphire_ring", "emerald_ring");
+                "topaz_ring", "sapphire_ring", "emerald_ring");
 
         List<GameItem> items = gearWithObsidian.stream().map(item -> GameItemManager.getInstance().getItem(item))
                 .filter(item -> item.craft() != null)
@@ -53,7 +49,7 @@ public class App {
             logger.info("{} {} {}", item.code(), item.level(),
                     GearCraftingSorter.getHighestLevelMonsterIngredient(item.craft().items()));
         });
-        // doCompleteCrafting("dreadful_ring", 5, mgr);
+        // doCompleteCrafting("obsidian_legs_armor", 5, mgr);
 
         // for (GameItem item : items) {
         // if (item.type().equals("ring")) {
@@ -110,6 +106,11 @@ public class App {
                 new PlanStep(PlanAction.GET_DROP, "trout", 150, "withdraw trout"),
                 new PlanStep(PlanAction.CRAFT, "cooked_trout", 150, "Craft cooked trout"),
                 new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory"));
+        List<PlanStep> cookBass = List.of(
+                new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory"),
+                new PlanStep(PlanAction.GET_DROP, "bass", 150, "withdraw bass"),
+                new PlanStep(PlanAction.CRAFT, "cooked_bass", 150, "Craft cooked bass"),
+                new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory"));
         List<PlanStep> craftWaterBoost = List.of(
                 new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory"),
                 new PlanStep(PlanAction.GET_DROP, "blue_slimeball", 10, "Collect slimeball"),
@@ -118,50 +119,27 @@ public class App {
                 new PlanStep(PlanAction.CRAFT, "water_boost_potion", 10, "Craft potion"),
                 new PlanStep(PlanAction.DEPOSIT, "", 0, "Empty inventory"));
 
-        // Bobby, George and Tim will fight Lich
-        mgr.assignAllToTask(new PlanStep(PlanAction.TRAIN, "woodcutting", 1, "trying to hit 35"));
-        mgr.assignSpecificCharacterToTask("Joe", new PlanStep(PlanAction.TRAIN, "combat", 1, "training combat"));
-        while (mgr.getCharacter("Bobby").getData().woodcuttingLevel < 35 ||
-                mgr.getCharacter("George").getData().woodcuttingLevel < 35 ||
-                mgr.getCharacter("Stuart").getData().woodcuttingLevel < 35 ||
-                mgr.getCharacter("Tim").getData().woodcuttingLevel < 35) {
-            if(mgr.getCharacter("Bobby").getData().woodcuttingLevel >= 35) {
-                mgr.getCharacter("Bobby").setTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
-            }
-            if (mgr.getCharacter("Stuart").getData().woodcuttingLevel >= 35) {
-                mgr.getCharacter("Stuart").setTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
-            }
-            if (mgr.getCharacter("George").getData().woodcuttingLevel >= 35) {
-                mgr.getCharacter("George").setTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
-            }
-            if (mgr.getCharacter("Tim").getData().woodcuttingLevel >= 35) {
-                mgr.getCharacter("Tim").setTask(new PlanStep(PlanAction.TRAIN, "mining", 1, "trying to hit 35"));
-            }
-            Thread.sleep(60 * 1000);
-        }
-        while (mgr.getCharacter("Bobby").getData().miningLevel < 35 ||
-                mgr.getCharacter("George").getData().miningLevel < 35 ||
-                mgr.getCharacter("Stuart").getData().miningLevel < 35 ||
-                mgr.getCharacter("Tim").getData().miningLevel < 35) {
-            Thread.sleep(60 * 1000);
-        }
+        List<PlanStep> craftDeadWoodPlank = List.of(
+            new PlanStep(PlanAction.DEPOSIT, "", 0, "pre-empty"),
+            new PlanStep(PlanAction.WITHDRAW, "dead_wood", 120, "withdraw"),
+            new PlanStep(PlanAction.CRAFT, "dead_wood_plank", 15, "craft"),
+            new PlanStep(PlanAction.DEPOSIT, "", 0, "post-empty")
+        );
 
-        mgr.getCharacter("George").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
-        mgr.getCharacter("Tim").setTask(new PlanStep(PlanAction.ATTACK, "lich", 1, "Trying to drop crown"));
-        loopCharacterWithPlan(mgr.getCharacter("Bobby"), craftWaterBoost);
-        loopCharacterWithPlan(mgr.getCharacter("Stuart"), cookTrout);
-        // for(int i = 0; i < 20; i++) {
-        // // Stuart will craft cooked bass
-        // mgr.getCharacter("Stuart").addTasksToQueue(cookTrout);
-        // // Joe will craft water boost potion
-        // mgr.getCharacter("Joe").addTasksToQueue(craftWaterBoost);
+        List<PlanStep> craftGold = List.of(
+                new PlanStep(PlanAction.DEPOSIT, "", 0, "pre-empty"),
+                new PlanStep(PlanAction.WITHDRAW, "gold_ore", 120, "withdraw"),
+                new PlanStep(PlanAction.CRAFT, "gold", 15, "craft"),
+                new PlanStep(PlanAction.DEPOSIT, "", 0, "post-empty"));
 
-        // }
+        mgr.assignSpecificCharacterToTask("Bobby", new PlanStep(PlanAction.COLLECT, "gold_ore", 1, "train mining"));
+        mgr.assignSpecificCharacterToTask("George", new PlanStep(PlanAction.COLLECT, "gold_ore", 1, "train mining"));
 
-        // mgr.assignSpecificCharacterToTask(character, task);
+        
+        loopCharacterWithPlan(mgr.getCharacter("Stuart"), cookBass);
+        mgr.assignSpecificCharacterToTask("Tim", new PlanStep(PlanAction.ATTACK, "lich", 1, "get crown"));
+        mgr.assignSpecificCharacterToTask("Joe", new PlanStep(PlanAction.ATTACK, "lich", 1, "get crown"));
         // mgr.forceAllCharactersToDeposit();
-        // mgr.assignAllToTask(new PlanStep(PlanAction.TASKS, "monsters", 1, "Leveling
-        // up characters"));
         mgr.standbyMode();
     }
 
@@ -234,18 +212,18 @@ public class App {
         Character character = Character.fromJson(characterData);
         CharacterStatSimulator simulator = new CharacterStatSimulator(character);
         simulator.optimizeWeaponFor(monster, MapManager.getInstance(), GameItemManager.getInstance(),
-                Bank.getInstance());
+                new FakeBank());
         // Weapon override here
 
         simulator.optomizeArmorFor(monster, MapManager.getInstance(), GameItemManager.getInstance(),
-                Bank.getInstance());
+                new FakeBank());
 
         // simulator.setGear("body_armor_slot", "bandit_armor");
         // simulator.setGear("helmet_slot", "obsidian_helmet");
         // Armor overrides here
 
         // Potion overrides
-        simulator.setElementPotionBoost("water", 1.12);
+        // simulator.setElementPotionBoost("water", 1.12);
         // simulator.setElementPotionBoost("earth", 1.1);
         // simulator.setElementPotionResistance("fire", 0.90);
         // simulator.setElementPotionResistance("water", 0.85);
